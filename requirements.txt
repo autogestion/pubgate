@@ -1,0 +1,4 @@
+
+git+https://github.com/tsileo/little-boxes.git
+sanic==0.7.0
+sanic-openapi==0.4.0
