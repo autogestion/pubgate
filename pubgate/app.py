@@ -1,6 +1,7 @@
 
 from sanic import Sanic
 from sanic_openapi import swagger_blueprint, openapi_blueprint
+from sanic_motor import BaseModel
 
 from pubgate.api.well_known import well_known
 from pubgate.api.v1 import user_v1, inbox_v1, outbox_v1
@@ -10,6 +11,8 @@ def create_app(config_path):
 
     app = Sanic()
     app.config.from_pyfile(config_path)
+
+    BaseModel.init_app(app)
 
     app.blueprint(openapi_blueprint)
     app.blueprint(swagger_blueprint)
