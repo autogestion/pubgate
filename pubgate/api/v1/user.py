@@ -85,5 +85,5 @@ async def get_user(request, user_id):
                 "mediaType": "image/png",
                 "url": "https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/512x512/torii.png"
             }
-        }
+        }, headers={'Content-Type': 'application/jrd+json; charset=utf-8'}
     )
