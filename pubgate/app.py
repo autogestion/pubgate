@@ -2,6 +2,7 @@
 from sanic import Sanic
 from sanic_openapi import swagger_blueprint, openapi_blueprint
 from sanic_motor import BaseModel
+# from little_boxes import set_debug
 from little_boxes.activitypub import use_backend
 
 from pubgate.db.backend import PGBackend
@@ -15,10 +16,10 @@ def create_app(config_path):
     app.config.from_pyfile(config_path)
 
     BaseModel.init_app(app)
-    use_backend(PGBackend())
-
-    global DEBUG
-    DEBUG = app.config.DEBUG
+    back = PGBackend()
+    use_backend(back)
+    app.config.back = back
+    # set_debug(app.config.DEBUG)
 
     app.blueprint(openapi_blueprint)
     app.blueprint(swagger_blueprint)
