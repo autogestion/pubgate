@@ -2,7 +2,9 @@
 from sanic import Sanic
 from sanic_openapi import swagger_blueprint, openapi_blueprint
 from sanic_motor import BaseModel
+from little_boxes.activitypub import use_backend
 
+from pubgate.db.backend import PGBackend
 from pubgate.api.well_known import well_known
 from pubgate.api.v1 import user_v1, inbox_v1, outbox_v1
 
@@ -13,6 +15,10 @@ def create_app(config_path):
     app.config.from_pyfile(config_path)
 
     BaseModel.init_app(app)
+    use_backend(PGBackend())
+
+    global DEBUG
+    DEBUG = app.config.DEBUG
 
     app.blueprint(openapi_blueprint)
     app.blueprint(swagger_blueprint)

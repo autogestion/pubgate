@@ -1,0 +1,86 @@
+{
+	"variables": [],
+	"info": {
+		"name": "pubgate",
+		"_postman_id": "08f32117-2205-a5c9-06eb-41e0a812ec07",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/api/v1/user",
+			"request": {
+				"url": "{{host}}/api/v1/user",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"{{user}}\", \"password\":\"dev\", \"email\": \"bu\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/user/user_id",
+			"request": {
+				"url": "{{host}}/api/v1/user/dev/",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"dev1\", \"password\":\"dev1\", \"email\": \"bu\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/.well-known/webfinger",
+			"request": {
+				"url": {
+					"raw": "0.0.0.0:8000/.well-known/webfinger?resource=acct:dev@esxample.com",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8000",
+					"path": [
+						".well-known",
+						"webfinger"
+					],
+					"query": [
+						{
+							"key": "resource",
+							"value": "acct:dev@esxample.com",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"dev1\", \"password\":\"dev1\", \"email\": \"bu\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/outbox/user_id Create post",
+			"request": {
+				"url": "{{host}}:{{port}}/api/v1/outbox/dev1",
+				"method": "POST",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
