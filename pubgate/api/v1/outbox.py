@@ -25,6 +25,9 @@ async def outbox_post(request, user_id):
 
     request.app.config.back.profile = profile
 
+    # async with request.app.config.back.client_session.get(request.json["actor"]) as resp:
+    #     resp = await resp.json()
+
     try:
         activity = parse_activity(request.json)
     except (UnexpectedActivityTypeError, BadActivityError) as e:

@@ -1,4 +1,4 @@
-
+import aiohttp
 from sanic import Sanic
 from sanic_openapi import swagger_blueprint, openapi_blueprint
 from sanic_motor import BaseModel
@@ -17,9 +17,9 @@ def create_app(config_path):
 
     BaseModel.init_app(app)
     back = PGBackend()
+    back.debug = app.config.DEBUG
     use_backend(back)
     app.config.back = back
-    # set_debug(app.config.DEBUG)
 
     app.blueprint(openapi_blueprint)
     app.blueprint(swagger_blueprint)
@@ -29,4 +29,10 @@ def create_app(config_path):
     app.blueprint(inbox_v1)
     app.blueprint(outbox_v1)
 
+    app.add_task(register_aiohttp_pool(app))
+
     return app
+
+
+async def register_aiohttp_pool(app):
+    app.config.back.client_session = aiohttp.ClientSession()

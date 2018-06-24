@@ -38,7 +38,7 @@ def render_user_profile(method, domain, user_id):
                 "value": "schema:value"
             }
         ],
-        "id": f"{method}://{domain}/user/{user_id}",
+        "id": f"{method}://{domain}/api/v1/user/{user_id}",
         "type": "Person",
         "following": f"{method}://{domain}/outbox/{user_id}/following",
         "followers": f"{method}://{domain}/outbox/{user_id}/followers",

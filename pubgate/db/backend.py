@@ -13,8 +13,19 @@ if typing.TYPE_CHECKING:
     from little_boxes import activitypub as ap  # noqa: type checking
 
 from pubgate import version
+import asyncio
+
+
+async def fetch(session, url):
+    async with session.get(url) as resp:
+        return await resp.json()
+
 
 class PGBackend:
+
+    def debug_mode(self) -> bool:
+        """Should be overidded to return `True` in order to enable the debug mode."""
+        return self.debug
 
     def user_agent(self) -> str:
         return (
@@ -44,11 +55,31 @@ class PGBackend:
         return activity.get_actor().id == as_actor.id
 
     def fetch_iri(self, iri: str, **kwargs) -> "ap.ObjectType":  # pragma: no cover
-        try:
-            check_url(iri)
-        # TODO for debug
-        except InvalidURLError:
-            pass
+
+        check_url(iri, self.debug)
+
+        # loop = asyncio.get_event_loop()
+        # bu = loop.create_task(fetch(self.session, iri))
+
+        # bu = asyncio.ensure_future(fetch(self.client_session, iri), loop=loop)
+
+
+        async def slow_operation(future):
+            await asyncio.sleep(1)
+            future.set_result('Future is done!')
+
+        def got_result(future):
+            print(future.result())
+
+        # loop = asyncio.get_event_loop()
+        future = asyncio.Future()
+        asyncio.ensure_future(slow_operation(future))
+        x = future.add_done_callback(got_result)
+
+
+
+        # responses = loop.run_until_complete(fetch(self.client_session, iri))
+        # print(responses)
 
         # resp = requests.get(
         #     iri,
