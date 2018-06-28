@@ -16,37 +16,43 @@ well_known = Blueprint('well_known', url_prefix='/.well-known')
 @doc.summary("webfinger")
 async def webfinger(request):
     resource = request.args.get('resource')
-    id = resource.split(":")[1].split("@")
-    user_id, domain = id
+    id_list = resource.split(":")
+    user_id, domain = id_list[1].split("@")
+
+    if len(id_list) == 3:
+        domain += f":{id_list[2]}"
+
     if not (domain == request.app.config.DOMAIN and await User.find_one(dict(username=user_id))):
         return response.json({"error": "no such user"}, status=404)
 
+    method = request.app.config.METHOD
+
     resp = {
-        "subject": "acct:autogestion@mastodon.social",
+        "subject": f"acct:{user_id}@{domain}",
         "aliases": [
-            # "https://mastodon.social/@user",
-            f"https://{domain}/user/{user_id}"
+            # "{method}://mastodon.social/@user",
+            f"{method}://{domain}/user/{user_id}"
         ],
         "links": [
             # {
             #     "rel": "http://webfinger.net/rel/profile-page",
             #     "type": "text/html",
-            #     "href": "https://mastodon.social/@user"
+            #     "href": "{method}://mastodon.social/@user"
             # },
 
             {
                 "rel": "self",
                 "type": "application/activity+json",
-                "href": f"https://{domain}/user/{user_id}"
+                "href": f"{method}://{domain}/user/{user_id}"
             },
             # {
             #     "rel": "salmon",
-            #     "href": "https://mastodon.social/api/salmon/285169"
+            #     "href": "{method}://mastodon.social/api/salmon/285169"
             # },
 
             # {
             #     "rel": "http://ostatus.org/schema/1.0/subscribe",
-            #     "template": "https://mastodon.social/authorize_follow?acct={uri}"
+            #     "template": "{method}://mastodon.social/authorize_follow?acct={uri}"
             # }
         ]
     }
