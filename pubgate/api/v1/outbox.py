@@ -36,5 +36,5 @@ async def outbox_post(request, user_id):
     outbox = Outbox(Person(**profile))
     outbox.post(activity)
 
-    return response.json(status=201, headers={"Location": activity.id})
+    return response.json({'peremoga': 'yep'}, status=201, headers={"Location": activity.id})
 

@@ -39,14 +39,10 @@
 			"name": "/.well-known/webfinger",
 			"request": {
 				"url": {
-					"raw": "0.0.0.0:8000/.well-known/webfinger?resource=acct:dev@esxample.com",
+					"raw": "{{host}}/.well-known/webfinger?resource=acct:{{user}}@{{host}}",
 					"host": [
-						"0",
-						"0",
-						"0",
-						"0"
+						"{{host}}"
 					],
-					"port": "8000",
 					"path": [
 						".well-known",
 						"webfinger"
@@ -54,7 +50,7 @@
 					"query": [
 						{
 							"key": "resource",
-							"value": "acct:dev@esxample.com",
+							"value": "acct:{{user}}@{{host}}",
 							"equals": true,
 							"description": ""
 						}
@@ -74,10 +70,13 @@
 		{
 			"name": "/api/v1/outbox/user_id Create post",
 			"request": {
-				"url": "{{host}}:{{port}}/api/v1/outbox/dev1",
+				"url": "{{host}}/api/v1/outbox/{{user}}",
 				"method": "POST",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": "{\n            \"id\": \"https://mastodon.social/users/autogestion/statuses/100255324466024296/activity\",\n            \"type\": \"Create\",\n            \"actor\": \"{{method}}://{{host}}/api/v1/user/{{user}}\",\n            \"published\": \"2018-06-23T17:27:28Z\",\n            \"to\": [\n                \"https://www.w3.org/ns/activitystreams#Public\"\n            ],\n            \"cc\": [\n                \"https://mastodon.social/users/autogestion/followers\",\n                \"https://toot.cafe/users/dovbo\",\n                \"https://acts-sh.pp.ua\"\n            ],\n            \"object\": {\n                \"id\": \"https://mastodon.social/users/autogestion/statuses/100255324466024296\",\n                \"type\": \"Note\",\n                \"summary\": null,\n                \"inReplyTo\": \"https://acts-sh.pp.ua/outbox/a3b58f48b85ddde0/activity\",\n                \"published\": \"2018-06-23T17:27:28Z\",\n                \"url\": \"https://mastodon.social/@autogestion/100255324466024296\",\n                \"attributedTo\": \"https://mastodon.social/users/autogestion\",\n                \"to\": [\n                    \"https://www.w3.org/ns/activitystreams#Public\"\n                ],\n                \"cc\": [\n                    \"https://mastodon.social/users/autogestion/followers\",\n                    \"https://toot.cafe/users/dovbo\",\n                    \"https://acts-sh.pp.ua\"\n                ],\n                \"sensitive\": false,\n                \"atomUri\": \"https://mastodon.social/users/autogestion/statuses/100255324466024296\",\n                \"inReplyToAtomUri\": \"https://acts-sh.pp.ua/outbox/a3b58f48b85ddde0/activity\",\n                \"conversation\": \"tag:toot.cafe,2018-06-22:objectId=3168691:objectType=Conversation\",\n                \"content\": \"<p><span class=\\\"h-card\\\"><a href=\\\"https://acts-sh.pp.ua\\\" class=\\\"u-url mention\\\">@<span>cryptolol</span></a></span> <span class=\\\"h-card\\\"><a href=\\\"https://toot.cafe/@dovbo\\\" class=\\\"u-url mention\\\">@<span>dovbo</span></a></span> <br />Lol?</p>\",\n                \"contentMap\": {\n                    \"uk\": \"<p><span class=\\\"h-card\\\"><a href=\\\"https://acts-sh.pp.ua\\\" class=\\\"u-url mention\\\">@<span>cryptolol</span></a></span> <span class=\\\"h-card\\\"><a href=\\\"https://toot.cafe/@dovbo\\\" class=\\\"u-url mention\\\">@<span>dovbo</span></a></span> <br />Lol?</p>\"\n                },\n                \"attachment\": [],\n                \"tag\": [\n                    {\n                        \"type\": \"Mention\",\n                        \"href\": \"https://acts-sh.pp.ua\",\n                        \"name\": \"@cryptolol@acts-sh.pp.ua\"\n                    },\n                    {\n                        \"type\": \"Mention\",\n                        \"href\": \"https://toot.cafe/users/dovbo\",\n                        \"name\": \"@dovbo@toot.cafe\"\n                    }\n                ]\n            }\n        }"
+				},
 				"description": ""
 			},
 			"response": []

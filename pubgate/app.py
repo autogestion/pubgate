@@ -2,7 +2,6 @@ import aiohttp
 from sanic import Sanic
 from sanic_openapi import swagger_blueprint, openapi_blueprint
 from sanic_motor import BaseModel
-# from little_boxes import set_debug
 from little_boxes.activitypub import use_backend
 
 from pubgate.db.backend import PGBackend
@@ -18,6 +17,7 @@ def create_app(config_path):
     BaseModel.init_app(app)
     back = PGBackend()
     back.debug = app.config.DEBUG
+    back.base_url = f"{app.config.METHOD}/{app.config.DOMAIN}"
     use_backend(back)
     app.config.back = back
 
@@ -29,10 +29,10 @@ def create_app(config_path):
     app.blueprint(inbox_v1)
     app.blueprint(outbox_v1)
 
-    app.add_task(register_aiohttp_pool(app))
+    app.add_task(register_client(app))
 
     return app
 
 
-async def register_aiohttp_pool(app):
+async def register_client(app):
     app.config.back.client_session = aiohttp.ClientSession()
