@@ -3,7 +3,7 @@ from sanic import response, Blueprint
 from sanic_openapi import doc
 from little_boxes.key import Key
 
-from pubgate.db.models import User
+from pubgate.api.v1.db.models import User
 
 
 user_v1 = Blueprint('user_v1', url_prefix='/api/v1/user')

@@ -1,17 +1,20 @@
 
 ## Frontendles ActivityPub API
-Based on [little-boxes](https://github.com/tsileo/little-boxes)
-Implements both the client to server API and the federated server to server API.
-Compatible with [Mastodon](https://github.com/tootsuite/mastodon) (which is not following the spec closely), but will drop OStatus messages.
-Support extensions
+Based on [little-boxes](https://github.com/tsileo/little-boxes).
+Implements both the client-to-server API and the federated server-to-server API.
+
+Compatible with [Mastodon](https://github.com/tootsuite/mastodon), but will drop OStatus messages.
+
+(will) Support extensions
 
 ## Endpoints
 
  - /.well-known/    +
- - /user/           +
+ - /user/           -/+
  - /inbox/
  - /outbox/         -/+
-Full list of endpoints and their payloads avalaible in [Postman collection](https://github.com/autogestion/pubgate/blob/master/pubgate.postman_collection.json)
+
+Full list of endpoints and their payloads available as [Postman collection](https://github.com/autogestion/pubgate/blob/master/pubgate.postman_collection.json)
 
 ## Api docs
 

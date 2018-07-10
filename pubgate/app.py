@@ -4,9 +4,8 @@ from sanic_openapi import swagger_blueprint, openapi_blueprint
 from sanic_motor import BaseModel
 from little_boxes.activitypub import use_backend
 
-from pubgate.db.backend import PGBackend
-from pubgate.api.well_known import well_known
-from pubgate.api.v1 import user_v1, inbox_v1, outbox_v1
+from pubgate.api.v1.db.backend import PGBackend
+from pubgate.api.v1 import user_v1, inbox_v1, outbox_v1, well_known
 
 
 def create_app(config_path):

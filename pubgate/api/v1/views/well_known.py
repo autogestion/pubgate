@@ -2,7 +2,7 @@
 from sanic import response, Blueprint
 from sanic_openapi import doc
 
-from pubgate.db.models import User
+from pubgate.api.v1.db.models import User
 
 well_known = Blueprint('well_known', url_prefix='/.well-known')
 
