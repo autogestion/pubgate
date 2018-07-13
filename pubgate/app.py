@@ -28,7 +28,7 @@ def create_app(config_path):
     app.blueprint(inbox_v1)
     app.blueprint(outbox_v1)
 
-    app.add_task(register_client(app))
+    # app.add_task(register_client(app))
 
     return app
 

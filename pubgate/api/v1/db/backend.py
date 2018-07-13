@@ -1,11 +1,18 @@
 import binascii
 import os
 import typing
+import aiohttp
+import json
 
 import requests
+from asgiref.sync import async_to_sync
 
 from little_boxes.urlutils import check_url
 from little_boxes.activitypub import _to_list
+from little_boxes.errors import ActivityGoneError
+from little_boxes.errors import ActivityNotFoundError
+from little_boxes.errors import ActivityUnavailableError
+from little_boxes.urlutils import URLLookupFailedError
 
 from pubgate.api.v1.db.models import Outbox
 
@@ -17,64 +24,29 @@ from pubgate import version
 import asyncio
 
 
-
-
-
-async def fetch(session, url):
-    print(url)
-    async with session.get(url) as resp:
-        resp = await resp.json()
-    return resp
+@async_to_sync
+async def fetch_direct(url, headers):
+    session = aiohttp.ClientSession()
+    async with session.get(url, headers=headers) as resp:
+        resp_json = await resp.json()
+    return resp_json
 
 
 class NotBackend:
 
     def fetch_iri(self, iri: str, **kwargs) -> "ap.ObjectType":  # pragma: no cover
 
-        check_url(iri, self.debug)
-        # try:
-        #     self.check_url(iri)
-        # except URLLookupFailedError:
-        #     # The IRI is inaccessible
-        #     raise ActivityUnavailableError(f"unable to fetch {iri}, url lookup failed")
-        #
-        # try:
-        #     resp = requests.get(
-        #         iri,
-        #         headers={
-        #             "User-Agent": self.user_agent(),
-        #             "Accept": "application/activity+json",
-        #         },
-        #         timeout=15,
-        #         allow_redirects=False,
-        #         **kwargs,
-        #     )
-        # except (
-        #     requests.exceptions.ConnectTimeout,
-        #     requests.exceptions.ReadTimeout,
-        #     requests.exceptions.ConnectionError,
-        # ):
-        #     raise ActivityUnavailableError(f"unable to fetch {iri}, connection error")
-        # if resp.status_code == 404:
-        #     raise ActivityNotFoundError(f"{iri} is not found")
-        # elif resp.status_code == 410:
-        #     raise ActivityGoneError(f"{iri} is gone")
-        # elif resp.status_code in [500, 502, 503]:
-        #     raise ActivityUnavailableError(
-        #         f"unable to fetch {iri}, server error ({resp.status_code})"
-        #     )
-        #
-        # resp.raise_for_status()
-        #
-        # try:
-        #     out = resp.json()
-        # except json.JSONDecodeError:
-        #     # TODO(tsileo): a special error type?
-        #     raise ActivityUnavailableError(f"{iri} is not JSON")
-        #
-        # return out
+        try:
+            check_url(iri, self.debug)
+        except URLLookupFailedError:
+            # The IRI is inaccessible
+            raise ActivityUnavailableError(f"unable to fetch {iri}, url lookup failed")
 
-        return self.profile
+        x = fetch_direct(iri, headers={
+                    "User-Agent": self.user_agent(),
+                    "Accept": "application/activity+json",
+                })
+        return x
 
     def activity_url(self, obj_id):
         """URL for activity link."""
@@ -128,6 +100,7 @@ class PGBackend(NotBackend):
         loop = asyncio.get_event_loop()
         asyncio.ensure_future(Outbox.insert_one(
              {
+                "user_id": as_actor._data["preferredUsername"],
                 "activity": activity.to_dict(),
                 "type": _to_list(activity.type),
                 "remote_id": activity.id,

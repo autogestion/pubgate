@@ -7,7 +7,7 @@ from pubgate.api.v1.db.models import User
 from pubgate.api.v1.views.user import render_user_profile
 
 outbox_v1 = Blueprint('outbox_v1', url_prefix='/api/v1/outbox')
-
+from asgiref.sync import sync_to_async
 
 @outbox_v1.route('/<user_id>', methods=['POST'])
 @doc.summary("Post a user outbox")
@@ -29,12 +29,14 @@ async def outbox_post(request, user_id):
     #     resp = await resp.json()
 
     try:
-        activity = parse_activity(request.json)
+        # activity = parse_activity(request.json)
+        activity = await sync_to_async(parse_activity)(request.json)
     except (UnexpectedActivityTypeError, BadActivityError) as e:
         return response.json({"zrada": e})
 
     outbox = Outbox(Person(**profile))
-    outbox.post(activity)
+    # outbox.post(activity)
+    await sync_to_async(outbox.post)(activity)
 
     return response.json({'peremoga': 'yep'}, status=201, headers={"Location": activity.id})
 
@@ -49,7 +51,8 @@ async def get_outbox(request, user_id):
 
     q = {
         # "box": Box.OUTBOX.value,
-        "meta.deleted": False
+        "meta.deleted": False,
+        "user_id": user_id
     }
     resp = await request.app.config.back.build_ordered_collection(
             # DB.activities,
