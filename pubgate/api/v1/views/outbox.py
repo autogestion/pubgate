@@ -58,7 +58,6 @@ async def outbox_list(request, user_id):
         "user_id": user_id
     })
 
-    # data = [x["activity"] for x in data.objects]
     oubox_url = f"{request.app.config.back.base_url}/outbox/{user_id}"
     cleaned = []
     for item in data.objects:
@@ -72,7 +71,7 @@ async def outbox_list(request, user_id):
 
 
 @outbox_v1.route('/<user_id>/<activity_id>', methods=['GET'])
-@doc.summary("Returns user outbox")
+@doc.summary("Returns item from outbox")
 async def outbox_item(request, user_id, activity_id):
     user = await User.find_one(dict(username=user_id))
     if not user:
@@ -82,17 +81,17 @@ async def outbox_item(request, user_id, activity_id):
     if not data:
         return response.json({"zrada": "no such activity"}, status=404)
 
-    oubox_url = f"{request.app.config.back.base_url}/outbox/{user_id}"
+    outbox_url = f"{request.app.config.back.base_url}/outbox/{user_id}"
     activity = data["activity"]
-    activity["id"] = f"{oubox_url}/{data['_id']}"
-    activity["object"]["id"] = f"{oubox_url}/{data['_id']}/activity"
+    activity["id"] = f"{outbox_url}/{data['_id']}"
+    activity["object"]["id"] = f"{outbox_url}/{data['_id']}/activity"
     activity['@context'] = context
 
     return response.json(activity, headers={'Content-Type': 'application/jrd+json; charset=utf-8'})
 
 
 @outbox_v1.route('/<user_id>/<activity_id>/activity', methods=['GET'])
-@doc.summary("Returns user outbox")
+@doc.summary("Returns activity from outbox")
 async def outbox_activity(request, user_id, activity_id):
     user = await User.find_one(dict(username=user_id))
     if not user:
@@ -102,9 +101,9 @@ async def outbox_activity(request, user_id, activity_id):
     if not data:
         return response.json({"zrada": "no such activity"}, status=404)
 
-    oubox_url = f"{request.app.config.back.base_url}/outbox/{user_id}"
+    outbox_url = f"{request.app.config.back.base_url}/outbox/{user_id}"
     activity = data["activity"]["object"]
-    activity["id"] = f"{oubox_url}/{data['_id']}/activity"
+    activity["id"] = f"{outbox_url}/{data['_id']}/activity"
     activity['@context'] = context
 
     return response.json(activity, headers={'Content-Type': 'application/jrd+json; charset=utf-8'})
