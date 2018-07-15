@@ -9,4 +9,4 @@ class User(BaseModel):
 
 class Outbox(BaseModel):
     __coll__ = 'outbox'
-    __unique_fields__ = ['remote_id']
+    __unique_fields__ = ['_id']

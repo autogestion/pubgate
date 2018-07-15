@@ -1,5 +1,5 @@
 
-## Frontendles ActivityPub API
+## Asyncronous Frontendles ActivityPub API
 Based on [little-boxes](https://github.com/tsileo/little-boxes).
 Implements both the client-to-server API and the federated server-to-server API.
 
@@ -9,10 +9,10 @@ Compatible with [Mastodon](https://github.com/tootsuite/mastodon), but will drop
 
 ## Endpoints
 
- - /.well-known/    +
- - /user/           -/+
- - /inbox/
- - /outbox/         -/+
+ - /.well-known/    +   (webfinger)
+ - /user/           -/+ (create, profile, following)
+ - /inbox/          -   (create, list)
+ - /outbox/         -/+ (create, list, item, activity)
 
 Full list of endpoints and their payloads available as [Postman collection](https://github.com/autogestion/pubgate/blob/master/pubgate.postman_collection.json)
 

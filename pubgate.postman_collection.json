@@ -97,6 +97,40 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "/api/v1/outbox/user_id/item_id",
+			"request": {
+				"url": "{{host}}/api/v1/outbox/{{user}}/{{item}}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/outbox/user_id/item_id/activity",
+			"request": {
+				"url": "{{host}}/api/v1/outbox/{{user}}/{{item}}/activity",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }

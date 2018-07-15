@@ -1,64 +1,110 @@
+
+from asgiref.sync import sync_to_async
 from sanic import response, Blueprint
 from sanic_openapi import doc
-from little_boxes.activitypub import parse_activity, Outbox, Person
+
+from little_boxes.activitypub import parse_activity, _to_list
 from little_boxes.errors import UnexpectedActivityTypeError, BadActivityError
 
-from pubgate.api.v1.db.models import User
-from pubgate.api.v1.views.user import render_user_profile
+from pubgate.api.v1.db.models import User, Outbox
+from pubgate.api.v1.renders import user_profile, ordered_collection, context
 
 outbox_v1 = Blueprint('outbox_v1', url_prefix='/api/v1/outbox')
-from asgiref.sync import sync_to_async
+
 
 @outbox_v1.route('/<user_id>', methods=['POST'])
-@doc.summary("Post a user outbox")
+@doc.summary("Post to user outbox")
 async def outbox_post(request, user_id):
+    # TODO handle replies, post_to_remote_inbox
     user = await User.find_one(dict(username=user_id))
     if not user:
         return response.json({"zrada": "no such user"}, status=404)
 
-    profile = render_user_profile(request.app.config.METHOD,
-                                  request.app.config.DOMAIN,
-                                  user_id)
+    profile = user_profile(request.app.config.back.base_url, user_id)
+    activity = request.json.copy()
 
-    if request.json["actor"] != profile["id"]:
+    if activity["actor"] != profile["id"]:
         return response.json({"zrada": "incorect id"})
 
-    request.app.config.back.profile = profile
+    # Disabled while issue  https://github.com/tsileo/little-boxes/issues/8 will be fixed
+    # try:
+    #     activity = await sync_to_async(parse_activity)(request.json)
+    # except (UnexpectedActivityTypeError, BadActivityError) as e:
+    #     return response.json({"zrada": e})
+    obj_id = request.app.config.back.random_object_id()
 
-    # async with request.app.config.back.client_session.get(request.json["actor"]) as resp:
-    #     resp = await resp.json()
+    await Outbox.insert_one({
+            "_id": obj_id,
+            "user_id": user_id,
+            "activity": activity,
+            "type": _to_list(activity["type"]),
+            "meta": {"undo": False, "deleted": False},
+         })
 
-    try:
-        # activity = parse_activity(request.json)
-        activity = await sync_to_async(parse_activity)(request.json)
-    except (UnexpectedActivityTypeError, BadActivityError) as e:
-        return response.json({"zrada": e})
-
-    outbox = Outbox(Person(**profile))
-    # outbox.post(activity)
-    await sync_to_async(outbox.post)(activity)
-
-    return response.json({'peremoga': 'yep'}, status=201, headers={"Location": activity.id})
+    return response.json({'peremoga': 'yep', 'id': obj_id})
 
 
 @outbox_v1.route('/<user_id>', methods=['GET'])
 @doc.summary("Returns user outbox")
-async def get_outbox(request, user_id):
+async def outbox_list(request, user_id):
+    # TODO pagination
 
     user = await User.find_one(dict(username=user_id))
     if not user:
         return response.json({"zrada": "no such user"}, status=404)
 
-    q = {
-        # "box": Box.OUTBOX.value,
+    data = await Outbox.find(filter={
         "meta.deleted": False,
         "user_id": user_id
-    }
-    resp = await request.app.config.back.build_ordered_collection(
-            # DB.activities,
-            q=q,
-            # cursor=request.args.get("cursor"),
-            # map_func=lambda doc: activity_from_doc(doc, embed=True),
-        )
+    })
+
+    # data = [x["activity"] for x in data.objects]
+    oubox_url = f"{request.app.config.back.base_url}/outbox/{user_id}"
+    cleaned = []
+    for item in data.objects:
+        activity = item["activity"]
+        activity["id"] = f"{oubox_url}/{item['_id']}"
+        activity["object"]["id"] = f"{oubox_url}/{item['_id']}/activity"
+        cleaned.append(activity)
+    resp = ordered_collection(oubox_url, cleaned)
 
     return response.json(resp, headers={'Content-Type': 'application/jrd+json; charset=utf-8'})
+
+
+@outbox_v1.route('/<user_id>/<activity_id>', methods=['GET'])
+@doc.summary("Returns user outbox")
+async def outbox_item(request, user_id, activity_id):
+    user = await User.find_one(dict(username=user_id))
+    if not user:
+        return response.json({"zrada": "no such user"}, status=404)
+
+    data = await Outbox.find_one(dict(user_id=user_id, _id=activity_id))
+    if not data:
+        return response.json({"zrada": "no such activity"}, status=404)
+
+    oubox_url = f"{request.app.config.back.base_url}/outbox/{user_id}"
+    activity = data["activity"]
+    activity["id"] = f"{oubox_url}/{data['_id']}"
+    activity["object"]["id"] = f"{oubox_url}/{data['_id']}/activity"
+    activity['@context'] = context
+
+    return response.json(activity, headers={'Content-Type': 'application/jrd+json; charset=utf-8'})
+
+
+@outbox_v1.route('/<user_id>/<activity_id>/activity', methods=['GET'])
+@doc.summary("Returns user outbox")
+async def outbox_activity(request, user_id, activity_id):
+    user = await User.find_one(dict(username=user_id))
+    if not user:
+        return response.json({"zrada": "no such user"}, status=404)
+
+    data = await Outbox.find_one(dict(user_id=user_id, _id=activity_id))
+    if not data:
+        return response.json({"zrada": "no such activity"}, status=404)
+
+    oubox_url = f"{request.app.config.back.base_url}/outbox/{user_id}"
+    activity = data["activity"]["object"]
+    activity["id"] = f"{oubox_url}/{data['_id']}/activity"
+    activity['@context'] = context
+
+    return response.json(activity, headers={'Content-Type': 'application/jrd+json; charset=utf-8'})

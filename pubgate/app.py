@@ -16,7 +16,7 @@ def create_app(config_path):
     BaseModel.init_app(app)
     back = PGBackend()
     back.debug = app.config.DEBUG
-    back.base_url = f"{app.config.METHOD}/{app.config.DOMAIN}"
+    back.base_url = f"{app.config.METHOD}://{app.config.DOMAIN}"
     use_backend(back)
     app.config.back = back
 
