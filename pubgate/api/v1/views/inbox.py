@@ -22,18 +22,12 @@ async def inbox_post(request, user_id):
     # profile = user_profile(request.app.config.back.base_url, user_id)
     activity = request.json.copy()
 
+    # TODO verify signature
     # x = verify_request(
     #         request.method, request.path, request.headers, activity
     #     )
     #
     # print(x)
-
-    session = aiohttp.ClientSession()
-    async with session.get(activity["id"], headers={
-                    "Accept": "application/activity+json",
-                }) as resp:
-        if resp.status != 200:
-            return response.json({"zrada": "actor validation fails"}, status=resp.status)
 
     # TODO skip blocked
     # if Outbox.find_one(
@@ -44,24 +38,38 @@ async def inbox_post(request, user_id):
     #     }):
     #     return response.json({"zrada": "actor is blocked"}, status=403)
 
-    # Disabled while issue  https://github.com/tsileo/little-boxes/issues/8 will be fixed
-    # try:
-    #     activity = await sync_to_async(parse_activity)(request.json)
-    # except (UnexpectedActivityTypeError, BadActivityError) as e:
-    #     return response.json({"zrada": e})
-    obj_id = request.app.config.back.random_object_id()
+    exists = await Inbox.find_one(dict(id=activity["id"]))
+    if exists:
 
-    await Inbox.insert_one({
-            "_id": obj_id,
-            "id": activity["id"],
-            "user_id": user_id,
-            # "actor_id": activity["acr"]
-            "activity": activity,
-            "type": activity["type"],
-            "meta": {"undo": False, "deleted": False},
-         })
+        if user_id in exists['users']:
+            return response.json({"zrada": "activity allready exists"}, status=403)
 
-    return response.json({'peremoga': 'yep', 'id': obj_id})
+        else:
+            users = exists['users']
+            users.append(user_id)
+            await Inbox.update_one(
+                {'_id': exists.id},
+                {'$set': {"users": users}}
+            )
+    else:
+
+        # TODO validate object, validate actor and activity
+        # Disabled while issue  https://github.com/tsileo/little-boxes/issues/8 will be fixed
+        # try:
+        #     activity = await sync_to_async(parse_activity)(request.json)
+        # except (UnexpectedActivityTypeError, BadActivityError) as e:
+        #     return response.json({"zrada": e})
+
+        await Inbox.insert_one({
+                "id": activity["id"],
+                "users": [user_id],
+                # "actor_id": activity["acr"]
+                "activity": activity,
+                "type": activity["type"],
+                "meta": {"undo": False, "deleted": False},
+             })
+
+    return response.json({'peremoga': 'yep'})
 
 
 @inbox_v1.route('/<user_id>', methods=['GET'])
@@ -75,7 +83,8 @@ async def inbox_list(request, user_id):
 
     data = await Inbox.find(filter={
         "meta.deleted": False,
-        "user_id": user_id
+        "users": {"$in": [user_id]}
+
     })
 
     inbox_url = f"{request.app.config.back.base_url}/inbox/{user_id}"
