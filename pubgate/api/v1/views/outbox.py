@@ -15,31 +15,37 @@ outbox_v1 = Blueprint('outbox_v1', url_prefix='/api/v1/outbox')
 @outbox_v1.route('/<user_id>', methods=['POST'])
 @doc.summary("Post to user outbox")
 async def outbox_post(request, user_id):
-    # TODO handle replies, post_to_remote_inbox
+    # TODO handle replies
     user = await User.find_one(dict(username=user_id))
     if not user:
         return response.json({"zrada": "no such user"}, status=404)
 
-    profile = user_profile(request.app.config.back.base_url, user_id)
-    activity = request.json.copy()
-
-    if activity["actor"] != profile["id"]:
-        return response.json({"zrada": "incorect id"})
+    # Client can hanlde it itself?
+    # profile = user_profile(request.app.config.back.base_url, user_id)
+    # if activity["actor"] != profile["id"]:
+    #     return response.json({"zrada": "incorect id"})
 
     # Disabled while issue  https://github.com/tsileo/little-boxes/issues/8 will be fixed
     # try:
     #     activity = await sync_to_async(parse_activity)(request.json)
     # except (UnexpectedActivityTypeError, BadActivityError) as e:
     #     return response.json({"zrada": e})
+    activity = request.json.copy()
     obj_id = request.app.config.back.random_object_id()
 
     await Outbox.insert_one({
             "_id": obj_id,
             "user_id": user_id,
             "activity": activity,
-            "type": _to_list(activity["type"]),
+            "type": activity["type"],
             "meta": {"undo": False, "deleted": False},
          })
+
+    # TODO post_to_remote_inbox
+    recipients = []
+    for field in ["to", "cc", "bto", "bcc"]:
+        if field in activity:
+            recipients.extend(_to_list(activity[field]))
 
     return response.json({'peremoga': 'yep', 'id': obj_id})
 

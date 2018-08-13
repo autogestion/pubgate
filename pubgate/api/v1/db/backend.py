@@ -17,8 +17,8 @@ if typing.TYPE_CHECKING:
 from pubgate import version
 
 
-@async_to_sync
-async def fetch_direct(url, headers):
+
+async def fetch(url, headers):
     session = aiohttp.ClientSession()
     async with session.get(url, headers=headers) as resp:
         resp_json = await resp.json()
@@ -35,7 +35,7 @@ class Utils:
             # The IRI is inaccessible
             raise ActivityUnavailableError(f"unable to fetch {iri}, url lookup failed")
 
-        resp = fetch_direct(iri, headers={
+        resp = async_to_sync(fetch)(iri, headers={
                     "User-Agent": self.user_agent(),
                     "Accept": "application/activity+json",
                 })

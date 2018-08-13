@@ -82,7 +82,7 @@
 			"response": []
 		},
 		{
-			"name": "/api/v1/outbox/user_id",
+			"name": "/api/v1/outbox/user_id get outbox",
 			"request": {
 				"url": "{{host}}/api/v1/outbox/{{user}}",
 				"method": "GET",
@@ -119,6 +119,37 @@
 			"name": "/api/v1/outbox/user_id/item_id/activity",
 			"request": {
 				"url": "{{host}}/api/v1/outbox/{{user}}/{{item}}/activity",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/inbox/user_id Create Note",
+			"request": {
+				"url": "{{host}}/api/v1/inbox/{{user}}",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\n                \"type\": \"Create\",\n                \"id\": \"https://mastodon.social/users/Sonstwer/statuses/100368779865509498/activity\",\n                \"actor\": \"https://mastodon.social/users/Sonstwer\",\n                \"object\": {\n                    \"id\": \"https://mastodon.social/users/Sonstwer/statuses/100368779865509498\",\n                    \"type\": \"Note\",\n                    \"summary\": null,\n                    \"inReplyTo\": null,\n                    \"published\": \"2018-07-13T18:20:40Z\",\n                    \"url\": \"https://mastodon.social/@Sonstwer/100368779865509498\",\n                    \"attributedTo\": \"https://mastodon.social/users/Sonstwer\",\n                    \"to\": [\n                        \"https://www.w3.org/ns/activitystreams#Public\"\n                    ],\n                    \"cc\": [\n                        \"https://mastodon.social/users/Sonstwer/followers\"\n                    ],\n                    \"sensitive\": false,\n                    \"atomUri\": \"https://mastodon.social/users/Sonstwer/statuses/100368779865509498\",\n                    \"inReplyToAtomUri\": null,\n                    \"conversation\": \"tag:mastodon.social,2018-07-13:objectId=42028339:objectType=Conversation\",\n                    \"content\": \"<p>Graz Hauptplatz<br />@AttacAustria@twitter.com Sommerakademie<br />Abschluss Demo</p>\",\n                    \"contentMap\": {\n                        \"de\": \"<p>Graz Hauptplatz<br />@AttacAustria@twitter.com Sommerakademie<br />Abschluss Demo</p>\"\n                    },\n                    \"attachment\": [\n                        {\n                            \"type\": \"Document\",\n                            \"mediaType\": \"image/jpeg\",\n                            \"url\": \"https://files.mastodon.social/media_attachments/files/004/949/619/original/7abb47991af01bdc.jpeg\",\n                            \"name\": null\n                        }\n                    ],\n                    \"tag\": []\n                },\n                \"published\": \"2018-07-13T18:20:40Z\",\n                \"to\": [\n                    \"https://www.w3.org/ns/activitystreams#Public\"\n                ],\n                \"cc\": [\n                    \"https://mastodon.social/users/Sonstwer/followers\"\n                ],\n                \"signature\": {\n                    \"type\": \"RsaSignature2017\",\n                    \"creator\": \"https://mastodon.social/users/Sonstwer#main-key\",\n                    \"created\": \"2018-07-13T18:20:41Z\",\n                    \"signatureValue\": \"ke5klb8DKljGplPRHimsXIf/IdUaBye6btv0PBXlhR1ikQ5otEKMLO6dJma8w9HK9Xg9DMsVgLS6eniWHr2dO+ymWg5QES0Iu7knn7UgZpfbVsLdz4tNKjTn5KTxDJAEBHuwDz9rvAWOG4XwtKanGXF3Q+UooqNnqB4MXid+tUb7tNhgvqsdDmTNEih4/78gcdRpqanmayOfJY8GOGOBjw+uQk5yxzGBYQVvED+kIhavoYOR9oGDo1zdUFOHNSUX0E27T8H+MYOV2ykW3n0XwBoQINgsaKj7okmwUx5bilsWhxxlikymVvQuM3E/w7LW4/pNeyHwETdY5785NM/DNA==\"\n                }\n            }"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/inbox/user_id get inbox",
+			"request": {
+				"url": "{{host}}/api/v1/inbox/{{user}}",
 				"method": "GET",
 				"header": [
 					{
