@@ -6,6 +6,7 @@ from little_boxes.activitypub import use_backend
 
 from pubgate.api.v1.db.backend import PGBackend
 from pubgate.api.v1 import user_v1, inbox_v1, outbox_v1, well_known
+from pubgate.api.v1.db.models import register_admin
 
 
 def create_app(config_path):
@@ -20,6 +21,7 @@ def create_app(config_path):
     use_backend(back)
     app.config.back = back
 
+    register_admin
     app.blueprint(openapi_blueprint)
     app.blueprint(swagger_blueprint)
 
@@ -29,6 +31,7 @@ def create_app(config_path):
     app.blueprint(outbox_v1)
 
     # app.add_task(register_client(app))
+    app.add_task(register_admin(app))
 
     return app
 

@@ -1,3 +1,4 @@
+from datetime import datetime
 
 from asgiref.sync import sync_to_async
 from sanic import response, Blueprint
@@ -8,6 +9,7 @@ from little_boxes.errors import UnexpectedActivityTypeError, BadActivityError
 
 from pubgate.api.v1.db.models import User, Outbox
 from pubgate.api.v1.renders import user_profile, ordered_collection, context
+from pubgate.api.v1.utils import deliver, make_label
 
 outbox_v1 = Blueprint('outbox_v1', url_prefix='/api/v1/outbox')
 
@@ -25,6 +27,7 @@ async def outbox_post(request, user_id):
     # if activity["actor"] != profile["id"]:
     #     return response.json({"zrada": "incorect id"})
 
+    # TODO validate object,
     # Disabled while issue  https://github.com/tsileo/little-boxes/issues/8 will be fixed
     # try:
     #     activity = await sync_to_async(parse_activity)(request.json)
@@ -32,20 +35,34 @@ async def outbox_post(request, user_id):
     #     return response.json({"zrada": e})
     activity = request.json.copy()
     obj_id = request.app.config.back.random_object_id()
+    now = datetime.now()
+
+    outbox_url = f"{request.app.config.back.base_url}/outbox/{user_id}"
+    activity["id"] = f"{outbox_url}/{obj_id}"
+    activity["published"] = now.isoformat()
+    if isinstance(activity["object"], dict):
+        activity["object"]["id"] = f"{outbox_url}/{obj_id}/activity"
+        activity["object"]["published"] = now.isoformat()
 
     await Outbox.insert_one({
             "_id": obj_id,
             "user_id": user_id,
             "activity": activity,
-            "type": activity["type"],
+            "label": make_label(activity),
             "meta": {"undo": False, "deleted": False},
          })
 
     # TODO post_to_remote_inbox
     recipients = []
-    for field in ["to", "cc", "bto", "bcc"]:
-        if field in activity:
-            recipients.extend(_to_list(activity[field]))
+    if activity["type"] == "Follow":
+        recipients.append(activity["object"])
+
+    else:
+        for field in ["to", "cc", "bto", "bcc"]:
+            if field in activity:
+                recipients.extend(_to_list(activity[field]))
+
+    deliver(activity, recipients)
 
     return response.json({'peremoga': 'yep', 'id': obj_id})
 
@@ -53,25 +70,20 @@ async def outbox_post(request, user_id):
 @outbox_v1.route('/<user_id>', methods=['GET'])
 @doc.summary("Returns user outbox")
 async def outbox_list(request, user_id):
-    # TODO pagination
 
     user = await User.find_one(dict(username=user_id))
     if not user:
         return response.json({"zrada": "no such user"}, status=404)
 
+    # TODO pagination
     data = await Outbox.find(filter={
         "meta.deleted": False,
         "user_id": user_id
-    })
+    }, sort="activity.published desc")
 
-    oubox_url = f"{request.app.config.back.base_url}/outbox/{user_id}"
-    cleaned = []
-    for item in data.objects:
-        activity = item["activity"]
-        activity["id"] = f"{oubox_url}/{item['_id']}"
-        activity["object"]["id"] = f"{oubox_url}/{item['_id']}/activity"
-        cleaned.append(activity)
-    resp = ordered_collection(oubox_url, cleaned)
+    outbox_url = f"{request.app.config.back.base_url}/outbox/{user_id}"
+    cleaned = [item["activity"] for item in data.objects]
+    resp = ordered_collection(outbox_url, cleaned)
 
     return response.json(resp, headers={'Content-Type': 'application/jrd+json; charset=utf-8'})
 
@@ -87,10 +99,7 @@ async def outbox_item(request, user_id, activity_id):
     if not data:
         return response.json({"zrada": "no such activity"}, status=404)
 
-    outbox_url = f"{request.app.config.back.base_url}/outbox/{user_id}"
     activity = data["activity"]
-    activity["id"] = f"{outbox_url}/{data['_id']}"
-    activity["object"]["id"] = f"{outbox_url}/{data['_id']}/activity"
     activity['@context'] = context
 
     return response.json(activity, headers={'Content-Type': 'application/jrd+json; charset=utf-8'})
@@ -107,9 +116,7 @@ async def outbox_activity(request, user_id, activity_id):
     if not data:
         return response.json({"zrada": "no such activity"}, status=404)
 
-    outbox_url = f"{request.app.config.back.base_url}/outbox/{user_id}"
     activity = data["activity"]["object"]
-    activity["id"] = f"{outbox_url}/{data['_id']}/activity"
     activity['@context'] = context
 
     return response.json(activity, headers={'Content-Type': 'application/jrd+json; charset=utf-8'})

@@ -5,9 +5,9 @@ from sanic_openapi import doc
 from little_boxes.httpsig import verify_request
 from little_boxes.activitypub import _to_list
 
-
-from pubgate.api.v1.db.models import User, Inbox
+from pubgate.api.v1.db.models import User, Inbox, Outbox
 from pubgate.api.v1.renders import ordered_collection
+from pubgate.api.v1.utils import deliver, make_label
 
 inbox_v1 = Blueprint('inbox_v1', url_prefix='/api/v1/inbox')
 
@@ -53,21 +53,46 @@ async def inbox_post(request, user_id):
             )
     else:
 
-        # TODO validate object, validate actor and activity
+        # TODO validate object,
+        # TODO validate actor and activity
         # Disabled while issue  https://github.com/tsileo/little-boxes/issues/8 will be fixed
         # try:
         #     activity = await sync_to_async(parse_activity)(request.json)
         # except (UnexpectedActivityTypeError, BadActivityError) as e:
         #     return response.json({"zrada": e})
+        label = activity["type"]
 
         await Inbox.insert_one({
                 "id": activity["id"],
                 "users": [user_id],
                 # "actor_id": activity["acr"]
                 "activity": activity,
-                "type": activity["type"],
+                "label": make_label(activity),
                 "meta": {"undo": False, "deleted": False},
              })
+
+    if activity["type"] == "Follow":
+        obj_id = request.app.config.back.random_object_id()
+        deliverance = {
+            "type": "Accept",
+            "actor": activity["object"],
+            "object": {
+                "type": "Follow",
+                "id": activity["id"],
+                "actor": activity["actor"],
+                "object": activity["object"]
+            }
+        }
+
+        await Outbox.insert_one({
+            "_id": obj_id,
+            "user_id": user_id,
+            "activity": deliverance,
+            "label": make_label(deliverance),
+            "meta": {"undo": False, "deleted": False},
+        })
+
+        deliver(deliverance, [activity["actor"]])
 
     return response.json({'peremoga': 'yep'})
 
@@ -75,17 +100,16 @@ async def inbox_post(request, user_id):
 @inbox_v1.route('/<user_id>', methods=['GET'])
 @doc.summary("Returns user inbox")
 async def inbox_list(request, user_id):
-    # TODO pagination
-
     user = await User.find_one(dict(username=user_id))
     if not user:
         return response.json({"zrada": "no such user"}, status=404)
 
+    # TODO pagination
     data = await Inbox.find(filter={
         "meta.deleted": False,
-        "users": {"$in": [user_id]}
-
-    })
+        "users": {"$in": [user_id]}},
+        sort="activity.published desc"
+    )
 
     inbox_url = f"{request.app.config.back.base_url}/inbox/{user_id}"
     cleaned = [item["activity"] for item in data.objects]
