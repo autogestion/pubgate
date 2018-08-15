@@ -9,10 +9,10 @@ Compatible with [Mastodon](https://github.com/tootsuite/mastodon), but will drop
 
 ## Endpoints
 
- - /.well-known/    + (webfinger)
- - /user/           + (create, profile, following)
- - /inbox/          + (create, list)
- - /outbox/         -/+ (create, list, item, activity, remote post)
+ - /.well-known/    (webfinger)
+ - /user/           (create, profile, following)
+ - /inbox/          (create, list)
+ - /outbox/         (create, list, item, activity, remote post)
 
 Full list of endpoints and their payloads available as [Postman collection](https://github.com/autogestion/pubgate/blob/master/pubgate.postman_collection.json)
 
