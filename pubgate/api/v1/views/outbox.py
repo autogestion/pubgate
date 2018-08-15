@@ -8,8 +8,9 @@ from little_boxes.activitypub import parse_activity, _to_list
 from little_boxes.errors import UnexpectedActivityTypeError, BadActivityError
 
 from pubgate.api.v1.db.models import User, Outbox
-from pubgate.api.v1.renders import user_profile, ordered_collection, context
-from pubgate.api.v1.utils import deliver, make_label
+from pubgate.api.v1.db.views import get_followers
+from pubgate.api.v1.renders import ordered_collection, context
+from pubgate.api.v1.utils import deliver, make_label, random_object_id
 
 outbox_v1 = Blueprint('outbox_v1', url_prefix='/api/v1/outbox')
 
@@ -22,22 +23,17 @@ async def outbox_post(request, user_id):
     if not user:
         return response.json({"zrada": "no such user"}, status=404)
 
-    # Client can hanlde it itself?
-    # profile = user_profile(request.app.config.back.base_url, user_id)
-    # if activity["actor"] != profile["id"]:
-    #     return response.json({"zrada": "incorect id"})
-
-    # TODO validate object,
+    # TODO validate activity
     # Disabled while issue  https://github.com/tsileo/little-boxes/issues/8 will be fixed
     # try:
     #     activity = await sync_to_async(parse_activity)(request.json)
     # except (UnexpectedActivityTypeError, BadActivityError) as e:
     #     return response.json({"zrada": e})
     activity = request.json.copy()
-    obj_id = request.app.config.back.random_object_id()
+    obj_id = random_object_id()
     now = datetime.now()
 
-    outbox_url = f"{request.app.config.back.base_url}/outbox/{user_id}"
+    outbox_url = f"{request.app.base_url}/outbox/{user_id}"
     activity["id"] = f"{outbox_url}/{obj_id}"
     activity["published"] = now.isoformat()
     if isinstance(activity["object"], dict):
@@ -52,16 +48,16 @@ async def outbox_post(request, user_id):
             "meta": {"undo": False, "deleted": False},
          })
 
-    # TODO post_to_remote_inbox
-    recipients = []
     if activity["type"] == "Follow":
-        recipients.append(activity["object"])
-
+        recipients = [activity["object"]]
     else:
+        recipients = await get_followers(user_id)
         for field in ["to", "cc", "bto", "bcc"]:
             if field in activity:
                 recipients.extend(_to_list(activity[field]))
+        recipients = list(set(recipients))
 
+    # TODO post_to_remote_inbox
     deliver(activity, recipients)
 
     return response.json({'peremoga': 'yep', 'id': obj_id})
@@ -81,7 +77,7 @@ async def outbox_list(request, user_id):
         "user_id": user_id
     }, sort="activity.published desc")
 
-    outbox_url = f"{request.app.config.back.base_url}/outbox/{user_id}"
+    outbox_url = f"{request.app.base_url}/outbox/{user_id}"
     cleaned = [item["activity"] for item in data.objects]
     resp = ordered_collection(outbox_url, cleaned)
 

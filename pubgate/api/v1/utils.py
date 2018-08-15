@@ -1,3 +1,5 @@
+import binascii
+import os
 
 
 def deliver(activity, recipients):
@@ -11,3 +13,8 @@ def make_label(activity):
     if isinstance(activity["object"], dict):
         label = f'{label}: {activity["object"]["type"]}'
     return label
+
+
+def random_object_id() -> str:
+    """Generates a random object ID."""
+    return binascii.hexlify(os.urandom(8)).decode("utf-8")

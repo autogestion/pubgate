@@ -19,6 +19,7 @@ class Inbox(BaseModel):
 
 
 async def register_admin(app):
+    # TODO patch flask admin
     # admin = flask_admin.Admin(app, name='Pubgate Admin', template_mode='bootstrap3')
     #
     # # Add views
