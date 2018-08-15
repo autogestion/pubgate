@@ -43,7 +43,7 @@ def user_profile(base_url, user_id):
     }
 
 
-def ordered_collection(coll_id, data=[]):
+def ordered_collection(coll_id, data=None):
     collection = {
         "@context": context,
         "id": coll_id,
