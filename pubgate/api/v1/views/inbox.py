@@ -50,6 +50,7 @@ async def inbox_post(request, user_id):
                 {'$set': {"users": users}}
             )
 
+    else:
         # TODO validate actor and activity
         # Disabled while issue  https://github.com/tsileo/little-boxes/issues/8 will be fixed
         # try:

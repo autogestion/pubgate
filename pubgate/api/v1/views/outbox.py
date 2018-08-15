@@ -8,7 +8,6 @@ from little_boxes.activitypub import parse_activity, _to_list
 from little_boxes.errors import UnexpectedActivityTypeError, BadActivityError
 
 from pubgate.api.v1.db.models import User, Outbox
-from pubgate.api.v1.db.views import get_followers
 from pubgate.api.v1.renders import ordered_collection, context
 from pubgate.api.v1.utils import deliver, make_label, random_object_id
 
@@ -51,7 +50,7 @@ async def outbox_post(request, user_id):
     if activity["type"] == "Follow":
         recipients = [activity["object"]]
     else:
-        recipients = await get_followers(user_id)
+        recipients = await user.get_followers(user_id)
         for field in ["to", "cc", "bto", "bcc"]:
             if field in activity:
                 recipients.extend(_to_list(activity[field]))

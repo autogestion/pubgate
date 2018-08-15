@@ -24,7 +24,7 @@
 		{
 			"name": "/api/v1/user/user_id",
 			"request": {
-				"url": "{{host}}/api/v1/user/dev/",
+				"url": "{{host}}/api/v1/user/{{user}}/",
 				"method": "GET",
 				"header": [],
 				"body": {

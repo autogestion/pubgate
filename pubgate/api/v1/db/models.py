@@ -3,9 +3,20 @@ from sanic_motor import BaseModel
 # import flask_admin
 # from flask_admin.contrib.pymongo.view import ModelView
 
+
 class User(BaseModel):
     __coll__ = 'users'
     __unique_fields__ = ['username']
+
+    async def get_followers(self, paginate=None):
+        # TODO support pagination
+        data = await Outbox.find(filter={
+            "meta.deleted": False,
+            "user_id": self.username,
+            "activity.type": "Accept",
+            "activity.object.type": "Follow"
+        })
+        return [x["activity"]["object"]["actor"] for x in data.objects]
 
 
 class Outbox(BaseModel):

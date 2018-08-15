@@ -3,7 +3,6 @@ from sanic import response, Blueprint
 from sanic_openapi import doc
 
 from pubgate.api.v1.db.models import User, Inbox
-from pubgate.api.v1.db.views import get_followers as followers_get
 from pubgate.api.v1.renders import user_profile, ordered_collection
 
 
@@ -47,7 +46,7 @@ async def get_followers(request, user_id):
         return response.json({"zrada": "no such user"}, status=404)
 
     # TODO pagination
-    followers = await followers_get(user_id)
+    followers = await user.get_followers()
     followers_url = f"{request.app.base_url}/user/{user_id}/followers"
     resp = ordered_collection(followers_url, followers)
 
