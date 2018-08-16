@@ -13,6 +13,7 @@ inbox_v1 = Blueprint('inbox_v1', url_prefix='/api/v1/inbox')
 
 @inbox_v1.route('/<user_id>', methods=['POST'])
 @doc.summary("Post to user inbox")
+@doc.consumes(Inbox, location="body")
 async def inbox_post(request, user_id):
     user = await User.find_one(dict(username=user_id))
     if not user:

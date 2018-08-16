@@ -37,4 +37,4 @@ async def register_admin(app):
     # admin.add_view(ModelView(User))
     # admin.add_view(ModelView(Outbox))
     # admin.add_view(ModelView(Inbox))
-    pass
+    print('registered')

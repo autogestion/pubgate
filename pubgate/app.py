@@ -30,4 +30,4 @@ def create_app(config_path):
 
 
 async def register_client(app):
-    app.config.back.client_session = aiohttp.ClientSession()
+    app.client_session = aiohttp.ClientSession()

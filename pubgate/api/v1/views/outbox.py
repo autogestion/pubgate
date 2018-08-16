@@ -1,4 +1,5 @@
 from datetime import datetime
+import asyncio
 
 from asgiref.sync import sync_to_async
 from sanic import response, Blueprint
@@ -16,6 +17,7 @@ outbox_v1 = Blueprint('outbox_v1', url_prefix='/api/v1/outbox')
 
 @outbox_v1.route('/<user_id>', methods=['POST'])
 @doc.summary("Post to user outbox")
+@doc.consumes(Outbox, location="body")
 async def outbox_post(request, user_id):
     # TODO handle replies
     user = await User.find_one(dict(username=user_id))
@@ -56,8 +58,10 @@ async def outbox_post(request, user_id):
                 recipients.extend(_to_list(activity[field]))
         recipients = list(set(recipients))
 
+
     # TODO post_to_remote_inbox
-    deliver(activity, recipients)
+    activity['@context'] = context
+    asyncio.ensure_future(deliver(activity, recipients))
 
     return response.json({'peremoga': 'yep', 'id': obj_id})
 

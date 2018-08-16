@@ -34,7 +34,7 @@ async def get_user(request, user_id):
     if not user:
         return response.json({"zrada": "no such user"}, status=404)
 
-    return response.json(user_profile(request.app.config.back.base_url, user_id),
+    return response.json(user_profile(request.app.base_url, user_id),
                          headers={'Content-Type': 'application/jrd+json; charset=utf-8'})
 
 
