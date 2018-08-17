@@ -4,8 +4,11 @@ import aiohttp
 
 from sanic.log import logger
 
+from pubgate import __version__
+
 
 async def deliver_task(recipient, activity):
+    logger.info(activity)
     async with aiohttp.ClientSession() as session:
 
         async with session.get(recipient,
@@ -16,20 +19,24 @@ async def deliver_task(recipient, activity):
 
         async with session.post(profile["inbox"],
                                 json=activity,
-                                headers={'Accept': 'application/activity+json'}
+                                headers={
+                                    'Accept': 'application/activity+json',
+                                    "Content-Type": 'application/activity+json',
+                                    "User-Agent": f"Pubgate v:{__version__}",
+                                }
                                 ) as resp:
             logger.info(resp)
 
 
 async def deliver(activity, recipients):
     # TODO deliver
-    # TODO sign object
     # TODO retry over day if fails
+
     for recipient in recipients:
-        # try:
+        try:
             await deliver_task(recipient, activity)
-        # except Exception as e:
-        #     logger.error(e)
+        except Exception as e:
+            logger.error(e)
 
 
 def make_label(activity):

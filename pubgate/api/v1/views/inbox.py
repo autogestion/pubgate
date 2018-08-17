@@ -3,10 +3,13 @@ import aiohttp
 from sanic import response, Blueprint
 from sanic_openapi import doc
 from little_boxes.httpsig import verify_request
+from little_boxes.linked_data_sig import generate_signature
 
 from pubgate.api.v1.db.models import User, Inbox, Outbox
 from pubgate.api.v1.renders import ordered_collection, context
 from pubgate.api.v1.utils import deliver, make_label, random_object_id
+from pubgate.api.v1.key import get_key
+
 
 inbox_v1 = Blueprint('inbox_v1', url_prefix='/api/v1/inbox')
 
@@ -91,6 +94,7 @@ async def inbox_post(request, user_id):
             "meta": {"undo": False, "deleted": False},
         })
 
+        generate_signature(deliverance, get_key(request.app.base_url, user_id, request.app.config.DOMAIN))
         deliverance['@context'] = context
         deliver(deliverance, [activity["actor"]])
 
