@@ -22,16 +22,15 @@ async def webfinger(request):
     if len(id_list) == 3:
         domain += f":{id_list[2]}"
 
-    if not (domain == request.app.config.DOMAIN and await User.find_one(dict(username=user_id))):
-        return response.json({"error": "no such user"}, status=404)
-
-    method = request.app.config.METHOD
+    user = await User.find_one(dict(username=user_id))
+    if not user:
+        return response.json({"zrada": "no such user"}, status=404)
 
     resp = {
         "subject": f"acct:{user_id}@{domain}",
         "aliases": [
             # "{method}://mastodon.social/@user",
-            f"{method}://{domain}/user/{user_id}"
+            f"{request.app.base_url}/api/v1/user/{user_id}"
         ],
         "links": [
             # {
@@ -43,7 +42,7 @@ async def webfinger(request):
             {
                 "rel": "self",
                 "type": "application/activity+json",
-                "href": f"{method}://{domain}/user/{user_id}"
+                "href": f"{request.app.base_url}/api/v1/user/{user_id}"
             },
             # {
             #     "rel": "salmon",

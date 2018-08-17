@@ -26,10 +26,10 @@ async def deliver(activity, recipients):
     # TODO sign object
     # TODO retry over day if fails
     for recipient in recipients:
-        try:
+        # try:
             await deliver_task(recipient, activity)
-        except Exception as e:
-            logger.error(e)
+        # except Exception as e:
+        #     logger.error(e)
 
 
 def make_label(activity):
