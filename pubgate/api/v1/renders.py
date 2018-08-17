@@ -20,10 +20,10 @@ def user_profile(base_url, user_id):
         "@context": context,
         "id": f"{base_url}/api/v1/user/{user_id}",
         "type": "Person",
-        "following": f"{base_url}/user/{user_id}/following",
-        "followers": f"{base_url}/user/{user_id}/followers",
-        "inbox": f"{base_url}/inbox/{user_id}/inbox",
-        "outbox": f"{base_url}/outbox/{user_id}/outbox",
+        "following": f"{base_url}/api/v1/user/{user_id}/following",
+        "followers": f"{base_url}/api/v1/user/{user_id}/followers",
+        "inbox": f"{base_url}/api/v1/inbox/{user_id}/inbox",
+        "outbox": f"{base_url}/api/v1/outbox/{user_id}/outbox",
         "preferredUsername": f"{user_id}",
         "name": "",
         "summary": "<p></p>",
@@ -33,7 +33,7 @@ def user_profile(base_url, user_id):
         "tag": [],
         "attachment": [],
         "endpoints": {
-            "sharedInbox": f"{base_url}/inbox"
+            # "sharedInbox": f"{base_url}/inbox"
         },
         "icon": {
             "type": "Image",
