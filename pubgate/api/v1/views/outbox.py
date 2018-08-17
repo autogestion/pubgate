@@ -61,9 +61,7 @@ async def outbox_post(request, user_id):
                 recipients.extend(_to_list(activity[field]))
         recipients = list(set(recipients))
 
-
-    # TODO post_to_remote_inbox
-    # TODO sign object
+    # post_to_remote_inbox
     generate_signature(activity, get_key(request.app.base_url, user_id, request.app.config.DOMAIN))
     activity['@context'] = context
     asyncio.ensure_future(deliver(activity, recipients))

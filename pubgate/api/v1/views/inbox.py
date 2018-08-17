@@ -1,4 +1,4 @@
-
+import asyncio
 import aiohttp
 from sanic import response, Blueprint
 from sanic_openapi import doc
@@ -94,9 +94,10 @@ async def inbox_post(request, user_id):
             "meta": {"undo": False, "deleted": False},
         })
 
+        # post_to_remote_inbox
         generate_signature(deliverance, get_key(request.app.base_url, user_id, request.app.config.DOMAIN))
         deliverance['@context'] = context
-        deliver(deliverance, [activity["actor"]])
+        asyncio.ensure_future(deliver(deliverance, [activity["actor"]]))
 
     return response.json({'peremoga': 'yep'})
 
