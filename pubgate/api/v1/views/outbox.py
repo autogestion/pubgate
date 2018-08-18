@@ -11,7 +11,7 @@ from little_boxes.linked_data_sig import generate_signature
 
 from pubgate.api.v1.db.models import User, Outbox
 from pubgate.api.v1.renders import ordered_collection, context
-from pubgate.api.v1.utils import deliver, make_label, random_object_id
+from pubgate.api.v1.utils import deliver, make_label, random_object_id, auth_required
 from pubgate.api.v1.key import get_key
 
 
@@ -19,7 +19,8 @@ outbox_v1 = Blueprint('outbox_v1', url_prefix='/api/v1/outbox')
 
 
 @outbox_v1.route('/<user_id>', methods=['POST'])
-@doc.summary("Post to user outbox")
+@auth_required
+@doc.summary("Post to user outbox, auth_required")
 @doc.consumes(Outbox, location="body")
 async def outbox_post(request, user_id):
     # TODO handle replies

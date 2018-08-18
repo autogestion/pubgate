@@ -7,7 +7,7 @@ from little_boxes.linked_data_sig import generate_signature
 
 from pubgate.api.v1.db.models import User, Inbox, Outbox
 from pubgate.api.v1.renders import ordered_collection, context
-from pubgate.api.v1.utils import deliver, make_label, random_object_id
+from pubgate.api.v1.utils import deliver, make_label, random_object_id, auth_required
 from pubgate.api.v1.key import get_key
 
 
@@ -103,7 +103,8 @@ async def inbox_post(request, user_id):
 
 
 @inbox_v1.route('/<user_id>', methods=['GET'])
-@doc.summary("Returns user inbox")
+@auth_required
+@doc.summary("Returns user inbox, auth_required")
 async def inbox_list(request, user_id):
     user = await User.find_one(dict(username=user_id))
     if not user:

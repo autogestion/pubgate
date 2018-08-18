@@ -8,14 +8,28 @@
 	},
 	"item": [
 		{
-			"name": "/api/v1/user",
+			"name": "/api/v1/auth   Create user",
 			"request": {
-				"url": "{{host}}/api/v1/user",
+				"url": "{{host}}/api/v1/auth",
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": "{\"username\": \"{{user}}\", \"password\":\"dev\", \"email\": \"bu\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/auth/token",
+			"request": {
+				"url": "{{host}}/api/v1/auth/token",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"{{user}}\", \"password\":\"dev\"}"
 				},
 				"description": ""
 			},
@@ -100,7 +114,13 @@
 			"request": {
 				"url": "{{host}}/api/v1/outbox/{{user}}",
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"description": ""
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"type\": \"Create\",\n    \"actor\": \"{{method}}://{{host}}/api/v1/user/{{user}}\",\n    \"to\": [\n        \"https://www.w3.org/ns/activitystreams#Public\"\n    ],\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"inReplyTo\": \"\",\n        \"attributedTo\": \"{{method}}://{{host}}/api/v1/user/{{user}}\",\n        \"to\": [\n            \"https://www.w3.org/ns/activitystreams#Public\"\n        ],\n        \"sensitive\": false,\n        \"content\": \"Звитяга! Слава Ісу! Карамба\",\n        \"contentMap\": {\n            \"uk\": \"Звитягаll!\"\n        },\n        \"attachment\": [],\n        \"tag\": []\n    }\n}        "
@@ -114,10 +134,16 @@
 			"request": {
 				"url": "{{host}}/api/v1/outbox/{{user}}",
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"description": ""
+					}
+				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"type\": \"Follow\",\n    \"actor\": \"{{method}}://{{host}}/api/v1/user/{{user}}\",\n    \"object\": \"https://mastodon.social/users/pubgate\",\n}"
+					"raw": "{\n    \"type\": \"Follow\",\n    \"actor\": \"{{method}}://{{host}}/api/v1/user/{{user}}\",\n    \"object\": \"https://pixelfed.social/SneekyPeet\",\n}"
 				},
 				"description": ""
 			},
@@ -211,6 +237,11 @@
 					{
 						"key": "Accept",
 						"value": "application/activity+json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
 						"description": ""
 					}
 				],
