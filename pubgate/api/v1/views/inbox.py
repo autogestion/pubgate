@@ -73,7 +73,7 @@ async def inbox_post(request, user_id):
 
     if activity["type"] == "Follow":
         obj_id = random_object_id()
-        outbox_url = f"{request.app.base_url}/outbox/{user_id}"
+        outbox_url = f"{request.app.base_url}/api/v1/outbox/{user_id}"
         deliverance = {
             "id": f"{outbox_url}/{obj_id}",
             "type": "Accept",
@@ -95,9 +95,9 @@ async def inbox_post(request, user_id):
         })
 
         # post_to_remote_inbox
-        generate_signature(deliverance, get_key(request.app.base_url, user_id, request.app.config.DOMAIN))
-        deliverance['@context'] = context
-        asyncio.ensure_future(deliver(deliverance, [activity["actor"]]))
+        key = get_key(request.app.base_url, user_id, request.app.config.DOMAIN)
+        activity['@context'] = context
+        asyncio.ensure_future(deliver(deliverance, [activity["actor"]], key))
 
     return response.json({'peremoga': 'yep'})
 

@@ -31,10 +31,9 @@ def user_profile(base_url, user_id):
         "url": f"{base_url}/@{user_id}",
         "manuallyApprovesFollowers": False,
         "publicKey": key.to_dict(),
-        "tag": [],
-        "attachment": [],
         "endpoints": {
             # "sharedInbox": f"{base_url}/inbox"
+            "oauthTokenEndpoint": f"{base_url}/api/v1/auth/token"
         },
         "icon": {
             "type": "Image",

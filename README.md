@@ -9,7 +9,7 @@ Compatible with [Mastodon](https://github.com/tootsuite/mastodon), but will drop
 
 ## Endpoints
 
-####Federated
+#### Federated
 
  - /.well-known/    (webfinger)
  - /user/           (profile, following)
@@ -17,7 +17,7 @@ Compatible with [Mastodon](https://github.com/tootsuite/mastodon), but will drop
  - /outbox/         (create, list, item, activity, remote post)
  
  
-####Additional 
+#### Additional 
  - /auth            (create user, get token)
  - /swagger         (api docs)
 

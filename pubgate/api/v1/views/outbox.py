@@ -7,7 +7,6 @@ from sanic_openapi import doc
 
 from little_boxes.activitypub import parse_activity, _to_list
 from little_boxes.errors import UnexpectedActivityTypeError, BadActivityError
-from little_boxes.linked_data_sig import generate_signature
 
 from pubgate.api.v1.db.models import User, Outbox
 from pubgate.api.v1.renders import ordered_collection, context
@@ -38,7 +37,7 @@ async def outbox_post(request, user_id):
     obj_id = random_object_id()
     now = datetime.now()
 
-    outbox_url = f"{request.app.base_url}/outbox/{user_id}"
+    outbox_url = f"{request.app.base_url}/api/v1/outbox/{user_id}"
     activity["id"] = f"{outbox_url}/{obj_id}"
     activity["published"] = now.isoformat()
     if isinstance(activity["object"], dict):
@@ -63,9 +62,9 @@ async def outbox_post(request, user_id):
         recipients = list(set(recipients))
 
     # post_to_remote_inbox
-    generate_signature(activity, get_key(request.app.base_url, user_id, request.app.config.DOMAIN))
+    key = get_key(request.app.base_url, user_id, request.app.config.DOMAIN)
     activity['@context'] = context
-    asyncio.ensure_future(deliver(activity, recipients))
+    asyncio.ensure_future(deliver(activity, recipients, key))
 
     return response.json({'peremoga': 'yep', 'id': obj_id})
 
