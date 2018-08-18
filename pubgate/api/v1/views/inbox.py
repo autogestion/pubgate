@@ -103,8 +103,8 @@ async def inbox_post(request, user_id):
 
 
 @inbox_v1.route('/<user_id>', methods=['GET'])
+@doc.summary("Returns user inbox, auth required")
 @auth_required
-@doc.summary("Returns user inbox, auth_required")
 async def inbox_list(request, user_id):
     user = await User.find_one(dict(username=user_id))
     if not user:

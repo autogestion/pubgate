@@ -9,14 +9,6 @@ from pubgate.api.v1.utils import random_object_id
 auth_v1 = Blueprint('auth_v1', url_prefix='/api/v1/auth')
 
 
-class TokenAuth:
-    def __init__(self, app):
-        app.register_middleware(self.open_session, 'request')
-
-    async def open_session(self, request):
-        pass
-
-
 @auth_v1.route('/', methods=['POST'])
 @doc.summary("Creates a user")
 @doc.consumes(User, location="body")

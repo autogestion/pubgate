@@ -19,9 +19,9 @@ outbox_v1 = Blueprint('outbox_v1', url_prefix='/api/v1/outbox')
 
 
 @outbox_v1.route('/<user_id>', methods=['POST'])
-@auth_required
-@doc.summary("Post to user outbox, auth_required")
+@doc.summary("Post to user outbox, auth required")
 @doc.consumes(Outbox, location="body")
+@auth_required
 async def outbox_post(request, user_id):
     # TODO handle replies
     user = await User.find_one(dict(username=user_id))
