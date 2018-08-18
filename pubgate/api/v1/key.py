@@ -1,6 +1,7 @@
 import binascii
 import os
 from typing import Callable
+import re
 
 from little_boxes.key import Key
 
@@ -24,12 +25,11 @@ def get_secret_key(name: str, new_key: Callable[[], str] = _new_key) -> str:
         return f.read()
 
 
-def get_key(owner: str, user: str, domain: str) -> Key:
+def get_key(owner: str) -> Key:
     """"Loads or generates an RSA key."""
     k = Key(owner)
-    user = user.replace(".", "_")
-    domain = domain.replace(".", "_")
-    key_path = os.path.join(KEY_DIR, f"key_{user}_{domain}.pem")
+    user = re.sub('[^\w\d]', "_", owner)
+    key_path = os.path.join(KEY_DIR, f"key_{user}.pem")
     if os.path.isfile(key_path):
         with open(key_path) as f:
             privkey_pem = f.read()

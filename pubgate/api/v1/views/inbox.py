@@ -3,12 +3,11 @@ import aiohttp
 from sanic import response, Blueprint
 from sanic_openapi import doc
 from little_boxes.httpsig import verify_request
-from little_boxes.linked_data_sig import generate_signature
 
 from pubgate.api.v1.db.models import User, Inbox, Outbox
 from pubgate.api.v1.renders import ordered_collection, context
-from pubgate.api.v1.utils import deliver, make_label, random_object_id, auth_required
-from pubgate.api.v1.key import get_key
+from pubgate.api.v1.utils import make_label, random_object_id, auth_required
+from pubgate.api.v1.deliver import deliver
 
 
 inbox_v1 = Blueprint('inbox_v1', url_prefix='/api/v1/inbox')
@@ -95,9 +94,7 @@ async def inbox_post(request, user_id):
         })
 
         # post_to_remote_inbox
-        key = get_key(request.app.base_url, user_id, request.app.config.DOMAIN)
-        activity['@context'] = context
-        asyncio.ensure_future(deliver(deliverance, [activity["actor"]], key))
+        asyncio.ensure_future(deliver(deliverance, [activity["actor"]]))
 
     return response.json({'peremoga': 'yep'})
 

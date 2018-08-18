@@ -1,5 +1,5 @@
 
-from little_boxes.key import Key
+from pubgate.api.v1.key import get_key
 
 
 context = [
@@ -14,8 +14,6 @@ context = [
 
 def user_profile(base_url, user_id):
     id = f"{base_url}/api/v1/user/{user_id}"
-    key = Key(id)
-    key.new()
 
     return {
         "@context": context,
@@ -30,7 +28,7 @@ def user_profile(base_url, user_id):
         "summary": "<p></p>",
         "url": f"{base_url}/@{user_id}",
         "manuallyApprovesFollowers": False,
-        "publicKey": key.to_dict(),
+        "publicKey": get_key(id).to_dict(),
         "endpoints": {
             # "sharedInbox": f"{base_url}/inbox"
             "oauthTokenEndpoint": f"{base_url}/api/v1/auth/token"
