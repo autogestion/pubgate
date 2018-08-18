@@ -1,4 +1,5 @@
 from datetime import datetime
+import asyncio
 
 from asgiref.sync import sync_to_async
 from sanic import response, Blueprint
@@ -6,16 +7,21 @@ from sanic_openapi import doc
 
 from little_boxes.activitypub import parse_activity, _to_list
 from little_boxes.errors import UnexpectedActivityTypeError, BadActivityError
+from little_boxes.linked_data_sig import generate_signature
 
 from pubgate.api.v1.db.models import User, Outbox
 from pubgate.api.v1.renders import ordered_collection, context
-from pubgate.api.v1.utils import deliver, make_label, random_object_id
+from pubgate.api.v1.utils import deliver, make_label, random_object_id, auth_required
+from pubgate.api.v1.key import get_key
+
 
 outbox_v1 = Blueprint('outbox_v1', url_prefix='/api/v1/outbox')
 
 
 @outbox_v1.route('/<user_id>', methods=['POST'])
-@doc.summary("Post to user outbox")
+@doc.summary("Post to user outbox, auth required")
+@doc.consumes(Outbox, location="body")
+@auth_required
 async def outbox_post(request, user_id):
     # TODO handle replies
     user = await User.find_one(dict(username=user_id))
@@ -56,8 +62,10 @@ async def outbox_post(request, user_id):
                 recipients.extend(_to_list(activity[field]))
         recipients = list(set(recipients))
 
-    # TODO post_to_remote_inbox
-    deliver(activity, recipients)
+    # post_to_remote_inbox
+    generate_signature(activity, get_key(request.app.base_url, user_id, request.app.config.DOMAIN))
+    activity['@context'] = context
+    asyncio.ensure_future(deliver(activity, recipients))
 
     return response.json({'peremoga': 'yep', 'id': obj_id})
 

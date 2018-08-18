@@ -1,18 +1,22 @@
-
+import asyncio
 import aiohttp
 from sanic import response, Blueprint
 from sanic_openapi import doc
 from little_boxes.httpsig import verify_request
+from little_boxes.linked_data_sig import generate_signature
 
 from pubgate.api.v1.db.models import User, Inbox, Outbox
 from pubgate.api.v1.renders import ordered_collection, context
-from pubgate.api.v1.utils import deliver, make_label, random_object_id
+from pubgate.api.v1.utils import deliver, make_label, random_object_id, auth_required
+from pubgate.api.v1.key import get_key
+
 
 inbox_v1 = Blueprint('inbox_v1', url_prefix='/api/v1/inbox')
 
 
 @inbox_v1.route('/<user_id>', methods=['POST'])
 @doc.summary("Post to user inbox")
+@doc.consumes(Inbox, location="body")
 async def inbox_post(request, user_id):
     user = await User.find_one(dict(username=user_id))
     if not user:
@@ -90,14 +94,17 @@ async def inbox_post(request, user_id):
             "meta": {"undo": False, "deleted": False},
         })
 
+        # post_to_remote_inbox
+        generate_signature(deliverance, get_key(request.app.base_url, user_id, request.app.config.DOMAIN))
         deliverance['@context'] = context
-        deliver(deliverance, [activity["actor"]])
+        asyncio.ensure_future(deliver(deliverance, [activity["actor"]]))
 
     return response.json({'peremoga': 'yep'})
 
 
 @inbox_v1.route('/<user_id>', methods=['GET'])
-@doc.summary("Returns user inbox")
+@doc.summary("Returns user inbox, auth required")
+@auth_required
 async def inbox_list(request, user_id):
     user = await User.find_one(dict(username=user_id))
     if not user:

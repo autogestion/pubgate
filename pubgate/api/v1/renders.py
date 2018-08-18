@@ -13,17 +13,18 @@ context = [
 
 
 def user_profile(base_url, user_id):
-    key = Key(f"{base_url}/user/{user_id}")
+    id = f"{base_url}/api/v1/user/{user_id}"
+    key = Key(id)
     key.new()
 
     return {
         "@context": context,
-        "id": f"{base_url}/api/v1/user/{user_id}",
+        "id": id,
         "type": "Person",
-        "following": f"{base_url}/user/{user_id}/following",
-        "followers": f"{base_url}/user/{user_id}/followers",
-        "inbox": f"{base_url}/inbox/{user_id}/inbox",
-        "outbox": f"{base_url}/outbox/{user_id}/outbox",
+        "following": f"{id}/following",
+        "followers": f"{id}/followers",
+        "inbox": f"{base_url}/api/v1/inbox/{user_id}",
+        "outbox": f"{base_url}/api/v1/outbox/{user_id}",
         "preferredUsername": f"{user_id}",
         "name": "",
         "summary": "<p></p>",
@@ -33,7 +34,7 @@ def user_profile(base_url, user_id):
         "tag": [],
         "attachment": [],
         "endpoints": {
-            "sharedInbox": f"{base_url}/inbox"
+            # "sharedInbox": f"{base_url}/inbox"
         },
         "icon": {
             "type": "Image",

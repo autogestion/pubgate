@@ -104,5 +104,10 @@ venv.bak/
 .mypy_cache/
 
 
-/config/conf.cfg
+
 .idea/
+
+
+# pubgate
+/config/conf.cfg
+/config/key*

@@ -9,23 +9,28 @@ Compatible with [Mastodon](https://github.com/tootsuite/mastodon), but will drop
 
 ## Endpoints
 
+####Federated
+
  - /.well-known/    (webfinger)
- - /user/           (create, profile, following)
+ - /user/           (profile, following)
  - /inbox/          (create, list)
  - /outbox/         (create, list, item, activity, remote post)
+ 
+ 
+####Additional 
+ - /auth            (create user, get token)
+ - /swagger         (api docs)
 
 Full list of endpoints and their payloads available as [Postman collection](https://github.com/autogestion/pubgate/blob/master/pubgate.postman_collection.json)
+or as [swagger docs example](http://pubgate.autogestion.org/swagger)
 
-## Api docs
-
- - /swagger
 
 ## Run
 
-### Prerequisites
+#### Prerequisites
 `MongoDB`
 
-### Shell
+#### Shell
 
 ```
 git clone https://github.com/autogestion/pubgate.git
