@@ -1,9 +1,6 @@
 import aiohttp
-from aiohttp.client_reqrep import ClientRequest
-from urllib.parse import urlsplit
 import base64
 import hashlib
-from datetime import datetime
 from urllib.parse import urlparse
 import json
 
@@ -12,7 +9,6 @@ from Crypto.Signature import PKCS1_v1_5
 
 from sanic.log import logger
 from sanic import exceptions
-from little_boxes.httpsig import _build_signed_string
 from little_boxes.linked_data_sig import generate_signature
 
 from pubgate import __version__
@@ -74,6 +70,7 @@ class HTTPSigAuth:
     def sign(self, url, r_body):
         logger.info(f"keyid={self.key.key_id()}")
         host = urlparse(url).netloc
+        headers = self.headers.copy()
 
         bh = hashlib.new("sha256")
         body = r_body
@@ -84,15 +81,17 @@ class HTTPSigAuth:
         bh.update(body)
         bodydigest = "SHA-256=" + base64.b64encode(bh.digest()).decode("utf-8")
 
-        date = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
+        headers.update({"digest": bodydigest, "host": host})
 
-        self.headers.update({"digest": bodydigest, "date": date, "host": host})
+        sigheaders = "host digest"
+        out = []
+        for signed_header in sigheaders.split(" "):
+            if signed_header == "digest":
+                out.append("digest: " + bodydigest)
+            else:
+                out.append(signed_header + ": " + headers[signed_header])
+        to_be_signed = "\n".join(out)
 
-        sigheaders = "(request-target) user-agent host date digest content-type"
-
-        to_be_signed = _build_signed_string(
-            sigheaders, "POST", self.path_url(url), self.headers, bodydigest
-        )
         signer = PKCS1_v1_5.new(self.key.privkey)
         digest = SHA256.new()
         digest.update(to_be_signed.encode("utf-8"))
@@ -100,31 +99,9 @@ class HTTPSigAuth:
         sig = sig.decode("utf-8")
 
         key_id = self.key.key_id()
-        headers = {
+        headers.update({
             "Signature": f'keyId="{key_id}",algorithm="rsa-sha256",headers="{sigheaders}",signature="{sig}"'
-        }
+        })
         logger.debug(f"signed request headers={headers}")
 
-        self.headers.update(headers)
-
-        return self.headers
-
-    def path_url(self, url):
-        """Build the path URL to use."""
-
-        url = []
-
-        p = urlsplit(str(url))
-
-        path = p.path
-        if not path:
-            path = '/'
-
-        url.append(path)
-
-        query = p.query
-        if query:
-            url.append('?')
-            url.append(query)
-
-        return ''.join(url)
+        return headers
