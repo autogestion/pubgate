@@ -92,18 +92,20 @@ class PGClientRequest(ClientRequest):
 
 
 async def deliver_task(recipient, **kwargs):
-    logger.info(f" Delivering {make_label(kwargs['json'])} ===> {recipient}")
     async with aiohttp.ClientSession() as session:
         async with session.get(recipient,
                                headers={'Accept': 'application/activity+json',
                                         "User-Agent": f"PubGate v:{__version__}",}
                                ) as resp:
-            logger.info(resp)
+            logger.info(f"Delivering {make_label(kwargs['json'])} ===>> {recipient},"
+                        f" status: {resp.status}, {resp.reason}")
             profile = await resp.json()
 
     async with aiohttp.ClientSession(request_class=PGClientRequest) as session:
         async with session.post(profile["inbox"], **kwargs) as resp:
-            logger.info(resp)
+            logger.info(f"Post to inbox {resp.real_url}, status: {resp.status}, {resp.reason}")
+            print(resp.request_info.headers)
+            print("\n")
 
 
 async def deliver(activity, recipients):
@@ -119,6 +121,8 @@ async def deliver(activity, recipients):
                         "Content-Type": 'application/activity+json',
                         "User-Agent": f"PubGate v:{__version__}",
                   })
+
+    # print(activity)
 
     for recipient in recipients:
         # try:
