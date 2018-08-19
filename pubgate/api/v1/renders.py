@@ -1,6 +1,6 @@
 
 from pubgate.api.v1.key import get_key
-
+from pubgate import LOGO
 
 context = [
         "https://www.w3.org/ns/activitystreams",
@@ -36,7 +36,7 @@ def user_profile(base_url, user_id):
         "icon": {
             "type": "Image",
             "mediaType": "image/png",
-            "url": "http://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/512x512/torii.png"
+            "url": LOGO
         }
     }
 

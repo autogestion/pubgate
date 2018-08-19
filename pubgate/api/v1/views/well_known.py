@@ -2,10 +2,12 @@
 from sanic import response, Blueprint
 from sanic_openapi import doc
 
-from pubgate.api.v1.db.models import User
+from pubgate.api.v1.db.models import User, Outbox
+from pubgate import __version__, LOGO
+
 
 well_known = Blueprint('well_known', url_prefix='/.well-known')
-
+instance = Blueprint('instance', url_prefix='/api/v1/instance')
 
 # @well_known.middleware('response')
 # async def update_headers(request, response):
@@ -62,3 +64,35 @@ async def webfinger(request):
 @doc.summary("nodeinfo")
 async def nodeinfo(request):
     return response.json({"nodeName": request.app.config.DOMAIN})
+
+
+@instance.route('/', methods=['GET'])
+@doc.summary("Instance details")
+async def instance_get(request):
+
+    users = await User.find()
+    statuses = await Outbox.find(filter={
+                                    "meta.deleted": False,
+                                    "activity.type": "Create"
+                                })
+    resp = {
+        "uri": request.app.config.DOMAIN,
+        "title": "PubGate",
+        "description": "Asyncronous Lightweight ActivityPub Federator https://github.com/autogestion/pubgate",
+        # "email": "hello@joinmastodon.org",
+        "version": __version__,
+        # "urls": {
+        #     "streaming_api": "wss://mastodon.social"
+        # },
+        "stats": {
+            "user_count": len(users.objects),
+            "status_count": len(statuses.objects),
+            # "domain_count": 5628
+        },
+        "thumbnail": LOGO,
+        "languages": [
+            "en"
+        ]
+    }
+
+    return response.json(resp, headers={'Content-Type': 'application/jrd+json; charset=utf-8'})

@@ -5,6 +5,7 @@ import base64
 import hashlib
 from datetime import datetime
 from urllib.parse import urlparse
+import json
 
 from Crypto.Hash import SHA256
 from Crypto.Signature import PKCS1_v1_5
@@ -20,20 +21,64 @@ from pubgate.api.v1.renders import context
 from pubgate.api.v1.key import get_key
 
 
+async def deliver_task(recipient, http_sig, activity):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(recipient,
+                               headers={'Accept': 'application/activity+json',
+                                        "User-Agent": f"PubGate v:{__version__}",}
+                               ) as resp:
+            logger.info(f"Delivering {make_label(activity)} ===>> {recipient},"
+                        f" status: {resp.status}, {resp.reason}")
+            profile = await resp.json()
+
+    body = json.dumps(activity)
+    url = profile["inbox"]
+    headers = http_sig.sign(url, body)
+
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url,
+                                data=body,
+                                headers=headers) as resp:
+            logger.info(f"Post to inbox {resp.real_url}, status: {resp.status}, {resp.reason}")
+            print(resp.request_info.headers)
+            print("\n")
+
+
+async def deliver(activity, recipients):
+    # TODO deliver
+    # TODO retry over day if fails
+    key = get_key(activity["actor"])
+    activity['@context'] = context
+    generate_signature(activity, key)
+
+    headers = {"content-type": 'application/activity+json',
+               "user-agent": f"PubGate v:{__version__}"}
+
+    http_sig = HTTPSigAuth(key, headers)
+    # print(activity)
+
+    for recipient in recipients:
+        # try:
+            await deliver_task(recipient, http_sig, activity)
+        # except Exception as e:
+        #     logger.error(e)
+
+
 class HTTPSigAuth:
     """Requests auth plugin for signing requests on the fly."""
 
-    def __init__(self, key) -> None:
+    def __init__(self, key, headers) -> None:
         self.key = key
+        self.headers = headers
 
-    def __call__(self, r):
+    def sign(self, url, r_body):
         logger.info(f"keyid={self.key.key_id()}")
-        host = urlparse(str(r.url)).netloc
+        host = urlparse(url).netloc
 
         bh = hashlib.new("sha256")
-        body = r.body
+        body = r_body
         try:
-            body = r.body.encode("utf-8")
+            body = r_body.encode("utf-8")
         except AttributeError:
             pass
         bh.update(body)
@@ -41,12 +86,12 @@ class HTTPSigAuth:
 
         date = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
 
-        r.headers.update({"Digest": bodydigest, "Date": date, "Host": host})
+        self.headers.update({"digest": bodydigest, "date": date, "host": host})
 
         sigheaders = "(request-target) user-agent host date digest content-type"
 
         to_be_signed = _build_signed_string(
-            sigheaders, r.method, r.path_url, r.headers, bodydigest
+            sigheaders, "POST", self.path_url(url), self.headers, bodydigest
         )
         signer = PKCS1_v1_5.new(self.key.privkey)
         digest = SHA256.new()
@@ -60,22 +105,16 @@ class HTTPSigAuth:
         }
         logger.debug(f"signed request headers={headers}")
 
-        r.headers.update(headers)
+        self.headers.update(headers)
 
-        return r
+        return self.headers
 
-
-class PGClientRequest(ClientRequest):
-    def update_auth(self, auth):
-        auth(self)
-
-    @property
-    def path_url(self):
+    def path_url(self, url):
         """Build the path URL to use."""
 
         url = []
 
-        p = urlsplit(str(self.url))
+        p = urlsplit(str(url))
 
         path = p.path
         if not path:
@@ -89,43 +128,3 @@ class PGClientRequest(ClientRequest):
             url.append(query)
 
         return ''.join(url)
-
-
-async def deliver_task(recipient, **kwargs):
-    async with aiohttp.ClientSession() as session:
-        async with session.get(recipient,
-                               headers={'Accept': 'application/activity+json',
-                                        "User-Agent": f"PubGate v:{__version__}",}
-                               ) as resp:
-            logger.info(f"Delivering {make_label(kwargs['json'])} ===>> {recipient},"
-                        f" status: {resp.status}, {resp.reason}")
-            profile = await resp.json()
-
-    async with aiohttp.ClientSession(request_class=PGClientRequest) as session:
-        async with session.post(profile["inbox"], **kwargs) as resp:
-            logger.info(f"Post to inbox {resp.real_url}, status: {resp.status}, {resp.reason}")
-            print(resp.request_info.headers)
-            print("\n")
-
-
-async def deliver(activity, recipients):
-    # TODO deliver
-    # TODO retry over day if fails
-    key = get_key(activity["actor"])
-    activity['@context'] = context
-    generate_signature(activity, key)
-    kwargs = dict(json=activity,
-                  auth=HTTPSigAuth(key),
-                  headers={
-                        'Accept': 'application/activity+json',
-                        "Content-Type": 'application/activity+json',
-                        "User-Agent": f"PubGate v:{__version__}",
-                  })
-
-    # print(activity)
-
-    for recipient in recipients:
-        # try:
-            await deliver_task(recipient, **kwargs)
-        # except Exception as e:
-        #     logger.error(e)
