@@ -6,7 +6,7 @@ from sanic_openapi import doc
 from pubgate.api.v1.db.models import User
 from pubgate.api.v1.utils import random_object_id
 
-auth_v1 = Blueprint('auth_v1', url_prefix='/api/v1/auth')
+auth_v1 = Blueprint('auth_v1')
 
 
 @auth_v1.route('/', methods=['POST'])

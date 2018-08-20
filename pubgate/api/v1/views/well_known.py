@@ -7,7 +7,7 @@ from pubgate import __version__, LOGO
 
 
 well_known = Blueprint('well_known', url_prefix='/.well-known')
-instance = Blueprint('instance', url_prefix='/api/v1/instance')
+instance = Blueprint('instance')
 
 # @well_known.middleware('response')
 # async def update_headers(request, response):

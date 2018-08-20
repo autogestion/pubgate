@@ -12,12 +12,18 @@ def create_app(config_path):
     app = Sanic()
     app.config.from_pyfile(config_path)
     app.base_url = f"{app.config.METHOD}://{app.config.DOMAIN}"
+    app.v1_path = f"{app.base_url}/{app.config.API_V1_PREFIX}"
     BaseModel.init_app(app)
 
     # TODO Find viable openapi fork
     app.blueprint(openapi_blueprint)
     app.blueprint(swagger_blueprint)
 
+    auth_v1.url_prefix = f"{app.config.API_V1_PREFIX}/auth"
+    instance.url_prefix = f"{app.config.API_V1_PREFIX}/instance"
+    user_v1.url_prefix = f"{app.config.API_V1_PREFIX}/user"
+    inbox_v1.url_prefix = f"{app.config.API_V1_PREFIX}/inbox"
+    outbox_v1.url_prefix = f"{app.config.API_V1_PREFIX}/outbox"
     app.blueprint(auth_v1)
     app.blueprint(instance)
     app.blueprint(well_known)

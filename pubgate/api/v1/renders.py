@@ -12,8 +12,8 @@ context = [
     ]
 
 
-def user_profile(base_url, user_id):
-    id = f"{base_url}/api/v1/user/{user_id}"
+def user_profile(v1_path, user_id):
+    id = f"{v1_path}/user/{user_id}"
 
     return {
         "@context": context,
@@ -21,17 +21,17 @@ def user_profile(base_url, user_id):
         "type": "Person",
         "following": f"{id}/following",
         "followers": f"{id}/followers",
-        "inbox": f"{base_url}/api/v1/inbox/{user_id}",
-        "outbox": f"{base_url}/api/v1/outbox/{user_id}",
+        "inbox": f"{v1_path}/inbox/{user_id}",
+        "outbox": f"{v1_path}/outbox/{user_id}",
         "preferredUsername": f"{user_id}",
         "name": "",
         "summary": "<p></p>",
-        "url": f"{base_url}/@{user_id}",
+        # "url": f"{base_url}/@{user_id}",
         "manuallyApprovesFollowers": False,
         "publicKey": get_key(id).to_dict(),
         "endpoints": {
             # "sharedInbox": f"{base_url}/inbox"
-            "oauthTokenEndpoint": f"{base_url}/api/v1/auth/token"
+            "oauthTokenEndpoint": f"{v1_path}/auth/token"
         },
         "icon": {
             "type": "Image",

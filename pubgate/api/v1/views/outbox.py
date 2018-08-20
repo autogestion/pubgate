@@ -13,7 +13,7 @@ from pubgate.api.v1.renders import ordered_collection, context
 from pubgate.api.v1.utils import make_label, random_object_id, auth_required
 from pubgate.api.v1.deliver import deliver
 
-outbox_v1 = Blueprint('outbox_v1', url_prefix='/api/v1/outbox')
+outbox_v1 = Blueprint('outbox_v1')
 
 
 @outbox_v1.route('/<user_id>', methods=['POST'])
@@ -36,7 +36,7 @@ async def outbox_post(request, user_id):
     obj_id = random_object_id()
     now = datetime.now()
 
-    outbox_url = f"{request.app.base_url}/api/v1/outbox/{user_id}"
+    outbox_url = f"{request.app.v1_path}/outbox/{user_id}"
     activity["id"] = f"{outbox_url}/{obj_id}"
     activity["published"] = now.isoformat()
     if isinstance(activity["object"], dict):
@@ -80,7 +80,7 @@ async def outbox_list(request, user_id):
         "user_id": user_id
     }, sort="activity.published desc")
 
-    outbox_url = f"{request.app.base_url}/outbox/{user_id}"
+    outbox_url = f"{request.app.v1_path}/outbox/{user_id}"
     cleaned = [item["activity"] for item in data.objects]
     resp = ordered_collection(outbox_url, cleaned)
 

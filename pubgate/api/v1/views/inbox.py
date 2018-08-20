@@ -10,7 +10,7 @@ from pubgate.api.v1.utils import make_label, random_object_id, auth_required
 from pubgate.api.v1.deliver import deliver
 
 
-inbox_v1 = Blueprint('inbox_v1', url_prefix='/api/v1/inbox')
+inbox_v1 = Blueprint('inbox_v1')
 
 
 @inbox_v1.route('/<user_id>', methods=['POST'])
@@ -72,7 +72,7 @@ async def inbox_post(request, user_id):
 
     if activity["type"] == "Follow":
         obj_id = random_object_id()
-        outbox_url = f"{request.app.base_url}/api/v1/outbox/{user_id}"
+        outbox_url = f"{request.app.v1_path}/outbox/{user_id}"
         deliverance = {
             "id": f"{outbox_url}/{obj_id}",
             "type": "Accept",
@@ -114,7 +114,7 @@ async def inbox_list(request, user_id):
         sort="activity.published desc"
     )
 
-    inbox_url = f"{request.app.base_url}/inbox/{user_id}"
+    inbox_url = f"{request.app.v1_path}/inbox/{user_id}"
     cleaned = [item["activity"] for item in data.objects]
     resp = ordered_collection(inbox_url, cleaned)
 
