@@ -29,7 +29,7 @@ async def followers_get(request, user_id):
 
     # TODO pagination
     followers = await user.get_followers()
-    followers_url = f"{request.v1_path}/user/{user_id}/followers"
+    followers_url = f"{request.app.v1_path}/user/{user_id}/followers"
     resp = ordered_collection(followers_url, followers)
 
     return response.json(resp, headers={'Content-Type': 'application/jrd+json; charset=utf-8'})

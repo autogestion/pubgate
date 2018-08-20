@@ -3,7 +3,7 @@
 Based on [little-boxes](https://github.com/tsileo/little-boxes).
 Implements both the client-to-server API and the federated server-to-server API.
 
-Compatible with [Mastodon](https://github.com/tootsuite/mastodon), but will drop OStatus messages.
+Compatible (tested) with Mastodon, Pleroma and microblog.pub
 
 (will) Support extensions
 

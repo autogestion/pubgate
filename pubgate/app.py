@@ -12,7 +12,7 @@ def create_app(config_path):
     app = Sanic()
     app.config.from_pyfile(config_path)
     app.base_url = f"{app.config.METHOD}://{app.config.DOMAIN}"
-    app.v1_path = f"{app.base_url}/{app.config.API_V1_PREFIX}"
+    app.v1_path = f"{app.base_url}{app.config.API_V1_PREFIX}"
     BaseModel.init_app(app)
 
     # TODO Find viable openapi fork
