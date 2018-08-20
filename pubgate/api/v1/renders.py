@@ -1,6 +1,6 @@
 
-from little_boxes.key import Key
-
+from pubgate.api.v1.key import get_key
+from pubgate import LOGO
 
 context = [
         "https://www.w3.org/ns/activitystreams",
@@ -12,10 +12,8 @@ context = [
     ]
 
 
-def user_profile(base_url, user_id):
-    id = f"{base_url}/api/v1/user/{user_id}"
-    key = Key(id)
-    key.new()
+def user_profile(v1_path, user_id):
+    id = f"{v1_path}/user/{user_id}"
 
     return {
         "@context": context,
@@ -23,23 +21,22 @@ def user_profile(base_url, user_id):
         "type": "Person",
         "following": f"{id}/following",
         "followers": f"{id}/followers",
-        "inbox": f"{base_url}/api/v1/inbox/{user_id}",
-        "outbox": f"{base_url}/api/v1/outbox/{user_id}",
+        "inbox": f"{v1_path}/inbox/{user_id}",
+        "outbox": f"{v1_path}/outbox/{user_id}",
         "preferredUsername": f"{user_id}",
         "name": "",
         "summary": "<p></p>",
-        "url": f"{base_url}/@{user_id}",
+        # "url": f"{base_url}/@{user_id}",
         "manuallyApprovesFollowers": False,
-        "publicKey": key.to_dict(),
-        "tag": [],
-        "attachment": [],
+        "publicKey": get_key(id).to_dict(),
         "endpoints": {
             # "sharedInbox": f"{base_url}/inbox"
+            "oauthTokenEndpoint": f"{v1_path}/auth/token"
         },
         "icon": {
             "type": "Image",
             "mediaType": "image/png",
-            "url": "http://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/512x512/torii.png"
+            "url": LOGO
         }
     }
 

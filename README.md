@@ -3,13 +3,13 @@
 Based on [little-boxes](https://github.com/tsileo/little-boxes).
 Implements both the client-to-server API and the federated server-to-server API.
 
-Compatible with [Mastodon](https://github.com/tootsuite/mastodon), but will drop OStatus messages.
+Compatible (tested) with Mastodon, Pleroma and microblog.pub
 
 (will) Support extensions
 
 ## Endpoints
 
-####Federated
+#### Federated
 
  - /.well-known/    (webfinger)
  - /user/           (profile, following)
@@ -17,7 +17,7 @@ Compatible with [Mastodon](https://github.com/tootsuite/mastodon), but will drop
  - /outbox/         (create, list, item, activity, remote post)
  
  
-####Additional 
+#### Additional 
  - /auth            (create user, get token)
  - /swagger         (api docs)
 

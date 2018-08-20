@@ -3,15 +3,14 @@ import aiohttp
 from sanic import response, Blueprint
 from sanic_openapi import doc
 from little_boxes.httpsig import verify_request
-from little_boxes.linked_data_sig import generate_signature
 
 from pubgate.api.v1.db.models import User, Inbox, Outbox
 from pubgate.api.v1.renders import ordered_collection, context
-from pubgate.api.v1.utils import deliver, make_label, random_object_id, auth_required
-from pubgate.api.v1.key import get_key
+from pubgate.api.v1.utils import make_label, random_object_id, auth_required
+from pubgate.api.v1.deliver import deliver
 
 
-inbox_v1 = Blueprint('inbox_v1', url_prefix='/api/v1/inbox')
+inbox_v1 = Blueprint('inbox_v1')
 
 
 @inbox_v1.route('/<user_id>', methods=['POST'])
@@ -73,7 +72,7 @@ async def inbox_post(request, user_id):
 
     if activity["type"] == "Follow":
         obj_id = random_object_id()
-        outbox_url = f"{request.app.base_url}/outbox/{user_id}"
+        outbox_url = f"{request.app.v1_path}/outbox/{user_id}"
         deliverance = {
             "id": f"{outbox_url}/{obj_id}",
             "type": "Accept",
@@ -95,8 +94,6 @@ async def inbox_post(request, user_id):
         })
 
         # post_to_remote_inbox
-        generate_signature(deliverance, get_key(request.app.base_url, user_id, request.app.config.DOMAIN))
-        deliverance['@context'] = context
         asyncio.ensure_future(deliver(deliverance, [activity["actor"]]))
 
     return response.json({'peremoga': 'yep'})
@@ -117,7 +114,7 @@ async def inbox_list(request, user_id):
         sort="activity.published desc"
     )
 
-    inbox_url = f"{request.app.base_url}/inbox/{user_id}"
+    inbox_url = f"{request.app.v1_path}/inbox/{user_id}"
     cleaned = [item["activity"] for item in data.objects]
     resp = ordered_collection(inbox_url, cleaned)
 

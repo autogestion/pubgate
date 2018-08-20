@@ -110,6 +110,20 @@
 			"response": []
 		},
 		{
+			"name": "/api/v1/instance",
+			"request": {
+				"url": "{{host}}/api/v1/instance",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"dev1\", \"password\":\"dev1\", \"email\": \"bu\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "/api/v1/outbox/user_id Create Note",
 			"request": {
 				"url": "{{host}}/api/v1/outbox/{{user}}",
@@ -123,7 +137,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"type\": \"Create\",\n    \"actor\": \"{{method}}://{{host}}/api/v1/user/{{user}}\",\n    \"to\": [\n        \"https://www.w3.org/ns/activitystreams#Public\"\n    ],\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"inReplyTo\": \"\",\n        \"attributedTo\": \"{{method}}://{{host}}/api/v1/user/{{user}}\",\n        \"to\": [\n            \"https://www.w3.org/ns/activitystreams#Public\"\n        ],\n        \"sensitive\": false,\n        \"content\": \"Звитяга! Слава Ісу! Карамба\",\n        \"contentMap\": {\n            \"uk\": \"Звитягаll!\"\n        },\n        \"attachment\": [],\n        \"tag\": []\n    }\n}        "
+					"raw": "{\n    \"type\": \"Create\",\n    \"actor\": \"{{host}}/api/v1/user/{{user}}\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"inReplyTo\": \"\",\n        \"attributedTo\": \"{{host}}/api/v1/user/{{user}}\",\n        \"to\": [\n            \"https://www.w3.org/ns/activitystreams#Public\"\n        ],\n        \"sensitive\": false,\n        \"content\": \"Ще Звитяга! Слава Ісу! Ще Карамба хуямба\",\n        \"contentMap\": {\n            \"uk\": \"Звитягаll!\"\n        },\n        \"attachment\": [],\n        \"tag\": []\n    }\n}        "
 				},
 				"description": ""
 			},
@@ -143,7 +157,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"type\": \"Follow\",\n    \"actor\": \"{{method}}://{{host}}/api/v1/user/{{user}}\",\n    \"object\": \"https://pixelfed.social/SneekyPeet\",\n}"
+					"raw": "{\n    \"type\": \"Follow\",\n    \"actor\": \"{{host}}/api/v1/user/{{user}}\",\n    \"object\": \"https://acts-sh.pp.ua\",\n}"
 				},
 				"description": ""
 			},
