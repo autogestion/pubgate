@@ -1,6 +1,6 @@
 import asyncio
-import aiohttp
 from sanic import response, Blueprint
+from sanic.log import logger
 from sanic_openapi import doc
 from little_boxes.httpsig import verify_request
 
@@ -25,11 +25,14 @@ async def inbox_post(request, user_id):
     activity = request.json.copy()
 
     # TODO verify signature
-    # x = verify_request(
-    #         request.method, request.path, request.headers, activity
-    #     )
-    #
-    # print(x)
+    verified = verify_request(
+            request.method, request.path, request.headers, activity
+        )
+    if not verified:
+        if request.app.config.DEBUG:
+            logger.info("signature incorrect")
+        else:
+            return response.json({"zrada": "signature incorrect"}, status=401)
 
     # TODO skip blocked
     # if Outbox.find_one(
@@ -43,7 +46,7 @@ async def inbox_post(request, user_id):
     exists = await Inbox.find_one(dict(_id=activity["id"]))
     if exists:
         if user_id in exists['users']:
-            return response.json({"zrada": "activity allready exists"}, status=403)
+            return response.json({"zrada": "activity already delivered"}, status=403)
 
         else:
             users = exists['users']
