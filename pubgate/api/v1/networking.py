@@ -25,6 +25,8 @@ async def verify_request(method: str, path: str, headers, body: str) -> bool:
     )
 
     actor = await fetch(hsig["keyId"])
+    if not actor.get("id"):
+        return False
     k = Key(actor["id"])
     k.load_pub(actor["publicKey"]["publicKeyPem"])
     if k.key_id() != hsig["keyId"]:
