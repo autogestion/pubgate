@@ -11,7 +11,7 @@ from little_boxes.errors import UnexpectedActivityTypeError, BadActivityError
 from pubgate.api.v1.db.models import User, Outbox
 from pubgate.api.v1.renders import ordered_collection, context
 from pubgate.api.v1.utils import make_label, random_object_id, auth_required
-from pubgate.api.v1.deliver import deliver
+from pubgate.api.v1.networking import deliver
 
 outbox_v1 = Blueprint('outbox_v1')
 

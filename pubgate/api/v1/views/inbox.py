@@ -2,12 +2,11 @@ import asyncio
 from sanic import response, Blueprint
 from sanic.log import logger
 from sanic_openapi import doc
-from little_boxes.httpsig import verify_request
 
 from pubgate.api.v1.db.models import User, Inbox, Outbox
-from pubgate.api.v1.renders import ordered_collection, context
+from pubgate.api.v1.renders import ordered_collection
 from pubgate.api.v1.utils import make_label, random_object_id, auth_required
-from pubgate.api.v1.deliver import deliver
+from pubgate.api.v1.networking import deliver, verify_request
 
 
 inbox_v1 = Blueprint('inbox_v1')
@@ -25,8 +24,8 @@ async def inbox_post(request, user_id):
     activity = request.json.copy()
 
     # TODO verify signature
-    verified = verify_request(
-            request.method, request.path, request.headers, activity
+    verified = await verify_request(
+            request.method, request.path, request.headers, request.body
         )
     if not verified:
         if request.app.config.DEBUG:
