@@ -2,8 +2,9 @@
 aiohttp==3.3.2
 asgiref==2.3.2
 git+https://github.com/tsileo/little-boxes.git
-sanic==0.7.0
 
+sanic==0.7.0
 sanic-motor==0.3.2
 sanic-openapi==0.4.0
 
+simple-bcrypt==0.1.0

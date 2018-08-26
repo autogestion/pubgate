@@ -22,6 +22,20 @@
 			"response": []
 		},
 		{
+			"name": "/api/v1/auth   Create user with invite",
+			"request": {
+				"url": "{{host}}/api/v1/auth",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"{{user}}\", \"password\":\"dev\", \"invite\": \"xyz\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "/api/v1/auth/token",
 			"request": {
 				"url": "{{host}}/api/v1/auth/token",
@@ -181,6 +195,43 @@
 			"response": []
 		},
 		{
+			"name": "/api/v1/outbox/user_id?page=2 get outbox paged",
+			"request": {
+				"url": {
+					"raw": "{{host}}/api/v1/outbox/{{user}}?page=2",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"outbox",
+						"{{user}}"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "/api/v1/outbox/user_id/item_id",
 			"request": {
 				"url": "{{host}}/api/v1/outbox/{{user}}/{{item}}",
@@ -246,6 +297,48 @@
 			"name": "/api/v1/inbox/user_id get inbox",
 			"request": {
 				"url": "{{host}}/api/v1/inbox/{{user}}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/inbox/user_id?page=2 get inbox paged",
+			"request": {
+				"url": {
+					"raw": "{{host}}/api/v1/inbox/{{user}}?page=2",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"inbox",
+						"{{user}}"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
 				"method": "GET",
 				"header": [
 					{

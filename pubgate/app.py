@@ -5,11 +5,12 @@ from sanic_motor import BaseModel
 
 from pubgate.api.v1 import user_v1, inbox_v1, outbox_v1, well_known, auth_v1, instance
 from pubgate.api.v1.db.models import register_admin
+from pubgate.logging import PGErrorHandler
 
 
 def create_app(config_path):
 
-    app = Sanic()
+    app = Sanic(error_handler=PGErrorHandler())
     app.config.from_pyfile(config_path)
     app.base_url = f"{app.config.METHOD}://{app.config.DOMAIN}"
     app.v1_path = f"{app.base_url}{app.config.API_V1_PREFIX}"
