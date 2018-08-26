@@ -39,6 +39,16 @@ class User(BaseModel):
     __coll__ = 'users'
     __unique_fields__ = ['username']
 
+    async def followers_get(self):
+        filters = {
+            "meta.deleted": False,
+            "user_id": self.username,
+            "activity.type": "Accept",
+            "activity.object.type": "Follow"
+        }
+        data = await Outbox.find(filter=filters)
+        return [x["activity"]["object"]["actor"] for x in data.objects]
+
     async def followers_paged(self, request):
         filters = {
             "meta.deleted": False,

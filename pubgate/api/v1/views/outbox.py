@@ -54,7 +54,7 @@ async def outbox_post(request, user_id):
     if activity["type"] == "Follow":
         recipients = [activity["object"]]
     else:
-        recipients = await user.get_followers(user_id)
+        recipients = await user.followers_get()
         for field in ["to", "cc", "bto", "bcc"]:
             if field in activity:
                 recipients.extend(_to_list(activity[field]))
