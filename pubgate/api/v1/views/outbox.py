@@ -9,7 +9,7 @@ from little_boxes.activitypub import parse_activity, _to_list
 from little_boxes.errors import UnexpectedActivityTypeError, BadActivityError
 
 from pubgate.api.v1.db.models import User, Outbox
-from pubgate.api.v1.renders import ordered_collection, context
+from pubgate.api.v1.renders import context
 from pubgate.api.v1.utils import make_label, random_object_id, auth_required
 from pubgate.api.v1.networking import deliver
 
@@ -69,22 +69,11 @@ async def outbox_post(request, user_id):
 @outbox_v1.route('/<user_id>', methods=['GET'])
 @doc.summary("Returns user outbox")
 async def outbox_list(request, user_id):
-
     user = await User.find_one(dict(username=user_id))
     if not user:
         return response.json({"zrada": "no such user"}, status=404)
-
-    # TODO pagination
-    data = await Outbox.find(filter={
-        "meta.deleted": False,
-        "user_id": user_id
-    }, sort="activity.published desc")
-
-    outbox_url = f"{request.app.v1_path}/outbox/{user_id}"
-    cleaned = [item["activity"] for item in data.objects]
-    resp = ordered_collection(outbox_url, cleaned)
-
-    return response.json(resp, headers={'Content-Type': 'application/jrd+json; charset=utf-8'})
+    resp = await user.outbox_paged(request)
+    return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
 @outbox_v1.route('/<user_id>/<activity_id>', methods=['GET'])
@@ -101,7 +90,7 @@ async def outbox_item(request, user_id, activity_id):
     activity = data["activity"]
     activity['@context'] = context
 
-    return response.json(activity, headers={'Content-Type': 'application/jrd+json; charset=utf-8'})
+    return response.json(activity, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
 @outbox_v1.route('/<user_id>/<activity_id>/activity', methods=['GET'])
@@ -118,4 +107,4 @@ async def outbox_activity(request, user_id, activity_id):
     activity = data["activity"]["object"]
     activity['@context'] = context
 
-    return response.json(activity, headers={'Content-Type': 'application/jrd+json; charset=utf-8'})
+    return response.json(activity, headers={'Content-Type': 'application/activity+json; charset=utf-8'})

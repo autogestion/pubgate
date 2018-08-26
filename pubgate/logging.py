@@ -41,7 +41,7 @@ class PGHttpProtocol(HttpProtocol):
 class PGErrorHandler(ErrorHandler):
 
     def default(self, request, exception):
-        if not getattr(exception, 'status_code') == 404:
+        if not getattr(exception, 'status_code', None) == 404:
             self.log(format_exc())
 
         if issubclass(type(exception), SanicException):

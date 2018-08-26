@@ -4,7 +4,6 @@ from sanic.log import logger
 from sanic_openapi import doc
 
 from pubgate.api.v1.db.models import User, Inbox, Outbox
-from pubgate.api.v1.renders import ordered_collection
 from pubgate.api.v1.utils import make_label, random_object_id, auth_required
 from pubgate.api.v1.networking import deliver, verify_request
 
@@ -19,11 +18,8 @@ async def inbox_post(request, user_id):
     user = await User.find_one(dict(username=user_id))
     if not user:
         return response.json({"zrada": "no such user"}, status=404)
-
-    # profile = user_profile(request.app.config.back.base_url, user_id)
     activity = request.json.copy()
 
-    # TODO verify signature
     verified = await verify_request(
             request.method, request.path, request.headers, request.body
         )
@@ -66,7 +62,6 @@ async def inbox_post(request, user_id):
         await Inbox.insert_one({
                 "_id": activity["id"],
                 "users": [user_id],
-                # "actor_id": activity["acr"]
                 "activity": activity,
                 "label": make_label(activity),
                 "meta": {"undo": False, "deleted": False},
@@ -109,15 +104,5 @@ async def inbox_list(request, user_id):
     if not user:
         return response.json({"zrada": "no such user"}, status=404)
 
-    # TODO pagination
-    data = await Inbox.find(filter={
-        "meta.deleted": False,
-        "users": {"$in": [user_id]}},
-        sort="activity.published desc"
-    )
-
-    inbox_url = f"{request.app.v1_path}/inbox/{user_id}"
-    cleaned = [item["activity"] for item in data.objects]
-    resp = ordered_collection(inbox_url, cleaned)
-
-    return response.json(resp, headers={'Content-Type': 'application/jrd+json; charset=utf-8'})
+    resp = await user.inbox_paged(request)
+    return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})

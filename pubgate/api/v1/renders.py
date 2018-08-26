@@ -13,14 +13,14 @@ context = [
 
 
 def user_profile(v1_path, user_id):
-    id = f"{v1_path}/user/{user_id}"
+    actor_id = f"{v1_path}/user/{user_id}"
 
     return {
         "@context": context,
         "id": id,
         "type": "Person",
-        "following": f"{id}/following",
-        "followers": f"{id}/followers",
+        "following": f"{actor_id}/following",
+        "followers": f"{actor_id}/followers",
         "inbox": f"{v1_path}/inbox/{user_id}",
         "outbox": f"{v1_path}/outbox/{user_id}",
         "preferredUsername": f"{user_id}",
@@ -28,7 +28,7 @@ def user_profile(v1_path, user_id):
         "summary": "<p></p>",
         # "url": f"{base_url}/@{user_id}",
         "manuallyApprovesFollowers": False,
-        "publicKey": get_key(id).to_dict(),
+        "publicKey": get_key(actor_id).to_dict(),
         "endpoints": {
             # "sharedInbox": f"{base_url}/inbox"
             "oauthTokenEndpoint": f"{v1_path}/auth/token"
@@ -41,21 +41,31 @@ def user_profile(v1_path, user_id):
     }
 
 
-def ordered_collection(coll_id, data=None):
+def ordered_collection(coll_id, total, page, data):
     collection = {
-        "@context": context,
-        "id": coll_id,
-        "totalItems": len(data),
-        "type": "OrderedCollection"
+        "@context": context
     }
 
+    collection_page = {
+        "id": f"{coll_id}?page={page}",
+        "partOf": coll_id,
+        "totalItems": len(data),
+        "type": "OrderedCollectionPage",
+        "orderedItems": data,
+    }
     if data:
-        collection["first"] = {
+        collection["next"] = f"{coll_id}?page={page + 1}"
+
+    if total:
+        collection.update({
             "id": coll_id,
-            "partOf": coll_id,
-            "totalItems": len(data),
-            "type": "OrderedCollectionPage",
-            "orderedItems": data,
-        }
+            "totalItems": total,
+            "type": "OrderedCollection",
+        })
+        if data:
+            collection["first"] = collection_page
+
+    else:
+        collection.update(collection_page)
 
     return collection

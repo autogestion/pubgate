@@ -62,7 +62,7 @@ async def deliver_task(recipient, http_sig, activity):
                                 data=body,
                                 headers=headers) as resp:
             logger.info(f"Post to inbox {resp.real_url}, status: {resp.status}, {resp.reason}")
-            print(resp.request_info.headers)
+            # print(resp.request_info.headers)
             print("\n")
 
 

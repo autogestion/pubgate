@@ -11,7 +11,7 @@ instance = Blueprint('instance')
 
 # @well_known.middleware('response')
 # async def update_headers(request, response):
-#     response.headers["Content-Type"] = "application/jrd+json; charset=utf-8"
+#     response.headers["Content-Type"] = "application/activity+json; charset=utf-8"
 
 
 @well_known.route('/webfinger', methods=['GET'])
@@ -57,7 +57,7 @@ async def webfinger(request):
             # }
         ]
     }
-    return response.json(resp, headers={'Content-Type': 'application/jrd+json; charset=utf-8'})
+    return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
 @well_known.route('/nodeinfo', methods=['GET'])
@@ -70,8 +70,8 @@ async def nodeinfo(request):
 @doc.summary("Instance details")
 async def instance_get(request):
 
-    users = await User.find()
-    statuses = await Outbox.find(filter={
+    users = await User.count()
+    statuses = await Outbox.count(filter={
                                     "meta.deleted": False,
                                     "activity.type": "Create"
                                 })
@@ -85,8 +85,8 @@ async def instance_get(request):
         #     "streaming_api": "wss://mastodon.social"
         # },
         "stats": {
-            "user_count": len(users.objects),
-            "status_count": len(statuses.objects),
+            "user_count": users,
+            "status_count": statuses,
             # "domain_count": 5628
         },
         "thumbnail": LOGO,
@@ -95,4 +95,4 @@ async def instance_get(request):
         ]
     }
 
-    return response.json(resp, headers={'Content-Type': 'application/jrd+json; charset=utf-8'})
+    return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
