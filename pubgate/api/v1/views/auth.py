@@ -28,7 +28,9 @@ async def user_create(request):
         if is_uniq in (True, None):
             await User.insert_one(dict(username=username,
                                        password=generate_password_hash(password),
-                                       email=request.json.get("email")))
+                                       email=request.json.get("email"),
+                                       actor_type=request.json.get("actor_type", "Person"),
+                                       details=request.json.get("details")))
             return response.json({'peremoga': 'yep'}, status=201)
         else:
             return response.json({'zrada': 'username n/a'})

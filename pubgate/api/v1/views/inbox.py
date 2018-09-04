@@ -93,7 +93,7 @@ async def inbox_post(request, user_id):
         # post_to_remote_inbox
         asyncio.ensure_future(deliver(deliverance, [activity["actor"]]))
 
-    return response.json({'peremoga': 'yep'})
+    return response.json({'peremoga': 'yep'}, status=202)
 
 
 @inbox_v1.route('/<user_id>', methods=['GET'])

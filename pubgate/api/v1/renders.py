@@ -12,13 +12,13 @@ context = [
     ]
 
 
-def user_profile(v1_path, user_id):
+def user_profile(v1_path, user_id, actor_type):
     actor_id = f"{v1_path}/user/{user_id}"
 
     return {
         "@context": context,
         "id": id,
-        "type": "Person",
+        "type": actor_type,
         "following": f"{actor_id}/following",
         "followers": f"{actor_id}/followers",
         "inbox": f"{v1_path}/inbox/{user_id}",

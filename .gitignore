@@ -110,4 +110,4 @@ venv.bak/
 
 # pubgate
 /config/conf.cfg
-/config/key*
+/storage/*

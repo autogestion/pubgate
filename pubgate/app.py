@@ -26,7 +26,7 @@ def create_app(config_path):
     inbox_v1.url_prefix = f"{app.config.API_V1_PREFIX}/inbox"
     outbox_v1.url_prefix = f"{app.config.API_V1_PREFIX}/outbox"
     app.blueprint(auth_v1)
-    app.blueprint(instance)
+    # app.blueprint(instance)
     app.blueprint(well_known)
     app.blueprint(user_v1)
     app.blueprint(inbox_v1)
@@ -34,9 +34,21 @@ def create_app(config_path):
 
     # app.add_task(register_client(app))
     app.add_task(register_admin(app))
+    app.add_task(register_extensions(app))
 
     return app
 
 
 async def register_client(app):
     app.client_session = aiohttp.ClientSession()
+
+
+async def register_extensions(app):
+    extensions = app.config.EXTENSIONS
+    for extension in extensions:
+        # try:
+            ext_bps =  getattr(__import__(extension), 'pg_blueprints')
+            for bp in ext_bps:
+                app.blueprint(bp)
+        # except Exception
+
