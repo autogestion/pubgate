@@ -9,7 +9,9 @@ context = [
         "https://w3id.org/security/v1",
         {
             "Hashtag": "as:Hashtag",
-            "sensitive": "as:sensitive"
+            "sensitive": "as:sensitive",
+            "toot": "http://joinmastodon.org/ns#",
+            "featured": "toot:featured"
         }
     ]
 
