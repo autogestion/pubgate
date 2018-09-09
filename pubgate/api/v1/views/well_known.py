@@ -29,7 +29,7 @@ async def webfinger(request):
     if not user:
         return response.json({"zrada": "no such user"}, status=404)
 
-    return response.json(Actor(user).webfinger, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
+    return response.json(Actor(user).webfinger, headers={'Content-Type': 'application/jrd+json; charset=utf-8'})
 
 
 @well_known.route('/nodeinfo', methods=['GET'])
