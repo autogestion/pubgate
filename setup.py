@@ -1,5 +1,6 @@
+import os, re
 from setuptools import setup, find_packages
-from rssbot import __version__
+
 try: # for pip >= 10
     from pip._internal.req import parse_requirements
     from pip._internal.download import PipSession
@@ -9,13 +10,22 @@ except ImportError: # for pip <= 9.0.3
 
 requirements = parse_requirements("requirements.txt", session=PipSession())
 
+
+def get_version(package):
+    """
+    Return package version as listed in `__version__` in `init.py`.
+    """
+    init_py = open(os.path.join(package, '__init__.py')).read()
+    return re.search("__version__ = ['\"]([^'\"]+)['\"]", init_py).group(1)
+
+
 setup(
     name="pubgate",
     description="Lightweight ActivityPub federator",
     author="autogestion",
     author_email="",
     url="https://github.com/autogestion/pubgate",
-    version=__version__,
+    version=get_version("pubgate"),
     packages=find_packages(),
     install_requires=[str(x.req) for x in requirements],
     license="BSD 3-Clause",

@@ -18,8 +18,8 @@ Compatible (tested) with Mastodon, Pleroma and microblog.pub
  - /inbox/          (create, list)
  - /outbox/         (create, list, item, activity, remote post)
  
- 
-#### Additional 
+
+#### Additional
  - /auth            (create user, get token)
  - /swagger         (api docs)
 
@@ -34,15 +34,15 @@ or as [swagger docs example](http://pubgate.autogestion.org/swagger)
 #### Shell
 ```
 git clone https://github.com/autogestion/pubgate.git
-```
-##### Install only federator
-```
 pip install -r requirements/base.txt
+```
+##### Only federator
+```
 cp -r config/base_sample_conf.cfg config/conf.cfg
 ```
-##### Install with extensions (marked * in list )
+##### To run with extensions (marked * in list )
 ```
-pip install -r requirements/with_extensions.txt
+pip install -r requirements/extensions.txt
 cp -r config/extensions_sample_conf.cfg config/conf.cfg
 ```
 ##### Run
