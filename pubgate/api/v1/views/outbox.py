@@ -1,15 +1,11 @@
 import asyncio
 
-from asgiref.sync import sync_to_async
 from sanic import response, Blueprint
 from sanic_openapi import doc
 
-from little_boxes.activitypub import parse_activity, _to_list
-from little_boxes.errors import UnexpectedActivityTypeError, BadActivityError
-
 from pubgate.api.v1.db.models import User, Outbox
 from pubgate.api.v1.renders import context, Activity
-from pubgate.api.v1.utils import make_label
+from pubgate.api.v1.utils import make_label, _to_list
 from pubgate.api.v1.networking import deliver
 from pubgate.api.v1.views.auth import auth_required
 
@@ -27,11 +23,6 @@ async def outbox_post(request, user_id):
         return response.json({"zrada": "no such user"}, status=404)
 
     # TODO validate activity
-    # Disabled while issue  https://github.com/tsileo/little-boxes/issues/8 will be fixed
-    # try:
-    #     activity = await sync_to_async(parse_activity)(request.json)
-    # except (UnexpectedActivityTypeError, BadActivityError) as e:
-    #     return response.json({"zrada": e})
     activity = Activity(request.app.v1_path, user_id, request.json)
     await Outbox.insert_one({
             "_id": activity.obj_id,

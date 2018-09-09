@@ -1,5 +1,8 @@
 import binascii
 import os
+from typing import Any
+from typing import List
+from typing import Union
 
 
 def make_label(activity):
@@ -12,3 +15,11 @@ def make_label(activity):
 def random_object_id() -> str:
     """Generates a random object ID."""
     return binascii.hexlify(os.urandom(8)).decode("utf-8")
+
+
+def _to_list(data: Union[List[Any], Any]) -> List[Any]:
+    """Helper to convert fields that can be either an object or a list of objects to a
+    list of object."""
+    if isinstance(data, list):
+        return data
+    return [data]

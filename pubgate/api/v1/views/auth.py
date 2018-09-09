@@ -45,7 +45,11 @@ async def user_create(request):
                                        password=generate_password_hash(password),
                                        email=request.json.get("email"),
                                        actor_type=request.json.get("actor_type", "Person"),
-                                       details=request.json.get("details")))
+                                       details=request.json.get("details"),
+                                       renders={"domain": request.app.config.DOMAIN,
+                                                "v1_path": request.app.v1_path}
+                                       )
+                                  )
             return response.json({'peremoga': 'yep'}, status=201)
         else:
             return response.json({'zrada': 'username n/a'})

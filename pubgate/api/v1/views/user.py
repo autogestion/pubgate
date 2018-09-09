@@ -16,7 +16,7 @@ async def user_get(request, user_id):
     if not user:
         return response.json({"zrada": "no such user"}, status=404)
 
-    return response.json(Actor(request.app.v1_path, user_id, user.actor_type).render,
+    return response.json(Actor(user).render,
                          headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 

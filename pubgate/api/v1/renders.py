@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pubgate.api.v1.key import get_key
+from pubgate.api.v1.crypto.key import get_key
 from pubgate.api.v1.utils import random_object_id
 from pubgate import LOGO
 
@@ -36,32 +36,77 @@ class Activity:
 
 
 class Actor:
-    def __init__(self, v1_path, username, actor_type):
-        actor_id = f"{v1_path}/user/{username}"
+    def __init__(self, user):
 
-        self.render = {
+        self.domain = user.renders["domain"]
+        self.v1_path = user.renders["v1_path"]
+        self.username = user.username
+        self.actor_id = f"{user.v1_path}/user/{user.username}"
+        self.actor_type = user.actor_type
+
+    @property
+    def render(self):
+
+        return {
             "@context": context,
-            "id": actor_id,
-            "type": actor_type,
-            "following": f"{actor_id}/following",
-            "followers": f"{actor_id}/followers",
-            "inbox": f"{v1_path}/inbox/{username}",
-            "outbox": f"{v1_path}/outbox/{username}",
-            "preferredUsername": f"{username}",
+            "id": self.actor_id,
+            "type": self.actor_type,
+            "following": f"{self.actor_id}/following",
+            "followers": f"{self.actor_id}/followers",
+            "inbox": f"{self.v1_path}/inbox/{self.username}",
+            "outbox": f"{self.v1_path}/outbox/{self.username}",
+            "preferredUsername": f"{self.username}",
             "name": "",
             "summary": "<p></p>",
             # "url": f"{base_url}/@{user_id}",
             "manuallyApprovesFollowers": False,
-            "publicKey": get_key(actor_id).to_dict(),
+            "publicKey": get_key(self.username).to_dict(),
             "endpoints": {
                 # "sharedInbox": f"{base_url}/inbox"
-                "oauthTokenEndpoint": f"{v1_path}/auth/token"
+                "oauthTokenEndpoint": f"{self.v1_path}/auth/token"
             },
             "icon": {
                 "type": "Image",
                 "mediaType": "image/png",
                 "url": LOGO
             }
+        }
+
+    @property
+    def webfinger(self):
+
+        return {
+            "subject": f"acct:{self.username}@{self.domain}",
+            "aliases": [
+                # "{method}://mastodon.social/@user",
+                self.actor_id
+            ],
+            "links": [
+                # {
+                #     "rel": "http://webfinger.net/rel/profile-page",
+                #     "type": "text/html",
+                #     "href": "{method}://mastodon.social/@user"
+                # },
+
+                {
+                    "rel": "self",
+                    "type": "application/activity+json",
+                    "href": self.actor_id
+                },
+                {
+                    "rel": "magic-public-key",
+                    "href": get_key(self.username).to_magic_key()
+                },
+                # {
+                #     "rel": "salmon",
+                #     "href": "{method}://mastodon.social/api/salmon/285169"
+                # },
+
+                # {
+                #     "rel": "http://ostatus.org/schema/1.0/subscribe",
+                #     "template": "{method}://mastodon.social/authorize_follow?acct={uri}"
+                # }
+            ]
         }
 
 
@@ -93,6 +138,4 @@ def ordered_collection(coll_id, total, page, data):
         collection.update(collection_page)
 
     return collection
-
-
 

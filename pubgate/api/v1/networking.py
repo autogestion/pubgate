@@ -4,14 +4,14 @@ import json
 
 from sanic.log import logger
 from sanic import exceptions
-from little_boxes.linked_data_sig import generate_signature
-from little_boxes.httpsig import _parse_sig_header, _body_digest, _build_signed_string, _verify_h
-from little_boxes.key import Key
 
 from pubgate import __version__
 from pubgate.api.v1.utils import make_label
 from pubgate.api.v1.renders import context
-from pubgate.api.v1.key import get_key, HTTPSigAuth
+from pubgate.api.v1.crypto.key import get_key
+from pubgate.api.v1.crypto.httpsig import HTTPSigAuth
+from pubgate.api.v1.crypto.httpsig import _parse_sig_header, _body_digest, _build_signed_string, _verify_h
+from pubgate.api.v1.crypto.linked_data_sig import generate_signature
 
 
 async def verify_request(method: str, path: str, headers, body: str) -> bool:
@@ -26,7 +26,7 @@ async def verify_request(method: str, path: str, headers, body: str) -> bool:
 
     actor = await fetch(hsig["keyId"])
     if not actor: return False
-    k = Key(actor["id"])
+    k = get_key(actor["id"])
     k.load_pub(actor["publicKey"]["publicKeyPem"])
     if k.key_id() != hsig["keyId"]:
         return False
@@ -62,12 +62,12 @@ async def deliver_task(recipient, http_sig, activity):
                         f" status: {resp.status}, {resp.reason}")
             profile = await resp.json()
 
-    from pprint import pprint
-    pprint(activity)
     body = json.dumps(activity)
     url = profile["inbox"]
     headers = http_sig.sign(url, body)
-    pprint(headers)
+    # from pprint import pprint
+    # pprint(activity)
+    # pprint(headers)
 
     async with aiohttp.ClientSession() as session:
         async with session.post(url,
@@ -88,7 +88,6 @@ async def deliver(activity, recipients):
                "user-agent": f"PubGate v:{__version__}"}
 
     http_sig = HTTPSigAuth(key, headers)
-    # print(activity)
 
     for recipient in recipients:
         try:

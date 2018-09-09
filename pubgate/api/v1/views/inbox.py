@@ -53,12 +53,6 @@ async def inbox_post(request, user_id):
 
     else:
         # TODO validate actor and activity
-        # Disabled while issue  https://github.com/tsileo/little-boxes/issues/8 will be fixed
-        # try:
-        #     activity = await sync_to_async(parse_activity)(request.json)
-        # except (UnexpectedActivityTypeError, BadActivityError) as e:
-        #     return response.json({"zrada": e})
-
         await Inbox.insert_one({
                 "_id": activity["id"],
                 "users": [user_id],
