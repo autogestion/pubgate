@@ -26,10 +26,10 @@ class Activity:
 
         activity["id"] = f"{outbox_url}/{self.obj_id}"
         activity["actor"] = user_id
-        activity["published"] = published
+        # activity["published"] = published
         if isinstance(activity["object"], dict):
             activity["object"]["id"] = f"{outbox_url}/{self.obj_id}/activity"
-            activity["object"]["published"] = published
+            # activity["object"]["published"] = published
             activity["object"]["attributedTo"] = user_id
 
         self.render = activity
