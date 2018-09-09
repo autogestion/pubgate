@@ -62,6 +62,8 @@ async def deliver_task(recipient, http_sig, activity):
                         f" status: {resp.status}, {resp.reason}")
             profile = await resp.json()
 
+    from pprint import pprint
+    pprint(activity)
     body = json.dumps(activity)
     url = profile["inbox"]
     headers = http_sig.sign(url, body)
