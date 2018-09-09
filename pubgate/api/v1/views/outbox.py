@@ -41,13 +41,13 @@ async def outbox_post(request, user_id):
             "meta": {"undo": False, "deleted": False},
          })
 
-    if activity["type"] == "Follow":
-        recipients = [activity["object"]]
+    if activity.render["type"] == "Follow":
+        recipients = [activity.render["object"]]
     else:
         recipients = await user.followers_get()
         for field in ["to", "cc", "bto", "bcc"]:
-            if field in activity:
-                recipients.extend(_to_list(activity[field]))
+            if field in activity.render:
+                recipients.extend(_to_list(activity.render[field]))
         recipients = list(set(recipients))
 
     # post_to_remote_inbox
