@@ -1,11 +1,26 @@
-from sanic import response, Blueprint
+from functools import wraps
+
+from sanic import response, Blueprint, exceptions
 from sanic_openapi import doc
 from simple_bcrypt import generate_password_hash, check_password_hash
 
 from pubgate.api.v1.db.models import User
 from pubgate.api.v1.utils import random_object_id
 
+
 auth_v1 = Blueprint('auth_v1')
+
+
+def auth_required(handler=None):
+    @wraps(handler)
+    async def wrapper(request, *args, **kwargs):
+        user = await User.find_one(dict(username=kwargs["user_id"],
+                                        token=request.token))
+        if not user:
+            raise exceptions.Unauthorized("Auth required.")
+
+        return await handler(request, *args, **kwargs)
+    return wrapper
 
 
 @auth_v1.route('/', methods=['POST'])

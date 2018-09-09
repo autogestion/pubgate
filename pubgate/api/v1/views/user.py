@@ -3,7 +3,7 @@ from sanic import response, Blueprint
 from sanic_openapi import doc
 
 from pubgate.api.v1.db.models import User
-from pubgate.api.v1.renders import user_profile
+from pubgate.api.v1.renders import Actor
 
 
 user_v1 = Blueprint('user_v1')
@@ -16,7 +16,7 @@ async def user_get(request, user_id):
     if not user:
         return response.json({"zrada": "no such user"}, status=404)
 
-    return response.json(user_profile(request.app.v1_path, user_id, user.actor_type),
+    return response.json(Actor(request.app.v1_path, user_id, user.actor_type).render,
                          headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 

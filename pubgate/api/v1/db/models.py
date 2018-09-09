@@ -1,4 +1,3 @@
-
 from sanic_motor import BaseModel
 # import flask_admin
 # from flask_admin.contrib.pymongo.view import ModelView

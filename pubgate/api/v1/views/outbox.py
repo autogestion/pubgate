@@ -1,4 +1,3 @@
-from datetime import datetime
 import asyncio
 
 from asgiref.sync import sync_to_async
@@ -9,9 +8,10 @@ from little_boxes.activitypub import parse_activity, _to_list
 from little_boxes.errors import UnexpectedActivityTypeError, BadActivityError
 
 from pubgate.api.v1.db.models import User, Outbox
-from pubgate.api.v1.renders import context
-from pubgate.api.v1.utils import make_label, random_object_id, auth_required
+from pubgate.api.v1.renders import context, Activity
+from pubgate.api.v1.utils import make_label
 from pubgate.api.v1.networking import deliver
+from pubgate.api.v1.views.auth import auth_required
 
 outbox_v1 = Blueprint('outbox_v1')
 
@@ -32,22 +32,12 @@ async def outbox_post(request, user_id):
     #     activity = await sync_to_async(parse_activity)(request.json)
     # except (UnexpectedActivityTypeError, BadActivityError) as e:
     #     return response.json({"zrada": e})
-    activity = request.json.copy()
-    obj_id = random_object_id()
-    now = datetime.now()
-
-    outbox_url = f"{request.app.v1_path}/outbox/{user_id}"
-    activity["id"] = f"{outbox_url}/{obj_id}"
-    activity["published"] = now.isoformat()
-    if isinstance(activity["object"], dict):
-        activity["object"]["id"] = f"{outbox_url}/{obj_id}/activity"
-        activity["object"]["published"] = now.isoformat()
-
+    activity = Activity(request.app.v1_path, user_id, request.json)
     await Outbox.insert_one({
-            "_id": obj_id,
+            "_id": activity.obj_id,
             "user_id": user_id,
-            "activity": activity,
-            "label": make_label(activity),
+            "activity": activity.render,
+            "label": make_label(activity.render),
             "meta": {"undo": False, "deleted": False},
          })
 
@@ -61,9 +51,9 @@ async def outbox_post(request, user_id):
         recipients = list(set(recipients))
 
     # post_to_remote_inbox
-    asyncio.ensure_future(deliver(activity, recipients))
+    asyncio.ensure_future(deliver(activity.render, recipients))
 
-    return response.json({'peremoga': 'yep', 'id': obj_id})
+    return response.json({'peremoga': 'yep'})
 
 
 @outbox_v1.route('/<user_id>', methods=['GET'])

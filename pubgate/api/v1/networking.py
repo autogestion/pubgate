@@ -37,10 +37,19 @@ async def verify_request(method: str, path: str, headers, body: str) -> bool:
 async def fetch(url):
     async with aiohttp.ClientSession() as session:
         async with session.get(url, headers={"accept": 'application/activity+json',
-                                              "user-agent": f"PubGate v:{__version__}"}
+                                             "user-agent": f"PubGate v:{__version__}"}
                                 ) as resp:
             logger.info(f"Fetch {url}, status: {resp.status}, {resp.reason}")
             return await resp.json()
+
+
+async def fetch_text(url):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers={"accept": 'application/activity+json',
+                                             "user-agent": f"PubGate v:{__version__}"}
+                                ) as resp:
+            logger.info(f"Fetch {url}, status: {resp.status}, {resp.reason}")
+            return await resp.text()
 
 
 async def deliver_task(recipient, http_sig, activity):
@@ -79,7 +88,7 @@ async def deliver(activity, recipients):
     # print(activity)
 
     for recipient in recipients:
-        # try:
+        try:
             await deliver_task(recipient, http_sig, activity)
-        # except Exception as e:
-        #     logger.error(e)
+        except Exception as e:
+            logger.error(e)

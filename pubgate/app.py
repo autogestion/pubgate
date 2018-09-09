@@ -32,9 +32,9 @@ def create_app(config_path):
     app.blueprint(inbox_v1)
     app.blueprint(outbox_v1)
 
-    # app.add_task(register_client(app))
+    app.add_task(register_client(app))
     app.add_task(register_admin(app))
-    app.add_task(register_extensions(app))
+    register_extensions(app)
 
     return app
 
@@ -43,12 +43,15 @@ async def register_client(app):
     app.client_session = aiohttp.ClientSession()
 
 
-async def register_extensions(app):
+def register_extensions(app):
     extensions = app.config.EXTENSIONS
     for extension in extensions:
-        # try:
-            ext_bps =  getattr(__import__(extension), 'pg_blueprints')
-            for bp in ext_bps:
-                app.blueprint(bp)
-        # except Exception
+        ext = __import__(extension)
 
+        ext_bps = getattr(ext, 'pg_blueprints')
+        for bp in ext_bps:
+            app.blueprint(bp)
+
+        ext_tasks = getattr(ext, 'pg_tasks')
+        for task in ext_tasks:
+            task(app)

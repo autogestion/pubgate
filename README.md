@@ -5,7 +5,7 @@ Implements both the client-to-server API and the federated server-to-server API.
 
 Compatible (tested) with Mastodon, Pleroma and microblog.pub
 
-Support extensions(collects blueprints/tasks):
+#####Support extensions(collects blueprints and listeners):
 
  - [pubgate-rssbot](https://github.com/autogestion/pubgate-rssbot):  federates rss-feeds*
 
@@ -38,7 +38,7 @@ git clone https://github.com/autogestion/pubgate.git
 ##### Install only federator
 ```
 pip install -r requirements/base.txt
-cp -r config/sample_conf.cfg config/conf.cfg
+cp -r config/base_sample_conf.cfg config/conf.cfg
 ```
 ##### Install with extensions (marked * in list )
 ```

@@ -356,6 +356,51 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "----extensions------",
+			"request": {
+				"url": "",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/auth   Create bot   (pubgate-rssbot required)",
+			"request": {
+				"url": "{{host}}/api/v1/auth",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"{{user}}\", \"password\":\"dev\", \"invite\": \"xyz\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "rssbot/user_id Disable bot  (pubgate-rssbot required)",
+			"request": {
+				"url": "{{host}}/rssbot/{{user}}",
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"feed\": \"https://www.reddit.com/r/Anarchy101/.rss\",   \n    \"enable\": false,                                       \n    \"tags\": [\"anarchy\", \"anarchy101\", \"reddit\"]            \n}        "
+				},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }
