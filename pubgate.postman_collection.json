@@ -43,7 +43,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"username\": \"{{user}}\", \"password\":\"dev\"}"
+					"raw": "{\"username\": \"{{user}}\", \"password\":\"pass\"}"
 				},
 				"description": ""
 			},
@@ -124,7 +124,21 @@
 			"response": []
 		},
 		{
-			"name": "/api/v1/instance",
+			"name": "/.well-known/nodeinfo",
+			"request": {
+				"url": "{{host}}/.well-known/nodeinfo",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"dev1\", \"password\":\"dev1\", \"email\": \"bu\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/instance  (disabled)",
 			"request": {
 				"url": "{{host}}/api/v1/instance",
 				"method": "GET",
@@ -171,7 +185,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"type\": \"Follow\",\n    \"actor\": \"{{host}}/api/v1/user/{{user}}\",\n    \"object\": \"https://acts-sh.pp.ua\",\n}"
+					"raw": "{\n    \"type\": \"Follow\",\n    \"object\": \"https://mastodon.social/users/autogestion\",\n}"
 				},
 				"description": ""
 			},
@@ -376,7 +390,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"username\": \"{{user}}\", \"password\":\"dev\", \"invite\": \"xyz\"}"
+					"raw": "{\n\t\"username\": \"{{user}}\",\n\t\"password\": \"pass\",\n\t\"actor_type\": \"Service\",\n\t\"email\": \"admin@mail.com\",\n\t\"invite\": \"xyz\",\n\t\"details\": {\n\t\t\"rssbot\": {\n\t\t\t\"feed\": \"http://feeds.feedburner.com/ArtLvivOnline\",\n\t\t\t\"enable\": true,\n\t\t\t\"tags\": [\"art\", \"lviv\", \"online\"],\n\t\t\t\"html\": true \n\t\t}\n\t}\n}"
 				},
 				"description": ""
 			},
@@ -396,7 +410,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"feed\": \"https://www.reddit.com/r/Anarchy101/.rss\",   \n    \"enable\": false,                                       \n    \"tags\": [\"anarchy\", \"anarchy101\", \"reddit\"]            \n}        "
+					"raw": "{\n    \"feed\": \"https://www.reddit.com/r/Anarchy101/.rss\",   \n    \"enable\": true,                                       \n    \"tags\": [\"anarchy\", \"anarchy101\", \"reddit\"],\n    \"html\": false \n}        "
 				},
 				"description": ""
 			},

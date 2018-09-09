@@ -41,7 +41,7 @@ class Actor:
         self.domain = user.renders["domain"]
         self.v1_path = user.renders["v1_path"]
         self.username = user.username
-        self.actor_id = f"{user.v1_path}/user/{user.username}"
+        self.actor_id = f"{self.v1_path}/user/{user.username}"
         self.actor_type = user.actor_type
 
     @property
