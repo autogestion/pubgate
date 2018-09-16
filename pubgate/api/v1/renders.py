@@ -62,7 +62,7 @@ class Actor:
             "summary": "<p></p>",
             # "url": f"{base_url}/@{user_id}",
             "manuallyApprovesFollowers": False,
-            "publicKey": get_key(self.username).to_dict(),
+            "publicKey": get_key(self.actor_id).to_dict(),
             "endpoints": {
                 # "sharedInbox": f"{base_url}/inbox"
                 "oauthTokenEndpoint": f"{self.v1_path}/auth/token"

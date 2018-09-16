@@ -15,7 +15,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"username\": \"{{user}}\", \"password\":\"dev\", \"email\": \"bu\"}"
+					"raw": "{\n\t\"username\": \"{{user}}\", \n\t\"password\":\"{{pass}}\", \n\t\"email\": \"bu\"\n}"
 				},
 				"description": ""
 			},
@@ -29,7 +29,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"username\": \"{{user}}\", \"password\":\"dev\", \"invite\": \"xyz\"}"
+					"raw": "{\n\t\"username\": \"{{user}}\", \n\t\"password\":\"{{pass}}\", \n\t\"invite\": \"{{invite}}\"\n}"
 				},
 				"description": ""
 			},
@@ -43,7 +43,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"username\": \"{{user}}\", \"password\":\"pass\"}"
+					"raw": "{\n\t\"username\": \"{{user}}\",\n\t\"password\":\"{{pass}}\"\n}"
 				},
 				"description": ""
 			},
@@ -165,7 +165,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"type\": \"Create\",\n    \"actor\": \"{{host}}/api/v1/user/{{user}}\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"inReplyTo\": \"\",\n        \"attributedTo\": \"{{host}}/api/v1/user/{{user}}\",\n        \"to\": [\n            \"https://www.w3.org/ns/activitystreams#Public\"\n        ],\n        \"sensitive\": false,\n        \"content\": \"Ще Звитяга! Слава Ісу! Ще Карамба хуямба\",\n        \"contentMap\": {\n            \"uk\": \"Звитягаll!\"\n        },\n        \"attachment\": [],\n        \"tag\": []\n    }\n}        "
+					"raw": "{\n    \"type\": \"Create\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"inReplyTo\": \"\",\n        \"attributedTo\": \"{{host}}/api/v1/user/{{user}}\",\n        \"to\": [\n            \"https://www.w3.org/ns/activitystreams#Public\"\n        ],\n        \"sensitive\": false,\n        \"content\": \"Ще Звитяга! Слава Ісу! Ще Карамба хуямба\",\n        \"contentMap\": {\n            \"uk\": \"Звитягаll!\"\n        },\n        \"attachment\": [],\n        \"tag\": []\n    }\n}        "
 				},
 				"description": ""
 			},
@@ -390,7 +390,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"username\": \"{{user}}\",\n\t\"password\": \"pass\",\n\t\"actor_type\": \"Service\",\n\t\"email\": \"admin@mail.com\",\n\t\"invite\": \"xyz\",\n\t\"details\": {\n\t\t\"rssbot\": {\n\t\t\t\"feed\": \"http://feeds.feedburner.com/ArtLvivOnline\",\n\t\t\t\"enable\": true,\n\t\t\t\"tags\": [\"art\", \"lviv\", \"online\"],\n\t\t\t\"html\": true \n\t\t}\n\t}\n}"
+					"raw": "{\n\t\"username\": \"{{user}}\",\n\t\"password\": \"{{pass}}\",\n\t\"actor_type\": \"Service\",\n\t\"email\": \"\",\n\t\"invite\": \"{{invite}}\",\n\t\"details\": {\n\t\t\"rssbot\": {\n\t\t\t\"feed\": \"http://feeds.feedburner.com/ArtLvivOnline\",\n\t\t\t\"enable\": true,\n\t\t\t\"tags\": [\"art\", \"lviv\", \"online\"],\n\t\t\t\"html\": true \n\t\t}\n\t}\n}"
 				},
 				"description": ""
 			},
@@ -410,7 +410,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"feed\": \"https://www.reddit.com/r/Anarchy101/.rss\",   \n    \"enable\": true,                                       \n    \"tags\": [\"anarchy\", \"anarchy101\", \"reddit\"],\n    \"html\": false \n}        "
+					"raw": "{\n\t\"feed\": \"http://feeds.feedburner.com/ArtLvivOnline\",\n\t\"enable\": false,\n\t\"tags\": [\"art\", \"lviv\", \"online\"],\n\t\"html\": true \n}"
 				},
 				"description": ""
 			},
