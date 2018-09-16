@@ -1,0 +1,3 @@
+
+#Extensions
+git+https://github.com/autogestion/pubgate-rssbot.git

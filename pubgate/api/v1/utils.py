@@ -1,10 +1,8 @@
 import binascii
 import os
-from functools import wraps
-
-from sanic import exceptions
-
-from pubgate.api.v1.db.models import User
+from typing import Any
+from typing import List
+from typing import Union
 
 
 def make_label(activity):
@@ -19,13 +17,9 @@ def random_object_id() -> str:
     return binascii.hexlify(os.urandom(8)).decode("utf-8")
 
 
-def auth_required(handler=None):
-    @wraps(handler)
-    async def wrapper(request, *args, **kwargs):
-        user = await User.find_one(dict(username=kwargs["user_id"],
-                                        token=request.token))
-        if not user:
-            raise exceptions.Unauthorized("Auth required.")
-
-        return await handler(request, *args, **kwargs)
-    return wrapper
+def _to_list(data: Union[List[Any], Any]) -> List[Any]:
+    """Helper to convert fields that can be either an object or a list of objects to a
+    list of object."""
+    if isinstance(data, list):
+        return data
+    return [data]

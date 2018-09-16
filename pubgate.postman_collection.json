@@ -15,7 +15,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"username\": \"{{user}}\", \"password\":\"dev\", \"email\": \"bu\"}"
+					"raw": "{\n\t\"username\": \"{{user}}\", \n\t\"password\":\"{{pass}}\", \n\t\"email\": \"bu\"\n}"
 				},
 				"description": ""
 			},
@@ -29,7 +29,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"username\": \"{{user}}\", \"password\":\"dev\", \"invite\": \"xyz\"}"
+					"raw": "{\n\t\"username\": \"{{user}}\", \n\t\"password\":\"{{pass}}\", \n\t\"invite\": \"{{invite}}\"\n}"
 				},
 				"description": ""
 			},
@@ -43,7 +43,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"username\": \"{{user}}\", \"password\":\"dev\"}"
+					"raw": "{\n\t\"username\": \"{{user}}\",\n\t\"password\":\"{{pass}}\"\n}"
 				},
 				"description": ""
 			},
@@ -124,7 +124,21 @@
 			"response": []
 		},
 		{
-			"name": "/api/v1/instance",
+			"name": "/.well-known/nodeinfo",
+			"request": {
+				"url": "{{host}}/.well-known/nodeinfo",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"dev1\", \"password\":\"dev1\", \"email\": \"bu\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/instance  (disabled)",
 			"request": {
 				"url": "{{host}}/api/v1/instance",
 				"method": "GET",
@@ -151,7 +165,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"type\": \"Create\",\n    \"actor\": \"{{host}}/api/v1/user/{{user}}\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"inReplyTo\": \"\",\n        \"attributedTo\": \"{{host}}/api/v1/user/{{user}}\",\n        \"to\": [\n            \"https://www.w3.org/ns/activitystreams#Public\"\n        ],\n        \"sensitive\": false,\n        \"content\": \"Ще Звитяга! Слава Ісу! Ще Карамба хуямба\",\n        \"contentMap\": {\n            \"uk\": \"Звитягаll!\"\n        },\n        \"attachment\": [],\n        \"tag\": []\n    }\n}        "
+					"raw": "{\n    \"type\": \"Create\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"inReplyTo\": \"\",\n        \"attributedTo\": \"{{host}}/api/v1/user/{{user}}\",\n        \"to\": [\n            \"https://www.w3.org/ns/activitystreams#Public\"\n        ],\n        \"sensitive\": false,\n        \"content\": \"Ще Звитяга! Слава Ісу! Ще Карамба хуямба\",\n        \"contentMap\": {\n            \"uk\": \"Звитягаll!\"\n        },\n        \"attachment\": [],\n        \"tag\": []\n    }\n}        "
 				},
 				"description": ""
 			},
@@ -171,7 +185,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"type\": \"Follow\",\n    \"actor\": \"{{host}}/api/v1/user/{{user}}\",\n    \"object\": \"https://acts-sh.pp.ua\",\n}"
+					"raw": "{\n    \"type\": \"Follow\",\n    \"object\": \"https://mastodon.social/users/autogestion\",\n}"
 				},
 				"description": ""
 			},
@@ -353,6 +367,51 @@
 					}
 				],
 				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "----extensions------",
+			"request": {
+				"url": "",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/auth   Create bot   (pubgate-rssbot required)",
+			"request": {
+				"url": "{{host}}/api/v1/auth",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"{{user}}\",\n\t\"password\": \"{{pass}}\",\n\t\"actor_type\": \"Service\",\n\t\"email\": \"\",\n\t\"invite\": \"{{invite}}\",\n\t\"details\": {\n\t\t\"rssbot\": {\n\t\t\t\"feed\": \"http://feeds.feedburner.com/ArtLvivOnline\",\n\t\t\t\"enable\": true,\n\t\t\t\"tags\": [\"art\", \"lviv\", \"online\"],\n\t\t\t\"html\": true \n\t\t}\n\t}\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "rssbot/user_id Disable bot  (pubgate-rssbot required)",
+			"request": {
+				"url": "{{host}}/rssbot/{{user}}",
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"feed\": \"http://feeds.feedburner.com/ArtLvivOnline\",\n\t\"enable\": false,\n\t\"tags\": [\"art\", \"lviv\", \"online\"],\n\t\"html\": true \n}"
+				},
 				"description": ""
 			},
 			"response": []

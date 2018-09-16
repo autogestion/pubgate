@@ -1,4 +1,3 @@
-
 from sanic_motor import BaseModel
 # import flask_admin
 # from flask_admin.contrib.pymongo.view import ModelView
@@ -47,7 +46,7 @@ class User(BaseModel):
             "activity.object.type": "Follow"
         }
         data = await Outbox.find(filter=filters)
-        return [x["activity"]["object"]["actor"] for x in data.objects]
+        return actor_clean(data.objects)
 
     async def followers_paged(self, request):
         filters = {

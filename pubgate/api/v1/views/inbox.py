@@ -4,9 +4,9 @@ from sanic.log import logger
 from sanic_openapi import doc
 
 from pubgate.api.v1.db.models import User, Inbox, Outbox
-from pubgate.api.v1.utils import make_label, random_object_id, auth_required
+from pubgate.api.v1.utils import make_label, random_object_id
 from pubgate.api.v1.networking import deliver, verify_request
-
+from pubgate.api.v1.views.auth import auth_required
 
 inbox_v1 = Blueprint('inbox_v1')
 
@@ -53,12 +53,6 @@ async def inbox_post(request, user_id):
 
     else:
         # TODO validate actor and activity
-        # Disabled while issue  https://github.com/tsileo/little-boxes/issues/8 will be fixed
-        # try:
-        #     activity = await sync_to_async(parse_activity)(request.json)
-        # except (UnexpectedActivityTypeError, BadActivityError) as e:
-        #     return response.json({"zrada": e})
-
         await Inbox.insert_one({
                 "_id": activity["id"],
                 "users": [user_id],
@@ -93,7 +87,7 @@ async def inbox_post(request, user_id):
         # post_to_remote_inbox
         asyncio.ensure_future(deliver(deliverance, [activity["actor"]]))
 
-    return response.json({'peremoga': 'yep'})
+    return response.json({'peremoga': 'yep'}, status=202)
 
 
 @inbox_v1.route('/<user_id>', methods=['GET'])

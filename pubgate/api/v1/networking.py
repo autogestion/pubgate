@@ -4,14 +4,14 @@ import json
 
 from sanic.log import logger
 from sanic import exceptions
-from little_boxes.linked_data_sig import generate_signature
-from little_boxes.httpsig import _parse_sig_header, _body_digest, _build_signed_string, _verify_h
-from little_boxes.key import Key
 
 from pubgate import __version__
 from pubgate.api.v1.utils import make_label
 from pubgate.api.v1.renders import context
-from pubgate.api.v1.key import get_key, HTTPSigAuth
+from pubgate.api.v1.crypto.key import get_key
+from pubgate.api.v1.crypto.httpsig import HTTPSigAuth
+from pubgate.api.v1.crypto.httpsig import _parse_sig_header, _body_digest, _build_signed_string, _verify_h
+from pubgate.api.v1.crypto.linked_data_sig import generate_signature
 
 
 async def verify_request(method: str, path: str, headers, body: str) -> bool:
@@ -26,7 +26,7 @@ async def verify_request(method: str, path: str, headers, body: str) -> bool:
 
     actor = await fetch(hsig["keyId"])
     if not actor: return False
-    k = Key(actor["id"])
+    k = get_key(actor["id"])
     k.load_pub(actor["publicKey"]["publicKeyPem"])
     if k.key_id() != hsig["keyId"]:
         return False
@@ -37,10 +37,19 @@ async def verify_request(method: str, path: str, headers, body: str) -> bool:
 async def fetch(url):
     async with aiohttp.ClientSession() as session:
         async with session.get(url, headers={"accept": 'application/activity+json',
-                                              "user-agent": f"PubGate v:{__version__}"}
+                                             "user-agent": f"PubGate v:{__version__}"}
                                 ) as resp:
             logger.info(f"Fetch {url}, status: {resp.status}, {resp.reason}")
             return await resp.json()
+
+
+async def fetch_text(url):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers={"accept": 'application/activity+json',
+                                             "user-agent": f"PubGate v:{__version__}"}
+                                ) as resp:
+            logger.info(f"Fetch {url}, status: {resp.status}, {resp.reason}")
+            return await resp.text()
 
 
 async def deliver_task(recipient, http_sig, activity):
@@ -56,6 +65,9 @@ async def deliver_task(recipient, http_sig, activity):
     body = json.dumps(activity)
     url = profile["inbox"]
     headers = http_sig.sign(url, body)
+    # from pprint import pprint
+    # pprint(activity)
+    # pprint(headers)
 
     async with aiohttp.ClientSession() as session:
         async with session.post(url,
@@ -76,10 +88,9 @@ async def deliver(activity, recipients):
                "user-agent": f"PubGate v:{__version__}"}
 
     http_sig = HTTPSigAuth(key, headers)
-    # print(activity)
 
     for recipient in recipients:
-        # try:
+        try:
             await deliver_task(recipient, http_sig, activity)
-        # except Exception as e:
-        #     logger.error(e)
+        except Exception as e:
+            logger.error(e)

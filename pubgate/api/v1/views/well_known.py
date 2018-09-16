@@ -3,6 +3,7 @@ from sanic import response, Blueprint
 from sanic_openapi import doc
 
 from pubgate.api.v1.db.models import User, Outbox
+from pubgate.api.v1.renders import Actor
 from pubgate import __version__, LOGO
 
 
@@ -28,42 +29,36 @@ async def webfinger(request):
     if not user:
         return response.json({"zrada": "no such user"}, status=404)
 
-    resp = {
-        "subject": f"acct:{user_id}@{domain}",
-        "aliases": [
-            # "{method}://mastodon.social/@user",
-            f"{request.app.base_url}/api/v1/user/{user_id}"
-        ],
-        "links": [
-            # {
-            #     "rel": "http://webfinger.net/rel/profile-page",
-            #     "type": "text/html",
-            #     "href": "{method}://mastodon.social/@user"
-            # },
-
-            {
-                "rel": "self",
-                "type": "application/activity+json",
-                "href": f"{request.app.base_url}/api/v1/user/{user_id}"
-            },
-            # {
-            #     "rel": "salmon",
-            #     "href": "{method}://mastodon.social/api/salmon/285169"
-            # },
-
-            # {
-            #     "rel": "http://ostatus.org/schema/1.0/subscribe",
-            #     "template": "{method}://mastodon.social/authorize_follow?acct={uri}"
-            # }
-        ]
-    }
-    return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
+    return response.json(Actor(user).webfinger, headers={'Content-Type': 'application/jrd+json; charset=utf-8'})
 
 
 @well_known.route('/nodeinfo', methods=['GET'])
 @doc.summary("nodeinfo")
 async def nodeinfo(request):
-    return response.json({"nodeName": request.app.config.DOMAIN})
+    users = await User.count()
+    statuses = await Outbox.count(filter={
+                                    "meta.deleted": False,
+                                    "activity.type": "Create"
+                                })
+    info = {
+                "version": "2.0",
+                "software": {
+                    "name": "PubGate",
+                    "version": __version__,
+                },
+                "protocols": ["activitypub"],
+                "services": {"inbound": [], "outbound": []},
+                "openRegistrations": False,
+                "usage": {"users": {"total": users}, "localPosts": statuses},
+                "metadata": {
+                    "sourceCode": "https://github.com/autogestion/pubgate",
+                    # "nodeName": f"@{user.username}@{user.renders.domain}",
+                },
+    }
+
+    return response.json(info,
+        headers={"Content-Type": "application/json; profile=http://nodeinfo.diaspora.software/ns/schema/2.0#"}
+    )
 
 
 @instance.route('/', methods=['GET'])

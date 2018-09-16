@@ -5,7 +5,9 @@ Implements both the client-to-server API and the federated server-to-server API.
 
 Compatible (tested) with Mastodon, Pleroma and microblog.pub
 
-(will) Support extensions
+#####Support extensions(collects blueprints and listeners):
+
+ - [pubgate-rssbot](https://github.com/autogestion/pubgate-rssbot):  federates rss-feeds*
 
 ## Endpoints
 
@@ -16,8 +18,8 @@ Compatible (tested) with Mastodon, Pleroma and microblog.pub
  - /inbox/          (create, list)
  - /outbox/         (create, list, item, activity, remote post)
  
- 
-#### Additional 
+
+#### Additional
  - /auth            (create user, get token)
  - /swagger         (api docs)
 
@@ -29,12 +31,22 @@ or as [swagger docs example](http://pubgate.autogestion.org/swagger)
 
 #### Prerequisites
 `MongoDB`
-
 #### Shell
-
 ```
 git clone https://github.com/autogestion/pubgate.git
-pip install -r requirements.txt
-cp -r config/sample_conf.cfg config/conf.cfg
+pip install -r requirements/base.txt
+```
+##### Only federator
+```
+cp -r config/base_sample_conf.cfg config/conf.cfg
+```
+##### To run with extensions (marked * in list )
+```
+pip install -r requirements/extensions.txt
+cp -r config/extensions_sample_conf.cfg config/conf.cfg
+```
+##### Run
+
+```
 python run_api.py
 ```
