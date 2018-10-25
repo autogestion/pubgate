@@ -82,7 +82,7 @@ async def inbox_post(request, user):
         })
 
         # post_to_remote_inbox
-        asyncio.ensure_future(deliver(deliverance, [activity["actor"]]))
+        asyncio.ensure_future(deliver(deliverance.render, [activity["actor"]]))
 
     return response.json({'peremoga': 'yep'}, status=202)
 
