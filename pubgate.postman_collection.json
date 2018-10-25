@@ -2,57 +2,15 @@
 	"variables": [],
 	"info": {
 		"name": "pubgate",
-		"_postman_id": "08f32117-2205-a5c9-06eb-41e0a812ec07",
+		"_postman_id": "9633a73c-369b-554b-3ac4-7cf99a178205",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "/api/v1/auth   Create user",
+			"name": "/<user>",
 			"request": {
-				"url": "{{host}}/api/v1/auth",
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"username\": \"{{user}}\", \n\t\"password\":\"{{pass}}\", \n\t\"email\": \"bu\"\n}"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "/api/v1/auth   Create user with invite",
-			"request": {
-				"url": "{{host}}/api/v1/auth",
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"username\": \"{{user}}\", \n\t\"password\":\"{{pass}}\", \n\t\"invite\": \"{{invite}}\"\n}"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "/api/v1/auth/token",
-			"request": {
-				"url": "{{host}}/api/v1/auth/token",
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"username\": \"{{user}}\",\n\t\"password\":\"{{pass}}\"\n}"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "/api/v1/user/user_id",
-			"request": {
-				"url": "{{host}}/api/v1/user/{{user}}/",
+				"url": "{{host}}/{{user}}/",
 				"method": "GET",
 				"header": [],
 				"body": {
@@ -64,9 +22,9 @@
 			"response": []
 		},
 		{
-			"name": "/api/v1/user/user_id/following",
+			"name": "/<user>/following",
 			"request": {
-				"url": "{{host}}/api/v1/user/{{user}}/following",
+				"url": "{{host}}/{{user}}/following",
 				"method": "GET",
 				"header": [],
 				"body": {
@@ -78,9 +36,9 @@
 			"response": []
 		},
 		{
-			"name": "/api/v1/user/user_id/followers",
+			"name": "/<user>/followers",
 			"request": {
-				"url": "{{host}}/api/v1/user/{{user}}/followers",
+				"url": "{{host}}/{{user}}/followers",
 				"method": "GET",
 				"header": [],
 				"body": {
@@ -95,7 +53,7 @@
 			"name": "/.well-known/webfinger",
 			"request": {
 				"url": {
-					"raw": "{{host}}/.well-known/webfinger?resource=acct:{{user}}@{{host}}",
+					"raw": "{{host}}/.well-known/webfinger?resource=acct:{{user}}@{{domain}}",
 					"host": [
 						"{{host}}"
 					],
@@ -106,7 +64,7 @@
 					"query": [
 						{
 							"key": "resource",
-							"value": "acct:{{user}}@{{host}}",
+							"value": "acct:{{user}}@{{domain}}",
 							"equals": true,
 							"description": ""
 						}
@@ -152,9 +110,176 @@
 			"response": []
 		},
 		{
-			"name": "/api/v1/outbox/user_id Create Note",
+			"name": "/<user>/outbox get outbox",
 			"request": {
-				"url": "{{host}}/api/v1/outbox/{{user}}",
+				"url": "{{host}}/{{user}}/outbox",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/<user>/outbox?page=2 get outbox paged",
+			"request": {
+				"url": {
+					"raw": "{{host}}/{{user}}/outbox?page=2",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{user}}",
+						"outbox"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/<user>/activity/<entity>",
+			"request": {
+				"url": "{{host}}/{{user}}/activity/{{entity}}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/<user>/object/<entity>",
+			"request": {
+				"url": "{{host}}/{{user}}/object/{{entity}}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/<user>/inbox/ Create Note",
+			"request": {
+				"url": "{{host}}/{{user}}/inbox",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\n                \"type\": \"Create\",\n                \"id\": \"https://mastodon.social/users/Sonstwer/statuses/100368779865509498/activity\",\n                \"actor\": \"https://mastodon.social/users/Sonstwer\",\n                \"object\": {\n                    \"id\": \"https://mastodon.social/users/Sonstwer/statuses/100368779865509498\",\n                    \"type\": \"Note\",\n                    \"summary\": null,\n                    \"inReplyTo\": null,\n                    \"published\": \"2018-07-13T18:20:40Z\",\n                    \"url\": \"https://mastodon.social/@Sonstwer/100368779865509498\",\n                    \"attributedTo\": \"https://mastodon.social/users/Sonstwer\",\n                    \"to\": [\n                        \"https://www.w3.org/ns/activitystreams#Public\"\n                    ],\n                    \"cc\": [\n                        \"https://mastodon.social/users/Sonstwer/followers\"\n                    ],\n                    \"sensitive\": false,\n                    \"atomUri\": \"https://mastodon.social/users/Sonstwer/statuses/100368779865509498\",\n                    \"inReplyToAtomUri\": null,\n                    \"conversation\": \"tag:mastodon.social,2018-07-13:objectId=42028339:objectType=Conversation\",\n                    \"content\": \"<p>Graz Hauptplatz<br />@AttacAustria@twitter.com Sommerakademie<br />Abschluss Demo</p>\",\n                    \"contentMap\": {\n                        \"de\": \"<p>Graz Hauptplatz<br />@AttacAustria@twitter.com Sommerakademie<br />Abschluss Demo</p>\"\n                    },\n                    \"attachment\": [\n                        {\n                            \"type\": \"Document\",\n                            \"mediaType\": \"image/jpeg\",\n                            \"url\": \"https://files.mastodon.social/media_attachments/files/004/949/619/original/7abb47991af01bdc.jpeg\",\n                            \"name\": null\n                        }\n                    ],\n                    \"tag\": []\n                },\n                \"published\": \"2018-07-13T18:20:40Z\",\n                \"to\": [\n                    \"https://www.w3.org/ns/activitystreams#Public\"\n                ],\n                \"cc\": [\n                    \"https://mastodon.social/users/Sonstwer/followers\"\n                ],\n                \"signature\": {\n                    \"type\": \"RsaSignature2017\",\n                    \"creator\": \"https://mastodon.social/users/Sonstwer#main-key\",\n                    \"created\": \"2018-07-13T18:20:41Z\",\n                    \"signatureValue\": \"ke5klb8DKljGplPRHimsXIf/IdUaBye6btv0PBXlhR1ikQ5otEKMLO6dJma8w9HK9Xg9DMsVgLS6eniWHr2dO+ymWg5QES0Iu7knn7UgZpfbVsLdz4tNKjTn5KTxDJAEBHuwDz9rvAWOG4XwtKanGXF3Q+UooqNnqB4MXid+tUb7tNhgvqsdDmTNEih4/78gcdRpqanmayOfJY8GOGOBjw+uQk5yxzGBYQVvED+kIhavoYOR9oGDo1zdUFOHNSUX0E27T8H+MYOV2ykW3n0XwBoQINgsaKj7okmwUx5bilsWhxxlikymVvQuM3E/w7LW4/pNeyHwETdY5785NM/DNA==\"\n                }\n            }"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/<user>/inbox Follow",
+			"request": {
+				"url": "{{host}}/{{user}}/inbox",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"type\": \"Follow\",\n    \"id\": \"https://mastodon.social/102ec882-a917-4644-bd19-0739dbaa1a3d\",\n    \"actor\": \"https://mastodon.social/users/pubgate\",\n    \"object\": \"{{method}}://{{host}}/api/v1/user/{{user}}\",\n    \"signature\": {\n        \"type\": \"RsaSignature2017\",\n        \"creator\": \"https://mastodon.social/users/pubgate#main-key\",\n        \"created\": \"2018-08-13T15:41:36Z\",\n        \"signatureValue\": \"lEsmVmkwz3bfMPyqKyPuPahN8OLnuMIKPjK44J04FQQbuxAddGRaK3yVh0acOlycbkbNla875Usn7a7uQlfhqW/ONjZXxkIYUroLLIKOsmOqEf/RrSYORvLytJzwoygompB9UY3IKm+VZBjmZrp4KgXxbRQrs2avFB4CUnLykNZwCHeEoikKR1aTwbRL2qLvzSmL8iPUieBR7LlKB+QBvDFGkKbU0JMs9eegYNdgoyt5JiHQYC0LvlwJlqzmFeW1CYxiAZP/QVHh+ZchsYlwRrYmO3aZItLKOcqKCBSXOdqSZ9tsIFIMf94EBFF0GxRDBnNISvOLS3c43BHeWLnxng==\"\n    }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "----    client to server------",
+			"request": {
+				"url": "",
+				"method": "OPTIONS",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/auth   Create user with invite",
+			"request": {
+				"url": "{{host}}/auth",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"{{user}}\", \n\t\"password\":\"{{pass}}\", \n\t\"invite\": \"{{invite}}\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/auth   Create user",
+			"request": {
+				"url": "{{host}}/auth",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"{{user}}\", \n\t\"password\":\"{{pass}}\", \n\t\"email\": \"bu\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/auth/token",
+			"request": {
+				"url": "{{host}}/auth/token",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"{{user}}\",\n\t\"password\":\"{{pass}}\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/<user>/outbox Create Note",
+			"request": {
+				"url": "{{host}}/{{user}}/outbox",
 				"method": "POST",
 				"header": [
 					{
@@ -165,16 +290,36 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"type\": \"Create\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"inReplyTo\": \"\",\n        \"attributedTo\": \"{{host}}/api/v1/user/{{user}}\",\n        \"to\": [\n            \"https://www.w3.org/ns/activitystreams#Public\"\n        ],\n        \"sensitive\": false,\n        \"content\": \"Ще Звитяга! Слава Ісу! Ще Карамба хуямба\",\n        \"contentMap\": {\n            \"uk\": \"Звитягаll!\"\n        },\n        \"attachment\": [],\n        \"tag\": []\n    }\n}        "
+					"raw": "{\n    \"type\": \"Create\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"inReplyTo\": \"\",\n        \"sensitive\": false,\n        \"content\": \"Ще Звитяга! Слава Ісу! Ще Карамба хуямба\",\n        \"contentMap\": {\n            \"uk\": \"Звитягаll!\"\n        },\n        \"attachment\": [],\n        \"tag\": []\n    }\n}        "
 				},
 				"description": ""
 			},
 			"response": []
 		},
 		{
-			"name": "/api/v1/outbox/user_id Follow",
+			"name": "/<user>/outbox Create Note with tags",
 			"request": {
-				"url": "{{host}}/api/v1/outbox/{{user}}",
+				"url": "{{host}}/{{user}}/outbox",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"type\": \"Create\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"inReplyTo\": null,\n        \"sensitive\": false,\n        \"content\": \"post with <a href='{{host}}/tag/some' rel='tag'>#some</a> <a href='{{host}}/tag/tags' rel='tag'>#tags</a>\",\n        \"attachment\": [],\n        \"tag\": [\n            {\n                \"type\": \"Hashtag\",\n                \"href\": \"{{host}}/tags/tags\",\n                \"name\": \"#tags\"\n            },\n            {\n                \"type\": \"Hashtag\",\n                \"href\": \"{{host}}/tags/some\",\n                \"name\": \"#some\"\n            }\n        ]\n    }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/<user>/outbox Follow",
+			"request": {
+				"url": "{{host}}/{{user}}/outbox",
 				"method": "POST",
 				"header": [
 					{
@@ -192,125 +337,29 @@
 			"response": []
 		},
 		{
-			"name": "/api/v1/outbox/user_id get outbox",
+			"name": "/<user>/outbox Note with picture",
 			"request": {
-				"url": "{{host}}/api/v1/outbox/{{user}}",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Accept",
-						"value": "application/activity+json",
-						"description": ""
-					}
-				],
-				"body": {},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "/api/v1/outbox/user_id?page=2 get outbox paged",
-			"request": {
-				"url": {
-					"raw": "{{host}}/api/v1/outbox/{{user}}?page=2",
-					"host": [
-						"{{host}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"outbox",
-						"{{user}}"
-					],
-					"query": [
-						{
-							"key": "page",
-							"value": "2",
-							"equals": true,
-							"description": ""
-						}
-					],
-					"variable": []
-				},
-				"method": "GET",
-				"header": [
-					{
-						"key": "Accept",
-						"value": "application/activity+json",
-						"description": ""
-					}
-				],
-				"body": {},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "/api/v1/outbox/user_id/item_id",
-			"request": {
-				"url": "{{host}}/api/v1/outbox/{{user}}/{{item}}",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Accept",
-						"value": "application/activity+json",
-						"description": ""
-					}
-				],
-				"body": {},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "/api/v1/outbox/user_id/item_id/activity",
-			"request": {
-				"url": "{{host}}/api/v1/outbox/{{user}}/{{item}}/activity",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Accept",
-						"value": "application/activity+json",
-						"description": ""
-					}
-				],
-				"body": {},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "/api/v1/inbox/user_id Create Note",
-			"request": {
-				"url": "{{host}}/api/v1/inbox/{{user}}",
+				"url": "{{host}}/{{user}}/outbox",
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"description": ""
+					}
+				],
 				"body": {
 					"mode": "raw",
-					"raw": " {\n                \"type\": \"Create\",\n                \"id\": \"https://mastodon.social/users/Sonstwer/statuses/100368779865509498/activity\",\n                \"actor\": \"https://mastodon.social/users/Sonstwer\",\n                \"object\": {\n                    \"id\": \"https://mastodon.social/users/Sonstwer/statuses/100368779865509498\",\n                    \"type\": \"Note\",\n                    \"summary\": null,\n                    \"inReplyTo\": null,\n                    \"published\": \"2018-07-13T18:20:40Z\",\n                    \"url\": \"https://mastodon.social/@Sonstwer/100368779865509498\",\n                    \"attributedTo\": \"https://mastodon.social/users/Sonstwer\",\n                    \"to\": [\n                        \"https://www.w3.org/ns/activitystreams#Public\"\n                    ],\n                    \"cc\": [\n                        \"https://mastodon.social/users/Sonstwer/followers\"\n                    ],\n                    \"sensitive\": false,\n                    \"atomUri\": \"https://mastodon.social/users/Sonstwer/statuses/100368779865509498\",\n                    \"inReplyToAtomUri\": null,\n                    \"conversation\": \"tag:mastodon.social,2018-07-13:objectId=42028339:objectType=Conversation\",\n                    \"content\": \"<p>Graz Hauptplatz<br />@AttacAustria@twitter.com Sommerakademie<br />Abschluss Demo</p>\",\n                    \"contentMap\": {\n                        \"de\": \"<p>Graz Hauptplatz<br />@AttacAustria@twitter.com Sommerakademie<br />Abschluss Demo</p>\"\n                    },\n                    \"attachment\": [\n                        {\n                            \"type\": \"Document\",\n                            \"mediaType\": \"image/jpeg\",\n                            \"url\": \"https://files.mastodon.social/media_attachments/files/004/949/619/original/7abb47991af01bdc.jpeg\",\n                            \"name\": null\n                        }\n                    ],\n                    \"tag\": []\n                },\n                \"published\": \"2018-07-13T18:20:40Z\",\n                \"to\": [\n                    \"https://www.w3.org/ns/activitystreams#Public\"\n                ],\n                \"cc\": [\n                    \"https://mastodon.social/users/Sonstwer/followers\"\n                ],\n                \"signature\": {\n                    \"type\": \"RsaSignature2017\",\n                    \"creator\": \"https://mastodon.social/users/Sonstwer#main-key\",\n                    \"created\": \"2018-07-13T18:20:41Z\",\n                    \"signatureValue\": \"ke5klb8DKljGplPRHimsXIf/IdUaBye6btv0PBXlhR1ikQ5otEKMLO6dJma8w9HK9Xg9DMsVgLS6eniWHr2dO+ymWg5QES0Iu7knn7UgZpfbVsLdz4tNKjTn5KTxDJAEBHuwDz9rvAWOG4XwtKanGXF3Q+UooqNnqB4MXid+tUb7tNhgvqsdDmTNEih4/78gcdRpqanmayOfJY8GOGOBjw+uQk5yxzGBYQVvED+kIhavoYOR9oGDo1zdUFOHNSUX0E27T8H+MYOV2ykW3n0XwBoQINgsaKj7okmwUx5bilsWhxxlikymVvQuM3E/w7LW4/pNeyHwETdY5785NM/DNA==\"\n                }\n            }"
+					"raw": "{\n    \"type\": \"Create\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"inReplyTo\": null,\n        \"sensitive\": false,\n        \"atomUri\": \"https://mastodon.social/users/pubgate/statuses/100935709221534471\",\n        \"inReplyToAtomUri\": null,\n        \"conversation\": \"tag:mastodon.social,2018-10-21:objectId=60526490:objectType=Conversation\",\n        \"content\": \"<p>yep</p>\",\n        \"contentMap\": {\n            \"en\": \"<p>yep</p>\"\n        },\n        \"attachment\": [\n            {\n                \"type\": \"Document\",\n                \"mediaType\": \"image/jpeg\",\n                \"url\": \"https://files.mastodon.social/media_attachments/files/007/311/211/original/882db53e64aecbb8.jpg\",\n                \"name\": null\n            }\n        ],\n        \"tag\": []\n    }\n}"
 				},
 				"description": ""
 			},
 			"response": []
 		},
 		{
-			"name": "/api/v1/inbox/user_id Follow",
+			"name": "/<user>/inbox get inbox",
 			"request": {
-				"url": "{{host}}/api/v1/inbox/{{user}}",
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"type\": \"Follow\",\n    \"id\": \"https://mastodon.social/102ec882-a917-4644-bd19-0739dbaa1a3d\",\n    \"actor\": \"https://mastodon.social/users/pubgate\",\n    \"object\": \"{{method}}://{{host}}/api/v1/user/{{user}}\",\n    \"signature\": {\n        \"type\": \"RsaSignature2017\",\n        \"creator\": \"https://mastodon.social/users/pubgate#main-key\",\n        \"created\": \"2018-08-13T15:41:36Z\",\n        \"signatureValue\": \"lEsmVmkwz3bfMPyqKyPuPahN8OLnuMIKPjK44J04FQQbuxAddGRaK3yVh0acOlycbkbNla875Usn7a7uQlfhqW/ONjZXxkIYUroLLIKOsmOqEf/RrSYORvLytJzwoygompB9UY3IKm+VZBjmZrp4KgXxbRQrs2avFB4CUnLykNZwCHeEoikKR1aTwbRL2qLvzSmL8iPUieBR7LlKB+QBvDFGkKbU0JMs9eegYNdgoyt5JiHQYC0LvlwJlqzmFeW1CYxiAZP/QVHh+ZchsYlwRrYmO3aZItLKOcqKCBSXOdqSZ9tsIFIMf94EBFF0GxRDBnNISvOLS3c43BHeWLnxng==\"\n    }\n}"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "/api/v1/inbox/user_id get inbox",
-			"request": {
-				"url": "{{host}}/api/v1/inbox/{{user}}",
+				"url": "{{host}}/{{user}}/inbox",
 				"method": "GET",
 				"header": [
 					{
@@ -330,18 +379,16 @@
 			"response": []
 		},
 		{
-			"name": "/api/v1/inbox/user_id?page=2 get inbox paged",
+			"name": "/<user>/inbox?page=2 get inbox paged",
 			"request": {
 				"url": {
-					"raw": "{{host}}/api/v1/inbox/{{user}}?page=2",
+					"raw": "{{host}}/{{user}}/inbox?page=2",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"api",
-						"v1",
-						"inbox",
-						"{{user}}"
+						"{{user}}",
+						"inbox"
 					],
 					"query": [
 						{
@@ -372,10 +419,10 @@
 			"response": []
 		},
 		{
-			"name": "----extensions------",
+			"name": "----              extensions------",
 			"request": {
 				"url": "",
-				"method": "GET",
+				"method": "OPTIONS",
 				"header": [],
 				"body": {},
 				"description": ""
@@ -383,21 +430,21 @@
 			"response": []
 		},
 		{
-			"name": "/api/v1/auth   Create bot   (pubgate-rssbot required)",
+			"name": "/auth   Create bot   (pubgate-rssbot required)",
 			"request": {
-				"url": "{{host}}/api/v1/auth",
+				"url": "{{host}}/auth",
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"username\": \"{{user}}\",\n\t\"password\": \"{{pass}}\",\n\t\"actor_type\": \"Service\",\n\t\"email\": \"\",\n\t\"invite\": \"{{invite}}\",\n\t\"details\": {\n\t\t\"rssbot\": {\n\t\t\t\"feed\": \"http://feeds.feedburner.com/ArtLvivOnline\",\n\t\t\t\"enable\": true,\n\t\t\t\"tags\": [\"art\", \"lviv\", \"online\"],\n\t\t\t\"html\": true \n\t\t}\n\t}\n}"
+					"raw": "{\n\t\"username\": \"{{user}}\",\n\t\"password\": \"{{pass}}\",\n\t\"actor_type\": \"Service\",\n\t\"email\": \"\",\n\t\"invite\": \"{{invite}}\",\n\t\"details\": {\n\t\t\"rssbot\": {\n\t\t\t\"feed\": \"https://xatarsis.blogspot.com/feeds/posts/default?alt=rss\",\n\t\t\t\"enable\": true,\n\t\t\t\"tags\": [\"Xatarsis\", \"coliving\", \"traveltogether\", \"travelwithfriends\", \"eurotrip\", \"europe\", \"together\", \"freedomlifestyle\", \"freelance\", \"freedom\", \"digitalnomadlife\", \"digitalnomad\", \"remotework\", \"friends\", \"колівінг\", \"фріланс\"],\n\t\t\t\"html\": true \n\t\t}\n\t}\n}"
 				},
 				"description": ""
 			},
 			"response": []
 		},
 		{
-			"name": "rssbot/user_id Disable bot  (pubgate-rssbot required)",
+			"name": "/rssbot/<user> Disable bot  (pubgate-rssbot required)",
 			"request": {
 				"url": "{{host}}/rssbot/{{user}}",
 				"method": "PATCH",

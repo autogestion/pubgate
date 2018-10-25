@@ -34,10 +34,16 @@ class Note(Activity):
         activity["actor"] = user.uri
         activity["published"] = published
 
+        activity["to"] = "https://www.w3.org/ns/activitystreams#Public"
+        activity["cc"] = user.followers
+
         if isinstance(activity["object"], dict):
             activity["object"]["id"] = f"{user.uri}/object/{self.id}"
             activity["object"]["attributedTo"] = user.uri
             activity["object"]["published"] = published
+
+            activity["to"] = "https://www.w3.org/ns/activitystreams#Public"
+            activity["cc"] = user.followers
 
 
 class Follow(Activity):
