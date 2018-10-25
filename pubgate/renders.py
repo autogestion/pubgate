@@ -1,71 +1,94 @@
 from datetime import datetime
 
-from pubgate.api.v1.crypto.key import get_key
-from pubgate.api.v1.utils import random_object_id
+from pubgate.crypto.key import get_key
+from pubgate.utils import random_object_id
 from pubgate import LOGO
+
 
 context = [
         "https://www.w3.org/ns/activitystreams",
         "https://w3id.org/security/v1",
         {
             "Hashtag": "as:Hashtag",
-            "sensitive": "as:sensitive",
-            "toot": "http://joinmastodon.org/ns#",
-            "featured": "toot:featured"
+            "sensitive": "as:sensitive"
+            # "toot": "http://joinmastodon.org/ns#",
+            # "featured": "toot:featured"
         }
     ]
 
 
 class Activity:
 
-    def __init__(self, v1_path, username, activity):
-        self.obj_id = random_object_id()
-        now = datetime.now()
-
-        outbox_url = f"{v1_path}/outbox/{username}"
-        user_id = f"{v1_path}/user/{username}"
-        published = now.isoformat()
-
-        activity["id"] = f"{outbox_url}/{self.obj_id}"
-        activity["actor"] = user_id
-        # activity["published"] = published
-        if isinstance(activity["object"], dict):
-            activity["object"]["id"] = f"{outbox_url}/{self.obj_id}/activity"
-            # activity["object"]["published"] = published
-            activity["object"]["attributedTo"] = user_id
-
+    def __init__(self, user, activity):
+        self.id = random_object_id()
         self.render = activity
+        activity["id"] = f"{user.uri}/activity/{self.id}"
+
+
+class Note(Activity):
+
+    def __init__(self, user, activity):
+        super().__init__(user, activity)
+        published = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+
+        activity["actor"] = user.uri
+        activity["published"] = published
+
+        if isinstance(activity["object"], dict):
+            activity["object"]["id"] = f"{user.uri}/object/{self.id}"
+            activity["object"]["attributedTo"] = user.uri
+            activity["object"]["published"] = published
+
+
+class Follow(Activity):
+
+    def __init__(self, user, activity):
+        super().__init__(user, activity)
+        activity["actor"] = user.uri
+
+
+def choose(user, activity):
+    atype = activity.get("type", None)
+    otype = None
+    aobj = activity.get("object", None)
+    if aobj and isinstance(aobj, dict):
+        otype = aobj.get("type", None)
+
+    if atype == "Create":
+        if otype == "Note":
+            return Note(user, activity)
+
+    elif atype == "Follow":
+        return Follow(user, activity)
+
+    return Activity(user, activity)
+
 
 
 class Actor:
     def __init__(self, user):
-
-        self.domain = user.renders["domain"]
-        self.v1_path = user.renders["v1_path"]
-        self.username = user.username
-        self.actor_id = f"{self.v1_path}/user/{user.username}"
-        self.actor_type = user.actor_type
+        self.user = user
 
     @property
     def render(self):
 
         return {
             "@context": context,
-            "id": self.actor_id,
-            "type": self.actor_type,
-            "following": f"{self.actor_id}/following",
-            "followers": f"{self.actor_id}/followers",
-            "inbox": f"{self.v1_path}/inbox/{self.username}",
-            "outbox": f"{self.v1_path}/outbox/{self.username}",
-            "preferredUsername": f"{self.username}",
+            "id": self.user.uri,
+            "type": self.user.actor_type,
+            "following": self.user.following,
+            "followers": self.user.followers,
+            "inbox": self.user.inbox,
+            "outbox": self.user.outbox,
+            "preferredUsername": f"{self.user.name}",
             "name": "",
             "summary": "<p></p>",
             # "url": f"{base_url}/@{user_id}",
             "manuallyApprovesFollowers": False,
-            "publicKey": get_key(self.actor_id).to_dict(),
+            "publicKey": get_key(self.user.uri).to_dict(),
             "endpoints": {
                 # "sharedInbox": f"{base_url}/inbox"
-                "oauthTokenEndpoint": f"{self.v1_path}/auth/token"
+                # "oauthTokenEndpoint": f"{self.base_url}/auth/token"
             },
             "icon": {
                 "type": "Image",
@@ -74,14 +97,13 @@ class Actor:
             }
         }
 
-    @property
-    def webfinger(self):
+    def webfinger(self, resource):
 
         return {
-            "subject": f"acct:{self.username}@{self.domain}",
+            "subject": resource,
             "aliases": [
                 # "{method}://mastodon.social/@user",
-                self.actor_id
+                self.user.uri
             ],
             "links": [
                 # {
@@ -93,11 +115,11 @@ class Actor:
                 {
                     "rel": "self",
                     "type": "application/activity+json",
-                    "href": self.actor_id
+                    "href": self.user.uri
                 },
                 {
                     "rel": "magic-public-key",
-                    "href": get_key(self.username).to_magic_key()
+                    "href": get_key(self.user.uri).to_magic_key()
                 },
                 # {
                 #     "rel": "salmon",

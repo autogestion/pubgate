@@ -2,8 +2,8 @@
 from sanic import response, Blueprint
 from sanic_openapi import doc
 
-from pubgate.api.v1.db.models import User, Outbox
-from pubgate.api.v1.renders import Actor
+from pubgate.db.models import User, Outbox
+from pubgate.renders import Actor
 from pubgate import __version__, LOGO
 
 
@@ -19,17 +19,16 @@ instance = Blueprint('instance')
 @doc.summary("webfinger")
 async def webfinger(request):
     resource = request.args.get('resource')
-    id_list = resource.split(":")
-    user_id, domain = id_list[1].split("@")
+    if request.app.config.DOMAIN not in resource:
+        return response.json({"zrada": "wrong domain"}, status=404)
 
-    if len(id_list) == 3:
-        domain += f":{id_list[2]}"
-
-    user = await User.find_one(dict(username=user_id))
+    id_list = resource.split(":")[1].split("@")[0]
+    user_id = id_list
+    user = await User.find_one(dict(name=user_id))
     if not user:
         return response.json({"zrada": "no such user"}, status=404)
 
-    return response.json(Actor(user).webfinger, headers={'Content-Type': 'application/jrd+json; charset=utf-8'})
+    return response.json(Actor(user).webfinger(resource), headers={'Content-Type': 'application/jrd+json; charset=utf-8'})
 
 
 @well_known.route('/nodeinfo', methods=['GET'])

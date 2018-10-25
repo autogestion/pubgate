@@ -3,15 +3,14 @@ import base64
 import json
 
 from sanic.log import logger
-from sanic import exceptions
 
 from pubgate import __version__
-from pubgate.api.v1.utils import make_label
-from pubgate.api.v1.renders import context
-from pubgate.api.v1.crypto.key import get_key
-from pubgate.api.v1.crypto.httpsig import HTTPSigAuth
-from pubgate.api.v1.crypto.httpsig import _parse_sig_header, _body_digest, _build_signed_string, _verify_h
-from pubgate.api.v1.crypto.linked_data_sig import generate_signature
+from pubgate.utils import make_label
+from pubgate.renders import context
+from pubgate.crypto.key import get_key
+from pubgate.crypto.httpsig import HTTPSigAuth
+from pubgate.crypto.httpsig import _parse_sig_header, _body_digest, _build_signed_string, _verify_h
+from pubgate.crypto.datasig import generate_signature
 
 
 async def verify_request(method: str, path: str, headers, body: str) -> bool:
@@ -82,7 +81,8 @@ async def deliver(activity, recipients):
     # TODO retry over day if fails
     key = get_key(activity["actor"])
     activity['@context'] = context
-    generate_signature(activity, key)
+    if "signature" not in activity:
+        generate_signature(activity, key)
 
     headers = {"content-type": 'application/activity+json',
                "user-agent": f"PubGate v:{__version__}"}

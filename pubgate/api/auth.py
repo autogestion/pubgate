@@ -4,21 +4,34 @@ from sanic import response, Blueprint, exceptions
 from sanic_openapi import doc
 from simple_bcrypt import generate_password_hash, check_password_hash
 
-from pubgate.api.v1.db.models import User
-from pubgate.api.v1.utils import random_object_id
+from pubgate.db.models import User
+from pubgate.utils import random_object_id
 
 
-auth_v1 = Blueprint('auth_v1')
+auth_v1 = Blueprint('auth_v1', url_prefix="auth")
 
 
-def auth_required(handler=None):
+def token_check(handler=None):
     @wraps(handler)
     async def wrapper(request, *args, **kwargs):
-        user = await User.find_one(dict(username=kwargs["user_id"],
+        user = await User.find_one(dict(name=kwargs["user"],
                                         token=request.token))
         if not user:
             raise exceptions.Unauthorized("Auth required.")
 
+        kwargs["user"] = user
+        return await handler(request, *args, **kwargs)
+    return wrapper
+
+
+def user_check(handler=None):
+    @wraps(handler)
+    async def wrapper(request, *args, **kwargs):
+        user = await User.find_one(dict(name=kwargs["user"]))
+        if not user:
+            raise exceptions.Unauthorized("Incorrect username.")
+
+        kwargs["user"] = user
         return await handler(request, *args, **kwargs)
     return wrapper
 
@@ -41,13 +54,12 @@ async def user_create(request):
     if username and password:
         is_uniq = await User.is_unique(doc=dict(username=username))
         if is_uniq in (True, None):
-            await User.insert_one(dict(username=username,
+            await User.insert_one(dict(name=username,
                                        password=generate_password_hash(password),
                                        email=request.json.get("email"),
                                        actor_type=request.json.get("actor_type", "Person"),
                                        details=request.json.get("details"),
-                                       renders={"domain": request.app.config.DOMAIN,
-                                                "v1_path": request.app.v1_path}
+                                       uri=f"{request.app.base_url}/{username}"
                                        )
                                   )
             return response.json({'peremoga': 'yep'}, status=201)
@@ -59,7 +71,7 @@ async def user_create(request):
 @doc.summary("Get token")
 async def token_get(request):
 
-    user = await User.find_one(dict(username=request.json["username"]))
+    user = await User.find_one(dict(name=request.json["username"]))
     if not user:
         return response.json({"zrada": "username incorrect"}, status=401)
 
@@ -70,7 +82,7 @@ async def token_get(request):
     if not token:
         token = random_object_id()
         #TODO make token expire
-        await User.update_one({'username': request.json["username"]},
+        await User.update_one({'name': request.json["username"]},
                               {'$set': {'token': token}})
 
     return response.json({'token': token})
