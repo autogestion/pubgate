@@ -42,8 +42,8 @@ class Note(Activity):
             activity["object"]["attributedTo"] = user.uri
             activity["object"]["published"] = published
 
-            activity["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
-            activity["cc"] = [user.followers]
+            activity["object"]["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
+            activity["object"]["cc"] = [user.followers]
 
 
 class Follow(Activity):
