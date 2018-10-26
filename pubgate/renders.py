@@ -1,7 +1,5 @@
-from datetime import datetime
 
 from pubgate.crypto.key import get_key
-from pubgate.utils import random_object_id
 from pubgate import LOGO
 
 
@@ -15,60 +13,6 @@ context = [
             # "featured": "toot:featured"
         }
     ]
-
-
-class Activity:
-
-    def __init__(self, user, activity):
-        self.id = random_object_id()
-        self.render = activity
-        activity["id"] = f"{user.uri}/activity/{self.id}"
-
-
-class Note(Activity):
-
-    def __init__(self, user, activity):
-        super().__init__(user, activity)
-        published = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
-
-        activity["actor"] = user.uri
-        activity["published"] = published
-
-        activity["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
-        activity["cc"] = [user.followers]
-
-        if isinstance(activity["object"], dict):
-            activity["object"]["id"] = f"{user.uri}/object/{self.id}"
-            activity["object"]["attributedTo"] = user.uri
-            activity["object"]["published"] = published
-
-            activity["object"]["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
-            activity["object"]["cc"] = [user.followers]
-
-
-class Follow(Activity):
-
-    def __init__(self, user, activity):
-        super().__init__(user, activity)
-        activity["actor"] = user.uri
-
-
-def choose(user, activity):
-    atype = activity.get("type", None)
-    otype = None
-    aobj = activity.get("object", None)
-    if aobj and isinstance(aobj, dict):
-        otype = aobj.get("type", None)
-
-    if atype == "Create":
-        if otype == "Note":
-            return Note(user, activity)
-
-    elif atype == "Follow":
-        return Follow(user, activity)
-
-    return Activity(user, activity)
-
 
 
 class Actor:

@@ -3,11 +3,11 @@ from sanic import response, Blueprint
 from sanic.log import logger
 from sanic_openapi import doc
 
-from pubgate.db.models import User, Inbox, Outbox
+from pubgate.db.models import Inbox, Outbox
 from pubgate.utils import make_label
 from pubgate.networking import deliver, verify_request
 from pubgate.api.auth import user_check, token_check
-from pubgate.renders import Activity
+from pubgate.activity import Activity
 
 inbox_v1 = Blueprint('inbox_v1')
 

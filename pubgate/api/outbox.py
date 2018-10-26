@@ -3,9 +3,9 @@ import asyncio
 from sanic import response, Blueprint
 from sanic_openapi import doc
 
-from pubgate.db.models import User, Outbox
-from pubgate.renders import context, Activity, choose
-from pubgate.utils import make_label
+from pubgate.db.models import Outbox
+from pubgate.renders import context
+from pubgate.activity import choose
 from pubgate.networking import deliver
 from pubgate.api.auth import user_check, token_check
 
@@ -21,22 +21,11 @@ async def outbox_post(request, user):
     # TODO validate activity
 
     activity = choose(user, request.json)
-    await Outbox.insert_one({
-            "_id": activity.id,
-            "user_id": user.name,
-            "activity": activity.render,
-            "label": make_label(activity.render),
-            "meta": {"undo": False, "deleted": False},
-         })
-
-    if activity.render["type"] == "Follow":
-        recipients = [activity.render["object"]]
-    else:
-        recipients = await user.followers_get()
-        # for field in ["to", "cc", "bto", "bcc"]:
-        #     if field in activity.render:
-        #         recipients.extend(_to_list(activity.render[field]))
-        recipients = list(set(recipients))
+    await activity.save()
+    # for field in ["to", "cc", "bto", "bcc"]:
+    #     if field in activity.render:
+    #         recipients.extend(_to_list(activity.render[field]))
+    recipients = await activity.recipients()
 
     # post_to_remote_inbox
     asyncio.ensure_future(deliver(activity.render, recipients))
