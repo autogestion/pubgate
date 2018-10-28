@@ -57,7 +57,7 @@ class Follow(Activity):
         activity["actor"] = user.uri
 
     async def recipients(self):
-        return self.render["object"]
+        return [self.render["object"]]
 
 
 class Delete(FollowersMixin):
