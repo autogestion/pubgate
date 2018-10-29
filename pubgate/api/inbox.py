@@ -84,6 +84,18 @@ async def inbox_post(request, user):
         # post_to_remote_inbox
         asyncio.ensure_future(deliver(deliverance.render, [activity["actor"]]))
 
+    elif (activity["type"] in ["Announce", "Like"] and
+        activity["object"]["id"].startswith(user.uri)) or \
+        (activity["type"] == "Create" and activity["object"]["inReplyTo"] and
+        activity["object"]["inReplyTo"].startswith(user.uri)):
+            recipients = await user.followers_get()
+            recipients = list(set(recipients))
+            try:
+                recipients.remove(activity["actor"])
+            except ValueError:
+                pass
+            asyncio.ensure_future(deliver(activity, recipients))
+
     return response.json({'peremoga': 'yep'}, status=202)
 
 
