@@ -8,6 +8,10 @@ def actor_clean(data):
     return [item["activity"]["object"]["actor"] for item in data]
 
 
+def actor_clean_inbox(data):
+    return [item["activity"]["object"]["object"] for item in data]
+
+
 def activity_clean(data):
     return [item["activity"] for item in data]
 
@@ -67,7 +71,8 @@ class User(BaseModel):
             "activity.type": "Accept",
             "activity.object.type": "Follow"
         }
-        return await get_ordered(request, Outbox, filters, actor_clean, self.followers)
+        return await get_ordered(request, Outbox, filters,
+                                 actor_clean, self.followers)
 
     async def following_paged(self, request):
         filters = {
@@ -76,21 +81,24 @@ class User(BaseModel):
             "activity.type": "Accept",
             "activity.object.type": "Follow"
         }
-        return await get_ordered(request, Inbox, filters, actor_clean, self.following)
+        return await get_ordered(request, Inbox, filters,
+                                 actor_clean_inbox, self.following)
 
     async def outbox_paged(self, request):
         filters = {
             "meta.deleted": False,
             "user_id": self.name
         }
-        return await get_ordered(request, Outbox, filters, activity_clean, self.outbox)
+        return await get_ordered(request, Outbox, filters,
+                                 activity_clean, self.outbox)
 
     async def inbox_paged(self, request):
         filters = {
             "meta.deleted": False,
             "users": {"$in": [self.name]}
         }
-        return await get_ordered(request, Inbox, filters, activity_clean, self.inbox)
+        return await get_ordered(request, Inbox, filters,
+                                 activity_clean, self.inbox)
 
 
 class Outbox(BaseModel):
