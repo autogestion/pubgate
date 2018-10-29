@@ -80,7 +80,8 @@ async def deliver_task(recipient, http_sig, activity):
 async def deliver(activity, recipients):
     # TODO retry over day if fails
     key = get_key(activity["actor"])
-    activity['@context'] = context
+    if '@context' not in activity:
+        activity['@context'] = context
     if "signature" not in activity:
         generate_signature(activity, key)
 

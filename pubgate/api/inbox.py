@@ -95,10 +95,6 @@ async def inbox_post(request, user):
         except ValueError:
             pass
 
-        activity["cc"] = [user.followers]
-        if isinstance(activity["object"], dict):
-            activity["object"]["cc"] = [user.followers]
-
         asyncio.ensure_future(deliver(activity, recipients))
 
     return response.json({'peremoga': 'yep'}, status=202)
