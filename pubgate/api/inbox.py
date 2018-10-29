@@ -88,13 +88,18 @@ async def inbox_post(request, user):
         activity["object"].startswith(user.uri)) or \
         (activity["type"] == "Create" and activity["object"]["inReplyTo"] and
         activity["object"]["inReplyTo"].startswith(user.uri)):
-            recipients = await user.followers_get()
-            recipients = list(set(recipients))
-            try:
-                recipients.remove(activity["actor"])
-            except ValueError:
-                pass
-            asyncio.ensure_future(deliver(activity, recipients))
+
+        recipients = await user.followers_get()
+        try:
+            recipients.remove(activity["actor"])
+        except ValueError:
+            pass
+
+        activity["cc"] = [user.followers]
+        if isinstance(activity["object"], dict):
+            activity["object"]["cc"] = [user.followers]
+
+        asyncio.ensure_future(deliver(activity, recipients))
 
     return response.json({'peremoga': 'yep'}, status=202)
 

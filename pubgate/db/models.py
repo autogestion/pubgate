@@ -58,7 +58,7 @@ class User(BaseModel):
             "activity.object.type": "Follow"
         }
         data = await Outbox.find(filter=filters)
-        return actor_clean(data.objects)
+        return list(set(actor_clean(data.objects)))
 
     async def followers_paged(self, request):
         filters = {
