@@ -85,7 +85,7 @@ async def inbox_post(request, user):
         asyncio.ensure_future(deliver(deliverance.render, [activity["actor"]]))
 
     elif (activity["type"] in ["Announce", "Like"] and
-        activity["object"]["id"].startswith(user.uri)) or \
+        activity["object"].startswith(user.uri)) or \
         (activity["type"] == "Create" and activity["object"]["inReplyTo"] and
         activity["object"]["inReplyTo"].startswith(user.uri)):
             recipients = await user.followers_get()
