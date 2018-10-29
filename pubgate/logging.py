@@ -36,7 +36,9 @@ class PGHttpProtocol(HttpProtocol):
             sign = self.request.headers.get("signature")
             if sign: logger.info(sign)
             if self.request.method == "POST":
-                logger.info(self.request.json)
+                # logger.info(self.request.json)
+                from pprint import pprint
+                pprint(self.request.json)
             logger.info("------")
 
 
