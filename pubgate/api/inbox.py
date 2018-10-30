@@ -82,8 +82,10 @@ async def inbox_post(request, user):
         })
 
         # post_to_remote_inbox
-        asyncio.ensure_future(deliver(deliverance.render, [activity["actor"]]))
+        asyncio.ensure_future(deliver(user.key, deliverance.render, [activity["actor"]]))
 
+    #forward reactions
+    #TODO validate if activity exists in outbox
     elif (activity["type"] in ["Announce", "Like"] and
         activity["object"].startswith(user.uri)) or \
         (activity["type"] == "Create" and activity["object"]["inReplyTo"] and
@@ -95,9 +97,9 @@ async def inbox_post(request, user):
         except ValueError:
             pass
 
-        activity = await fetch(activity["id"])
+        # activity = await fetch(activity["id"])
 
-        asyncio.ensure_future(deliver(activity, recipients))
+        asyncio.ensure_future(deliver(user.key, activity, recipients))
 
     return response.json({'peremoga': 'yep'}, status=202)
 

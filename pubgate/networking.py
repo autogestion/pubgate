@@ -77,9 +77,8 @@ async def deliver_task(recipient, http_sig, activity):
             print("\n")
 
 
-async def deliver(activity, recipients):
+async def deliver(key, activity, recipients):
     # TODO retry over day if fails
-    key = get_key(activity["actor"])
     if '@context' not in activity:
         activity['@context'] = context
     if "signature" not in activity:

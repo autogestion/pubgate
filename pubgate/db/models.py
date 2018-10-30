@@ -2,6 +2,7 @@ from sanic_motor import BaseModel
 # import flask_admin
 # from flask_admin.contrib.pymongo.view import ModelView
 from pubgate.renders import ordered_collection
+from pubgate.crypto.key import get_key
 
 
 def actor_clean(data):
@@ -41,6 +42,10 @@ async def get_ordered(request, model, filters, cleaner, coll_id):
 class User(BaseModel):
     __coll__ = 'users'
     __unique_fields__ = ['username']
+
+    @property
+    def key(self):
+        get_key(self.uri)
 
     @property
     def following(self): return f"{self.uri}/following"

@@ -28,7 +28,7 @@ async def outbox_post(request, user):
     recipients = await activity.recipients()
 
     # post_to_remote_inbox
-    asyncio.ensure_future(deliver(activity.render, recipients))
+    asyncio.ensure_future(deliver(user.key, activity.render, recipients))
 
     return response.json({'peremoga': 'yep'})
 
