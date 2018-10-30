@@ -66,7 +66,7 @@ async def deliver_task(recipient, http_sig, activity):
     headers = http_sig.sign(url, body)
     from pprint import pprint
     pprint(activity)
-    # pprint(headers)
+    pprint(headers)
 
     async with aiohttp.ClientSession() as session:
         async with session.post(url,
