@@ -45,7 +45,7 @@ class User(BaseModel):
 
     @property
     def key(self):
-        get_key(self.uri)
+        return get_key(self.uri)
 
     @property
     def following(self): return f"{self.uri}/following"
