@@ -41,7 +41,7 @@ async def get_ordered(request, model, filters, cleaner, coll_id):
 
 class User(BaseModel):
     __coll__ = 'users'
-    __unique_fields__ = ['username']
+    __unique_fields__ = ['name']
 
     @property
     def key(self):

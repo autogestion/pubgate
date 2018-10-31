@@ -1,7 +1,4 @@
 
-from pubgate.crypto.key import get_key
-from pubgate import LOGO
-
 
 context = [
         "https://www.w3.org/ns/activitystreams",
@@ -22,30 +19,24 @@ class Actor:
     @property
     def render(self):
 
-        return {
+        actor = self.user.profile
+        actor.update({
             "@context": context,
             "id": self.user.uri,
-            "type": self.user.actor_type,
             "following": self.user.following,
             "followers": self.user.followers,
             "inbox": self.user.inbox,
             "outbox": self.user.outbox,
-            "preferredUsername": f"{self.user.name}",
             "name": "",
-            "summary": "<p></p>",
             # "url": f"{base_url}/@{user_id}",
             "manuallyApprovesFollowers": False,
-            "publicKey": get_key(self.user.uri).to_dict(),
+            "publicKey": self.user.key.to_dict(),
             "endpoints": {
                 # "sharedInbox": f"{base_url}/inbox"
                 # "oauthTokenEndpoint": f"{self.base_url}/auth/token"
-            },
-            "icon": {
-                "type": "Image",
-                "mediaType": "image/png",
-                "url": LOGO
             }
-        }
+        })
+        return actor
 
     def webfinger(self, resource):
 
@@ -69,7 +60,7 @@ class Actor:
                 },
                 {
                     "rel": "magic-public-key",
-                    "href": get_key(self.user.uri).to_magic_key()
+                    "href": self.user.key.to_magic_key()
                 },
                 # {
                 #     "rel": "salmon",

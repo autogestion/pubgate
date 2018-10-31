@@ -57,7 +57,7 @@ async def user_create(request):
             await User.insert_one(dict(name=username,
                                        password=generate_password_hash(password),
                                        email=request.json.get("email"),
-                                       actor_type=request.json.get("actor_type", "Person"),
+                                       profile=request.json.get("profile"),
                                        details=request.json.get("details"),
                                        uri=f"{request.app.base_url}/{username}"
                                        )
