@@ -368,7 +368,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"username\": \"{{user}}\", \n\t\"password\":\"{{pass}}\", \n\t\"invite\": \"{{invite}}\",\n\t\"profile\": {\n\t\t\"type\": \"Person\",\n\t\t\"preferredUsername\": \"{{user}}\",\n\t\t\"summary\": \"activitypub federator, written on Python/ Sanic <a href=\\\"https://github.com/autogestion/pubgate\\\" target=\\\"_blank\\\" https://github.com/autogestion/pubgate</a>\",\n\t    \"icon\": {\n\t        \"type\": \"Image\",\n\t        \"mediaType\": \"image/jpeg\",\n\t        \"url\": \"https://avatars2.githubusercontent.com/u/1098257\"\n\t    }\t\t\n\t}\n}"
+					"raw": "{\n\t\"username\": \"{{user}}\", \n\t\"password\":\"{{pass}}\", \n\t\"invite\": \"{{invite}}\",\n\t\"profile\": {\n\t\t\"type\": \"Person\",\n\t\t\"preferredUsername\": \"{{user}}\",\n\t\t\"summary\": \"activitypub federator, written on Python/ Sanic <a href='https://github.com/autogestion/pubgate' target='blank'> https://github.com/autogestion/pubgate</a>\",\n\t    \"icon\": {\n\t        \"type\": \"Image\",\n\t        \"mediaType\": \"image/jpeg\",\n\t        \"url\": \"https://avatars2.githubusercontent.com/u/1098257\"\n\t    }\t\t\n\t}\n}"
 				},
 				"description": ""
 			},
@@ -382,7 +382,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"username\": \"{{user}}\", \n\t\"password\":\"{{pass}}\", \n\t\"email\": \"bu\",\n\t\"profile\": {\n\t\t\"type\": \"Person\",\n\t\t\"preferredUsername\": \"{{user}}\",\n\t\t\"summary\": \"activitypub federator, written on Python/ Sanic <a href=\\\"https://github.com/autogestion/pubgate\\\" target=\\\"_blank\\\" https://github.com/autogestion/pubgate</a>\",\n\t    \"icon\": {\n\t        \"type\": \"Image\",\n\t        \"mediaType\": \"image/jpeg\",\n\t        \"url\": \"https://avatars2.githubusercontent.com/u/1098257\"\n\t    }\t\t\n\t}\t\n}"
+					"raw": "{\n\t\"username\": \"{{user}}\", \n\t\"password\":\"{{pass}}\", \n\t\"email\": \"bu\",\n\t\"profile\": {\n\t\t\"type\": \"Person\",\n\t\t\"preferredUsername\": \"{{user}}\",\n\t\t\"summary\": \"activitypub federator, written on Python/ Sanic <a href='https://github.com/autogestion/pubgate' target='blank'> https://github.com/autogestion/pubgate</a>\",\n\t    \"icon\": {\n\t        \"type\": \"Image\",\n\t        \"mediaType\": \"image/jpeg\",\n\t        \"url\": \"https://avatars2.githubusercontent.com/u/1098257\"\n\t    }\t\t\n\t}\t\n}"
 				},
 				"description": ""
 			},
@@ -436,7 +436,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"type\": \"Create\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"inReplyTo\": null,\n        \"sensitive\": false,\n        \"content\": \"post with <a href='{{host}}/tag/some' rel='tag'>#some</a> <a href='{{host}}/tag/tags' rel='tag'>#tags</a>\",\n        \"attachment\": [],\n        \"tag\": [\n            {\n                \"type\": \"Hashtag\",\n                \"href\": \"{{host}}/tags/tags\",\n                \"name\": \"#tags\"\n            },\n            {\n                \"type\": \"Hashtag\",\n                \"href\": \"{{host}}/tags/some\",\n                \"name\": \"#some\"\n            }\n        ]\n    }\n}"
+					"raw": "{\n    \"type\": \"Create\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"inReplyTo\": null,\n        \"sensitive\": false,\n        \"content\": \"Lightweight rssbot, based on pubgate federator <a href='https://github.com/autogestion/pubgate-rssbot' target='blank'> https://github.com/autogestion/pubgate-rssbot</a> . <br> Handles replies, could be deployed on 2$ hosting, like scaleway. Bot example <a href='https://pubgate.autogestion.org/xatarsis' >@xatarsis</a> .<br> <a href='{{host}}/tag/activitypub' rel='tag'>#activitypub</a> <a href='{{host}}/tag/python' rel='tag'>#python</a> <a href='{{host}}/tag/rssbot' rel='tag'>#rssbot</a> <a href='{{host}}/tag/pubgate' rel='tag'>#pubgate</a>\",\n        \"attachment\": [],\n        \"tag\": [\n\t\t\t{\n\t\t\t\t\"type\": \"Mention\",\n\t\t\t\t\"href\": \"https://pubgate.autogestion.org/xatarsis\",\n\t\t\t\t\"name\": \"@xatarsis@pubgate.autogestion.org\"\n\t\t\t},        \n            {\n                \"type\": \"Hashtag\",\n                \"href\": \"{{host}}/tags/activitypub\",\n                \"name\": \"#activitypub\"\n            },\n            {\n                \"type\": \"Hashtag\",\n                \"href\": \"{{host}}/tags/python\",\n                \"name\": \"#python\"\n            },        \n            {\n                \"type\": \"Hashtag\",\n                \"href\": \"{{host}}/tags/rssbot\",\n                \"name\": \"#rssbot\"\n            },\n            {\n                \"type\": \"Hashtag\",\n                \"href\": \"{{host}}/tags/pubgate\",\n                \"name\": \"#pubgate\"\n            }\n        ]\n    }\n}"
 				},
 				"description": ""
 			},
@@ -583,7 +583,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"username\": \"{{user}}\",\n\t\"password\": \"{{pass}}\",\n\t\"email\": \"\",\n\t\"invite\": \"{{invite}}\",\n\t\"profile\": {\n\t\t\"type\": \"Service\",\n\t\t\"preferredUsername\": \"Xatarsis\",\n\t\t\"summary\": \"Blog of co-living. News, reflections, review and our expressions <br> Broadcast from <a href=\\\"https://xatarsis.blogspot.com\\\" target=\\\"_blank\\\" https://xatarsis.blogspot.com</a>\",\n\t    \"icon\": {\n\t        \"type\": \"Image\",\n\t        \"mediaType\": \"image/png\",\n\t        \"url\": \"https://scontent-mxp1-1.xx.fbcdn.net/v/t1.0-1/p320x320/30762577_367140987121136_8721509227190812672_n.png?_nc_cat=102&_nc_ht=scontent-mxp1-1.xx&oh=4451ff8948c6e5d7161291695139381f&oe=5C442443\"\n\t    }\t\t\n\t},\n\t\"details\": {\n\t\t\"rssbot\": {\n\t\t\t\"feed\": \"https://xatarsis.blogspot.com/feeds/posts/default?alt=rss\",\n\t\t\t\"enable\": true,\n\t\t\t\"tags\": [\"tag1\", \"tag2\"],\n\t\t\t\"html\": true \n\t\t}\n\t}\n}"
+					"raw": "{\n\t\"username\": \"{{user}}\",\n\t\"password\": \"{{pass}}\",\n\t\"email\": \"\",\n\t\"invite\": \"{{invite}}\",\n\t\"profile\": {\n\t\t\"type\": \"Service\",\n\t\t\"preferredUsername\": \"Xatarsis\",\n\t\t\"summary\": \"Blog of co-living. News, reflections, review and our expressions <br> Broadcast from <a href='https://xatarsis.blogspot.com' target='_blank'> https://xatarsis.blogspot.com</a>\",\n\t    \"icon\": {\n\t        \"type\": \"Image\",\n\t        \"mediaType\": \"image/png\",\n\t        \"url\": \"https://scontent-mxp1-1.xx.fbcdn.net/v/t1.0-1/p320x320/30762577_367140987121136_8721509227190812672_n.png?_nc_cat=102&_nc_ht=scontent-mxp1-1.xx&oh=4451ff8948c6e5d7161291695139381f&oe=5C442443\"\n\t    }\t\t\n\t},\n\t\"details\": {\n\t\t\"rssbot\": {\n\t\t\t\"feed\": \"https://xatarsis.blogspot.com/feeds/posts/default?alt=rss\",\n\t\t\t\"enable\": true,\n\t\t\t\"tags\": [\"tag1\", \"tag2\"],\n\t\t\t\"html\": true \n\t\t}\n\t}\n}"
 				},
 				"description": ""
 			},
