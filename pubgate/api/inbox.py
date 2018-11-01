@@ -3,26 +3,25 @@ from sanic import response, Blueprint
 from sanic.log import logger
 from sanic_openapi import doc
 
-from pubgate.api.v1.db.models import User, Inbox, Outbox
-from pubgate.api.v1.utils import make_label, random_object_id
-from pubgate.api.v1.networking import deliver, verify_request
-from pubgate.api.v1.views.auth import auth_required
+from pubgate.db.models import Inbox, Outbox
+from pubgate.utils import make_label
+from pubgate.networking import deliver, verify_request, fetch
+from pubgate.api.auth import user_check, token_check
+from pubgate.activity import Activity
 
 inbox_v1 = Blueprint('inbox_v1')
 
 
-@inbox_v1.route('/<user_id>', methods=['POST'])
+@inbox_v1.route('/<user>/inbox', methods=['POST'])
 @doc.summary("Post to user inbox")
 @doc.consumes(Inbox, location="body")
-async def inbox_post(request, user_id):
-    user = await User.find_one(dict(username=user_id))
-    if not user:
-        return response.json({"zrada": "no such user"}, status=404)
+@user_check
+async def inbox_post(request, user):
     activity = request.json.copy()
 
     verified = await verify_request(
-            request.method, request.path, request.headers, request.body
-        )
+        request.method, request.path, request.headers, request.body
+    )
     if not verified:
         if request.app.config.DEBUG:
             logger.info("signature incorrect")
@@ -40,12 +39,12 @@ async def inbox_post(request, user_id):
 
     exists = await Inbox.find_one(dict(_id=activity["id"]))
     if exists:
-        if user_id in exists['users']:
+        if user.name in exists['users']:
             return response.json({"zrada": "activity already delivered"}, status=403)
 
         else:
             users = exists['users']
-            users.append(user_id)
+            users.append(user.name)
             await Inbox.update_one(
                 {'_id': exists.id},
                 {'$set': {"users": users}}
@@ -55,17 +54,14 @@ async def inbox_post(request, user_id):
         # TODO validate actor and activity
         await Inbox.insert_one({
                 "_id": activity["id"],
-                "users": [user_id],
+                "users": [user.name],
                 "activity": activity,
                 "label": make_label(activity),
                 "meta": {"undo": False, "deleted": False},
              })
 
     if activity["type"] == "Follow":
-        obj_id = random_object_id()
-        outbox_url = f"{request.app.v1_path}/outbox/{user_id}"
         deliverance = {
-            "id": f"{outbox_url}/{obj_id}",
             "type": "Accept",
             "actor": activity["object"],
             "object": {
@@ -75,28 +71,42 @@ async def inbox_post(request, user_id):
                 "object": activity["object"]
             }
         }
+        deliverance = Activity(user, deliverance)
 
         await Outbox.insert_one({
-            "_id": obj_id,
-            "user_id": user_id,
-            "activity": deliverance,
-            "label": make_label(deliverance),
+            "_id": deliverance.id,
+            "user_id": user.name,
+            "activity": deliverance.render,
+            "label": make_label(deliverance.render),
             "meta": {"undo": False, "deleted": False},
         })
 
         # post_to_remote_inbox
-        asyncio.ensure_future(deliver(deliverance, [activity["actor"]]))
+        asyncio.ensure_future(deliver(user.key, deliverance.render, [activity["actor"]]))
+
+    #forward reactions
+    #TODO validate if activity exists in outbox
+    elif (activity["type"] in ["Announce", "Like"] and
+        activity["object"].startswith(user.uri)) or \
+        (activity["type"] == "Create" and activity["object"]["inReplyTo"] and
+        activity["object"]["inReplyTo"].startswith(user.uri)):
+
+        recipients = await user.followers_get()
+        try:
+            recipients.remove(activity["actor"])
+        except ValueError:
+            pass
+
+        # activity = await fetch(activity["id"])
+
+        asyncio.ensure_future(deliver(user.key, activity, recipients))
 
     return response.json({'peremoga': 'yep'}, status=202)
 
 
-@inbox_v1.route('/<user_id>', methods=['GET'])
+@inbox_v1.route('/<user>/inbox', methods=['GET'])
 @doc.summary("Returns user inbox, auth required")
-@auth_required
-async def inbox_list(request, user_id):
-    user = await User.find_one(dict(username=user_id))
-    if not user:
-        return response.json({"zrada": "no such user"}, status=404)
-
+@token_check
+async def inbox_list(request, user):
     resp = await user.inbox_paged(request)
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})

@@ -1,11 +1,16 @@
 from sanic_motor import BaseModel
 # import flask_admin
 # from flask_admin.contrib.pymongo.view import ModelView
-from pubgate.api.v1.renders import ordered_collection
+from pubgate.renders import ordered_collection
+from pubgate.crypto.key import get_key
 
 
 def actor_clean(data):
     return [item["activity"]["object"]["actor"] for item in data]
+
+
+def actor_clean_inbox(data):
+    return [item["activity"]["object"]["object"] for item in data]
 
 
 def activity_clean(data):
@@ -36,53 +41,69 @@ async def get_ordered(request, model, filters, cleaner, coll_id):
 
 class User(BaseModel):
     __coll__ = 'users'
-    __unique_fields__ = ['username']
+    __unique_fields__ = ['name']
+
+    @property
+    def key(self):
+        return get_key(self.uri)
+
+    @property
+    def following(self): return f"{self.uri}/following"
+
+    @property
+    def followers(self): return f"{self.uri}/followers"
+
+    @property
+    def inbox(self): return f"{self.uri}/inbox"
+
+    @property
+    def outbox(self): return f"{self.uri}/outbox"
 
     async def followers_get(self):
         filters = {
             "meta.deleted": False,
-            "user_id": self.username,
+            "user_id": self.name,
             "activity.type": "Accept",
             "activity.object.type": "Follow"
         }
         data = await Outbox.find(filter=filters)
-        return actor_clean(data.objects)
+        return list(set(actor_clean(data.objects)))
 
     async def followers_paged(self, request):
         filters = {
             "meta.deleted": False,
-            "user_id": self.username,
+            "user_id": self.name,
             "activity.type": "Accept",
             "activity.object.type": "Follow"
         }
-        coll_id = f"{request.app.v1_path}/user/{self.username}/followers"
-        return await get_ordered(request, Outbox, filters, actor_clean, coll_id)
+        return await get_ordered(request, Outbox, filters,
+                                 actor_clean, self.followers)
 
     async def following_paged(self, request):
         filters = {
             "meta.deleted": False,
-            "users": {"$in": [self.username]},
+            "users": {"$in": [self.name]},
             "activity.type": "Accept",
             "activity.object.type": "Follow"
         }
-        coll_id = f"{request.app.v1_path}/user/{self.username}/following"
-        return await get_ordered(request, Inbox, filters, actor_clean, coll_id)
+        return await get_ordered(request, Inbox, filters,
+                                 actor_clean_inbox, self.following)
 
     async def outbox_paged(self, request):
         filters = {
             "meta.deleted": False,
-            "user_id": self.username
+            "user_id": self.name
         }
-        coll_id = f"{request.app.v1_path}/outbox/{self.username}"
-        return await get_ordered(request, Outbox, filters, activity_clean, coll_id)
+        return await get_ordered(request, Outbox, filters,
+                                 activity_clean, self.outbox)
 
     async def inbox_paged(self, request):
         filters = {
             "meta.deleted": False,
-            "users": {"$in": [self.username]}
+            "users": {"$in": [self.name]}
         }
-        coll_id = f"{request.app.v1_path}/inbox/{self.username}"
-        return await get_ordered(request, Inbox, filters, activity_clean, coll_id)
+        return await get_ordered(request, Inbox, filters,
+                                 activity_clean, self.inbox)
 
 
 class Outbox(BaseModel):
