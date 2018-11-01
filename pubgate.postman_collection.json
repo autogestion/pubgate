@@ -361,9 +361,23 @@
 			"response": []
 		},
 		{
-			"name": "/auth   Create user with invite",
+			"name": "/auth/token",
 			"request": {
-				"url": "{{host}}/auth",
+				"url": "{{host}}/auth/token",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"{{user}}\",\n\t\"password\":\"{{pass}}\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/user   Create user with invite",
+			"request": {
+				"url": "{{host}}/user",
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -375,9 +389,9 @@
 			"response": []
 		},
 		{
-			"name": "/auth   Create user",
+			"name": "/user   Create user",
 			"request": {
-				"url": "{{host}}/auth",
+				"url": "{{host}}/user",
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -389,14 +403,14 @@
 			"response": []
 		},
 		{
-			"name": "/auth/token",
+			"name": "/<user>   Update user profile",
 			"request": {
-				"url": "{{host}}/auth/token",
-				"method": "POST",
+				"url": "{{host}}/{{user}}",
+				"method": "PATCH",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"username\": \"{{user}}\",\n\t\"password\":\"{{pass}}\"\n}"
+					"raw": "{\n\t\"profile\": {\n\t\t\"type\": \"Person\",\n\t\t\"preferredUsername\": \"{{user}}\",\n\t\t\"summary\": \"Gotta go fast! <br> <a href='https://github.com/autogestion/pubgate' target='blank'> https://github.com/autogestion/pubgate</a>\",\n\t    \"icon\": {\n\t        \"type\": \"Image\",\n\t        \"mediaType\": \"image/jpeg\",\n\t        \"url\": \"https://avatars2.githubusercontent.com/u/1098257\"\n\t    }\t\t\n\t}\t\n}"
 				},
 				"description": ""
 			},
@@ -576,9 +590,9 @@
 			"response": []
 		},
 		{
-			"name": "/auth   Create bot   (pubgate-rssbot required)",
+			"name": "/user   Create bot   (pubgate-rssbot required)",
 			"request": {
-				"url": "{{host}}/auth",
+				"url": "{{host}}/user",
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -590,9 +604,9 @@
 			"response": []
 		},
 		{
-			"name": "/rssbot/<user> Disable bot  (pubgate-rssbot required)",
+			"name": "/<user> Disable bot  (pubgate-rssbot required)",
 			"request": {
-				"url": "{{host}}/rssbot/{{user}}",
+				"url": "{{host}}/{{user}}",
 				"method": "PATCH",
 				"header": [
 					{
@@ -603,7 +617,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"feed\": \"http://feeds.feedburner.com/ArtLvivOnline\",\n\t\"enable\": false,\n\t\"tags\": [\"art\", \"lviv\", \"online\"],\n\t\"html\": true \n}"
+					"raw": "{\n\t\"details\": {\n\t\t\"rssbot\": {\n\t\t\t\"feed\": \"https://xatarsis.blogspot.com/feeds/posts/default?alt=rss\",\n\t\t\t\"enable\": false,\n\t\t\t\"tags\": [\"tag1\", \"tag2\"],\n\t\t\t\"html\": true \n\t\t}\n\t}\n}"
 				},
 				"description": ""
 			},
