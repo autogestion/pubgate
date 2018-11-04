@@ -407,7 +407,13 @@
 			"request": {
 				"url": "{{host}}/{{user}}",
 				"method": "PATCH",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"description": ""
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n\t\"profile\": {\n\t\t\"type\": \"Person\",\n\t\t\"preferredUsername\": \"{{user}}\",\n\t\t\"summary\": \"Gotta go fast! <br> <a href='https://github.com/autogestion/pubgate' target='blank'> https://github.com/autogestion/pubgate</a>\",\n\t    \"icon\": {\n\t        \"type\": \"Image\",\n\t        \"mediaType\": \"image/jpeg\",\n\t        \"url\": \"https://avatars2.githubusercontent.com/u/1098257\"\n\t    }\t\t\n\t}\t\n}"
