@@ -4,8 +4,8 @@ from sanic.log import logger
 from sanic_openapi import doc
 
 from pubgate.db.models import Inbox, Outbox
-from pubgate.utils import make_label
-from pubgate.networking import deliver, verify_request, fetch
+from pubgate.utils import make_label, check_obj_id
+from pubgate.networking import deliver, verify_request
 from pubgate.api.auth import user_check, token_check
 from pubgate.activity import Activity
 
@@ -37,69 +37,40 @@ async def inbox_post(request, user):
     #     }):
     #     return response.json({"zrada": "actor is blocked"}, status=403)
 
-    exists = await Inbox.find_one(dict(_id=activity["id"]))
-    if exists:
-        if user.name in exists['users']:
-            return response.json({"zrada": "activity already delivered"}, status=403)
-
-        else:
-            users = exists['users']
-            users.append(user.name)
-            await Inbox.update_one(
-                {'_id': exists.id},
-                {'$set': {"users": users}}
-            )
-
-    else:
-        # TODO validate actor and activity
-        await Inbox.insert_one({
-                "_id": activity["id"],
-                "users": [user.name],
-                "activity": activity,
-                "label": make_label(activity),
-                "meta": {"undo": False, "deleted": False},
-             })
-
+    mine = check_obj_id(activity["object"])
     if activity["type"] == "Follow":
+        saved = await Inbox.save(user, activity)
+        if not saved:
+            return response.json({"error": "activity already delivered"}, status=403)
+
         deliverance = {
             "type": "Accept",
-            "actor": activity["object"],
-            "object": {
-                "type": "Follow",
-                "id": activity["id"],
-                "actor": activity["actor"],
-                "object": activity["object"]
-            }
+            "object": activity
         }
         deliverance = Activity(user, deliverance)
-
-        await Outbox.insert_one({
-            "_id": deliverance.id,
-            "user_id": user.name,
-            "activity": deliverance.render,
-            "label": make_label(deliverance.render),
-            "meta": {"undo": False, "deleted": False},
-        })
-
+        await deliverance.save()
         # post_to_remote_inbox
         asyncio.ensure_future(deliver(user.key, deliverance.render, [activity["actor"]]))
 
-    #forward reactions
-    #TODO validate if activity exists in outbox
-    elif (activity["type"] in ["Announce", "Like"] and
-        activity["object"].startswith(user.uri)) or \
-        (activity["type"] == "Create" and activity["object"]["inReplyTo"] and
-        activity["object"]["inReplyTo"].startswith(user.uri)):
+    elif activity["type"] in ["Announce", "Like", "Create"]:
+        #TODO validate if object or reaction exists in outbox
+        saved = await Inbox.save(user, activity)
+        if not saved:
+            return response.json({"error": "activity already delivered"}, status=403)
+        if mine:
+            await user.forward_to_followers(activity)
 
-        recipients = await user.followers_get()
-        try:
-            recipients.remove(activity["actor"])
-        except ValueError:
-            pass
-
-        # activity = await fetch(activity["id"])
-
-        asyncio.ensure_future(deliver(user.key, activity, recipients))
+    elif activity["type"] == "Undo":
+        deleted = await Inbox.delete(user, activity["object"]["id"], undo=True)
+        if mine and deleted:
+            if activity["object"]["type"] == "Follow":
+                await Outbox.delete(activity["object"]["id"])
+            elif activity["object"]["type"] in ["Announce", "Like"]:
+                await user.forward_to_followers(activity)
+                
+    elif activity["type"] == "Delete":
+        await Inbox.delete(user, activity["object"]["id"])
+        # TODO handle(forward) delete of reply to user posts
 
     return response.json({'peremoga': 'yep'}, status=202)
 

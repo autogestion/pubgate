@@ -18,6 +18,7 @@ class Activity:
         self.render = activity
         self.user = user
         activity["id"] = f"{user.uri}/activity/{self.id}"
+        activity["actor"] = user.uri
 
     async def save(self):
         await Outbox.insert_one({
@@ -34,8 +35,6 @@ class Note(Activity, FollowersMixin):
     def __init__(self, user, activity):
         super().__init__(user, activity)
         published = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
-
-        activity["actor"] = user.uri
         activity["published"] = published
 
         activity["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
@@ -51,10 +50,6 @@ class Note(Activity, FollowersMixin):
 
 
 class Follow(Activity):
-
-    def __init__(self, user, activity):
-        super().__init__(user, activity)
-        activity["actor"] = user.uri
 
     async def recipients(self):
         return [self.render["object"]]
