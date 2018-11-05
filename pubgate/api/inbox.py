@@ -4,7 +4,7 @@ from sanic.log import logger
 from sanic_openapi import doc
 
 from pubgate.db.models import Inbox, Outbox
-from pubgate.utils import make_label, check_obj_id
+from pubgate.utils import check_obj_id
 from pubgate.networking import deliver, verify_request
 from pubgate.api.auth import user_check, token_check
 from pubgate.activity import Activity
@@ -37,37 +37,33 @@ async def inbox_post(request, user):
     #     }):
     #     return response.json({"zrada": "actor is blocked"}, status=403)
 
-    mine = check_obj_id(activity["object"])
+    mine = check_obj_id(activity["object"], user.uri)
     if activity["type"] == "Follow":
         saved = await Inbox.save(user, activity)
-        if not saved:
-            return response.json({"error": "activity already delivered"}, status=403)
-
-        deliverance = {
-            "type": "Accept",
-            "object": activity
-        }
-        deliverance = Activity(user, deliverance)
-        await deliverance.save()
-        # post_to_remote_inbox
-        asyncio.ensure_future(deliver(user.key, deliverance.render, [activity["actor"]]))
+        if saved:
+            deliverance = {
+                "type": "Accept",
+                "object": activity
+            }
+            deliverance = Activity(user, deliverance)
+            await deliverance.save()
+            # post_to_remote_inbox
+            asyncio.ensure_future(deliver(user.key, deliverance.render, [activity["actor"]]))
 
     elif activity["type"] in ["Announce", "Like", "Create"]:
         #TODO validate if object or reaction exists in outbox
         saved = await Inbox.save(user, activity)
-        if not saved:
-            return response.json({"error": "activity already delivered"}, status=403)
-        if mine:
+        if mine and saved:
             await user.forward_to_followers(activity)
 
     elif activity["type"] == "Undo":
-        deleted = await Inbox.delete(user, activity["object"]["id"], undo=True)
+        deleted = await Inbox.delete(activity["object"]["id"], undo=True)
         if mine and deleted:
             if activity["object"]["type"] == "Follow":
                 await Outbox.delete(activity["object"]["id"])
             elif activity["object"]["type"] in ["Announce", "Like"]:
                 await user.forward_to_followers(activity)
-                
+
     elif activity["type"] == "Delete":
         await Inbox.delete(user, activity["object"]["id"])
         # TODO handle(forward) delete of reply to user posts

@@ -19,6 +19,7 @@ outbox_v1 = Blueprint('outbox_v1')
 async def outbox_post(request, user):
     # TODO handle replies
     # TODO validate activity
+    # TODO support mentions
 
     activity = choose(user, request.json)
     await activity.save()
