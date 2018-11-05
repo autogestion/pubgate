@@ -4,7 +4,7 @@ from sanic.log import logger
 from sanic_openapi import doc
 
 from pubgate.db.models import Inbox, Outbox
-from pubgate.utils import check_obj_id
+from pubgate.utils import check_original
 from pubgate.networking import deliver, verify_request
 from pubgate.api.auth import user_check, token_check
 from pubgate.activity import Activity
@@ -37,7 +37,6 @@ async def inbox_post(request, user):
     #     }):
     #     return response.json({"zrada": "actor is blocked"}, status=403)
 
-    mine = check_obj_id(activity["object"], user.uri)
     if activity["type"] == "Follow":
         saved = await Inbox.save(user, activity)
         if saved:
@@ -51,21 +50,24 @@ async def inbox_post(request, user):
             asyncio.ensure_future(deliver(user.key, deliverance.render, [activity["actor"]]))
 
     elif activity["type"] in ["Announce", "Like", "Create"]:
-        #TODO validate if object or reaction exists in outbox
+        # TODO validate if object of reaction exists in outbox (is local
         saved = await Inbox.save(user, activity)
-        if mine and saved:
+        local = check_original(activity["object"], user.uri)
+        if local and saved:
             await user.forward_to_followers(activity)
 
     elif activity["type"] == "Undo":
-        deleted = await Inbox.delete(activity["object"]["id"], undo=True)
-        if mine and deleted:
+        deleted = await Inbox.delete(activity["object"]["id"])
+        undo_obj = activity["object"].get("object", "")
+
+        if undo_obj.startswith(user.uri) and deleted:
             if activity["object"]["type"] == "Follow":
                 await Outbox.delete(activity["object"]["id"])
             elif activity["object"]["type"] in ["Announce", "Like"]:
                 await user.forward_to_followers(activity)
 
     elif activity["type"] == "Delete":
-        await Inbox.delete(user, activity["object"]["id"])
+        await Inbox.delete(activity["object"]["id"])
         # TODO handle(forward) delete of reply to user posts
 
     return response.json({'peremoga': 'yep'}, status=202)

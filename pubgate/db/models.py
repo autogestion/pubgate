@@ -161,7 +161,7 @@ class Inbox(BaseModel):
                 users = exists['users']
                 users.append(user.name)
                 await cls.update_one(
-                    {'id': exists.id},
+                    {'_id': exists.id},
                     {'$set': {"users": users}}
                 )
 
@@ -178,7 +178,7 @@ class Inbox(BaseModel):
         return True
 
     @classmethod
-    async def delete(cls, obj_id, undo=False):
+    async def delete(cls, obj_id):
         # if undo:
         #     exists = await cls.find_one({"activity.id": obj_id,
         #                                  "deleted": False})

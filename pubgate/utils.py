@@ -25,12 +25,9 @@ def _to_list(data: Union[List[Any], Any]) -> List[Any]:
     return [data]
 
 
-def check_obj_id(obj, uri):
+def check_original(obj, uri):
     if isinstance(obj, str):
         return obj.startswith(uri)
     elif isinstance(obj, dict):
-        reply = obj.get("inReplyTo", "")
-        undo_obj = obj.get("object", "")
-        return obj["id"].startswith(uri) \
-               or reply.startswith(uri) \
-               or undo_obj.startswith(uri)
+        reply = obj.get("inReplyTo", None)
+        return reply.startswith(uri) if reply else False
