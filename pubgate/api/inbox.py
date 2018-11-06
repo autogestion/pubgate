@@ -50,7 +50,7 @@ async def inbox_post(request, user):
             asyncio.ensure_future(deliver(user.key, deliverance.render, [activity["actor"]]))
 
     elif activity["type"] in ["Announce", "Like", "Create"]:
-        # TODO validate if object of reaction exists in outbox (is local
+        # TODO validate if local object of reaction exists in outbox
         saved = await Inbox.save(user, activity)
         local = check_original(activity["object"], user.uri)
         if local and saved:
@@ -68,7 +68,7 @@ async def inbox_post(request, user):
 
     elif activity["type"] == "Delete":
         await Inbox.delete(activity["object"]["id"])
-        # TODO handle(forward) delete of reply to user posts
+        # TODO handle(forward) delete of reply to local user post
 
     return response.json({'peremoga': 'yep'}, status=202)
 
