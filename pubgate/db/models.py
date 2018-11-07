@@ -1,8 +1,12 @@
+import asyncio
+
 from sanic_motor import BaseModel
 # import flask_admin
 # from flask_admin.contrib.pymongo.view import ModelView
 from pubgate.renders import ordered_collection
 from pubgate.crypto.key import get_key
+from pubgate.utils import make_label, random_object_id
+from pubgate.networking import deliver
 
 
 def actor_clean(data):
@@ -61,7 +65,7 @@ class User(BaseModel):
 
     async def followers_get(self):
         filters = {
-            "meta.deleted": False,
+            "deleted": False,
             "user_id": self.name,
             "activity.type": "Accept",
             "activity.object.type": "Follow"
@@ -71,7 +75,7 @@ class User(BaseModel):
 
     async def followers_paged(self, request):
         filters = {
-            "meta.deleted": False,
+            "deleted": False,
             "user_id": self.name,
             "activity.type": "Accept",
             "activity.object.type": "Follow"
@@ -81,7 +85,7 @@ class User(BaseModel):
 
     async def following_paged(self, request):
         filters = {
-            "meta.deleted": False,
+            "deleted": False,
             "users": {"$in": [self.name]},
             "activity.type": "Accept",
             "activity.object.type": "Follow"
@@ -91,7 +95,7 @@ class User(BaseModel):
 
     async def outbox_paged(self, request):
         filters = {
-            "meta.deleted": False,
+            "deleted": False,
             "user_id": self.name
         }
         return await get_ordered(request, Outbox, filters,
@@ -99,21 +103,98 @@ class User(BaseModel):
 
     async def inbox_paged(self, request):
         filters = {
-            "meta.deleted": False,
+            "deleted": False,
             "users": {"$in": [self.name]}
         }
         return await get_ordered(request, Inbox, filters,
                                  activity_clean, self.inbox)
+
+    async def forward_to_followers(self, activity):
+        recipients = await self.followers_get()
+        try:
+            recipients.remove(activity["actor"])
+        except ValueError:
+            pass
+        asyncio.ensure_future(deliver(self.key, activity, recipients))
 
 
 class Outbox(BaseModel):
     __coll__ = 'outbox'
     __unique_fields__ = ['_id']
 
+    @classmethod
+    async def save(cls, user, activity, **kwargs):
+        db_obj = {
+            "_id": activity.id,
+            "user_id": user.name,
+            "activity": activity.render,
+            "label": make_label(activity.render),
+            "deleted": False,
+        }
+        db_obj.update(kwargs)
+        await Outbox.insert_one(db_obj)
+
+    @classmethod
+    async def delete(cls, obj_id):
+        await cls.update_one(
+            # {'activity.object.id': obj_id},
+            {"$or": [{"activity.object.id": obj_id},
+                     {"activity.object": obj_id}]},
+            {'$set': {"deleted": True}}
+        )
+
 
 class Inbox(BaseModel):
     __coll__ = 'inbox'
-    __unique_fields__ = ['_id']
+    __unique_fields__ = ['_id', 'activity.id']
+
+    @classmethod
+    async def save(cls, user, activity):
+        exists = await cls.find_one(
+            {"activity.id": activity["id"]}
+        )
+        if exists:
+            if user.name in exists['users']:
+                return False
+
+            else:
+                users = exists['users']
+                users.append(user.name)
+                await cls.update_one(
+                    {'_id': exists.id},
+                    {'$set': {"users": users}}
+                )
+
+        else:
+            # TODO validate actor and activity
+            await cls.insert_one({
+                "_id": random_object_id(),
+                "users": [user.name],
+                "activity": activity,
+                "label": make_label(activity),
+                "deleted": False,
+                "first_user": user.name
+            })
+        return True
+
+    @classmethod
+    async def delete(cls, obj_id):
+        # if undo:
+        #     exists = await cls.find_one({"activity.id": obj_id,
+        #                                  "deleted": False})
+        # else:
+        #     exists = await cls.find_one({"activity.object.id": obj_id,
+        #                                  "deleted": False})
+        exists = await cls.find_one({"$or": [{"activity.object.id": obj_id},
+                                             {"activity.id": obj_id}],
+                                     "deleted": False})
+        if exists:
+            await cls.update_one(
+                {'_id': str(exists.id)},
+                {'$set': {"deleted": True}}
+            )
+            return True
+        return False
 
 
 async def register_admin(app):

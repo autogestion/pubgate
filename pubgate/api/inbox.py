@@ -4,8 +4,8 @@ from sanic.log import logger
 from sanic_openapi import doc
 
 from pubgate.db.models import Inbox, Outbox
-from pubgate.utils import make_label
-from pubgate.networking import deliver, verify_request, fetch
+from pubgate.utils import check_origin
+from pubgate.networking import deliver, verify_request
 from pubgate.api.auth import user_check, token_check
 from pubgate.activity import Activity
 
@@ -37,69 +37,37 @@ async def inbox_post(request, user):
     #     }):
     #     return response.json({"zrada": "actor is blocked"}, status=403)
 
-    exists = await Inbox.find_one(dict(_id=activity["id"]))
-    if exists:
-        if user.name in exists['users']:
-            return response.json({"zrada": "activity already delivered"}, status=403)
-
-        else:
-            users = exists['users']
-            users.append(user.name)
-            await Inbox.update_one(
-                {'_id': exists.id},
-                {'$set': {"users": users}}
-            )
-
-    else:
-        # TODO validate actor and activity
-        await Inbox.insert_one({
-                "_id": activity["id"],
-                "users": [user.name],
-                "activity": activity,
-                "label": make_label(activity),
-                "meta": {"undo": False, "deleted": False},
-             })
-
     if activity["type"] == "Follow":
-        deliverance = {
-            "type": "Accept",
-            "actor": activity["object"],
-            "object": {
-                "type": "Follow",
-                "id": activity["id"],
-                "actor": activity["actor"],
-                "object": activity["object"]
+        saved = await Inbox.save(user, activity)
+        if saved:
+            deliverance = {
+                "type": "Accept",
+                "object": activity
             }
-        }
-        deliverance = Activity(user, deliverance)
+            deliverance = Activity(user, deliverance)
+            await deliverance.save()
+            asyncio.ensure_future(deliver(user.key, deliverance.render, [activity["actor"]]))
 
-        await Outbox.insert_one({
-            "_id": deliverance.id,
-            "user_id": user.name,
-            "activity": deliverance.render,
-            "label": make_label(deliverance.render),
-            "meta": {"undo": False, "deleted": False},
-        })
+    elif activity["type"] in ["Announce", "Like", "Create"]:
+        # TODO validate if local object of reaction exists in outbox
+        saved = await Inbox.save(user, activity)
+        local = check_origin(activity["object"], user.uri)
+        if local and saved:
+            await user.forward_to_followers(activity)
 
-        # post_to_remote_inbox
-        asyncio.ensure_future(deliver(user.key, deliverance.render, [activity["actor"]]))
+    elif activity["type"] == "Undo":
+        deleted = await Inbox.delete(activity["object"]["id"])
+        undo_obj = activity["object"].get("object", "")
 
-    #forward reactions
-    #TODO validate if activity exists in outbox
-    elif (activity["type"] in ["Announce", "Like"] and
-        activity["object"].startswith(user.uri)) or \
-        (activity["type"] == "Create" and activity["object"]["inReplyTo"] and
-        activity["object"]["inReplyTo"].startswith(user.uri)):
+        if undo_obj.startswith(user.uri) and deleted:
+            if activity["object"]["type"] == "Follow":
+                await Outbox.delete(activity["object"]["id"])
+            elif activity["object"]["type"] in ["Announce", "Like"]:
+                await user.forward_to_followers(activity)
 
-        recipients = await user.followers_get()
-        try:
-            recipients.remove(activity["actor"])
-        except ValueError:
-            pass
-
-        # activity = await fetch(activity["id"])
-
-        asyncio.ensure_future(deliver(user.key, activity, recipients))
+    elif activity["type"] == "Delete":
+        await Inbox.delete(activity["object"]["id"])
+        # TODO handle(forward) delete of reply to local user post
 
     return response.json({'peremoga': 'yep'}, status=202)
 

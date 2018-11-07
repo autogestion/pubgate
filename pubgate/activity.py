@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pubgate.utils import random_object_id, make_label
+from pubgate.utils import random_object_id
 from pubgate.db.models import Outbox
 
 
@@ -18,15 +18,10 @@ class Activity:
         self.render = activity
         self.user = user
         activity["id"] = f"{user.uri}/activity/{self.id}"
+        activity["actor"] = user.uri
 
     async def save(self):
-        await Outbox.insert_one({
-            "_id": self.id,
-            "user_id": self.user.name,
-            "activity": self.render,
-            "label": make_label(self.render),
-            "meta": {"undo": False, "deleted": False},
-        })
+        await Outbox.save(self.user, self)
 
 
 class Note(Activity, FollowersMixin):
@@ -34,27 +29,20 @@ class Note(Activity, FollowersMixin):
     def __init__(self, user, activity):
         super().__init__(user, activity)
         published = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
-
-        activity["actor"] = user.uri
         activity["published"] = published
 
         activity["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
         activity["cc"] = [user.followers]
 
-        if isinstance(activity["object"], dict):
-            activity["object"]["id"] = f"{user.uri}/object/{self.id}"
-            activity["object"]["attributedTo"] = user.uri
-            activity["object"]["published"] = published
+        activity["object"]["id"] = f"{user.uri}/object/{self.id}"
+        activity["object"]["attributedTo"] = user.uri
+        activity["object"]["published"] = published
 
-            activity["object"]["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
-            activity["object"]["cc"] = [user.followers]
+        activity["object"]["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
+        activity["object"]["cc"] = [user.followers]
 
 
 class Follow(Activity):
-
-    def __init__(self, user, activity):
-        super().__init__(user, activity)
-        activity["actor"] = user.uri
 
     async def recipients(self):
         return [self.render["object"]]
@@ -69,10 +57,7 @@ class Delete(FollowersMixin):
         activity["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
 
     async def save(self):
-        await Outbox.update_one(
-            {'activity.object.id': self.render["object"]["id"]},
-            {'$set': {"meta.deleted": True}}
-        )
+        await Outbox.delete(self.render["object"]["id"])
 
 
 def choose(user, activity):

@@ -2,10 +2,10 @@
 ## Asyncronous Lightweight ActivityPub API
 Based on [little-boxes](https://github.com/tsileo/little-boxes).
 Implements both the client-to-server API and the federated server-to-server API.
+Uses asyncio (Sanic) for non-blocking request handling.
+Compatible with Mastodon, Pleroma(?) and microblog.pub
 
-Compatible (tested) with Mastodon, Pleroma and microblog.pub
-
-##### Support extensions(collects blueprints and listeners):
+##### Support extensions (collects blueprints and listeners):
 
  - [pubgate-rssbot](https://github.com/autogestion/pubgate-rssbot):  federates rss-feeds*
 
@@ -13,14 +13,14 @@ Compatible (tested) with Mastodon, Pleroma and microblog.pub
 
 #### Federated
 
- - /.well-known/    (webfinger)
- - /user/           (profile, following)
+ - /.well-known/    (webfinger, nodeinfo)
+ - /user/           (create, profile, following)
  - /inbox/          (create, list)
- - /outbox/         (create, list, item, activity, remote post)
+ - /outbox/         (create, list, details)
  
 
 #### Additional
- - /auth            (create user, get token)
+ - /auth            (get token)
  - /swagger         (api docs)
 
 Full list of endpoints and their payloads available as [Postman collection](https://github.com/autogestion/pubgate/blob/master/pubgate.postman_collection.json)

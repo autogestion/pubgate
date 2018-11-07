@@ -10,7 +10,7 @@ from pubgate.renders import context
 from pubgate.crypto.key import get_key
 from pubgate.crypto.httpsig import HTTPSigAuth
 from pubgate.crypto.httpsig import _parse_sig_header, _body_digest, _build_signed_string, _verify_h
-from pubgate.crypto.datasig import generate_signature
+# from pubgate.crypto.datasig import generate_signature
 
 
 async def verify_request(method: str, path: str, headers, body: str) -> bool:
@@ -81,8 +81,10 @@ async def deliver(key, activity, recipients):
     # TODO retry over day if fails
     if '@context' not in activity:
         activity['@context'] = context
-    if "signature" not in activity:
-        generate_signature(activity, key)
+    # TODO investigate is it necessary to sign object
+    # TODO investigate is it necessary to use pyld instead of json.dump
+    # if "signature" not in activity:
+    #     generate_signature(activity, key)
 
     headers = {"content-type": 'application/activity+json',
                "user-agent": f"PubGate v:{__version__}"}
