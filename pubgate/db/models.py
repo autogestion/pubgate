@@ -146,7 +146,7 @@ class Outbox(BaseModel):
 
 class Inbox(BaseModel):
     __coll__ = 'inbox'
-    __unique_fields__ = ['_id']
+    __unique_fields__ = ['_id', 'activity.id']
 
     @classmethod
     async def save(cls, user, activity):

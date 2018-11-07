@@ -25,7 +25,7 @@ def _to_list(data: Union[List[Any], Any]) -> List[Any]:
     return [data]
 
 
-def check_original(obj, uri):
+def check_origin(obj, uri):
     if isinstance(obj, str):
         return obj.startswith(uri)
     elif isinstance(obj, dict):

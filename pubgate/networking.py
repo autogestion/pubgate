@@ -81,6 +81,8 @@ async def deliver(key, activity, recipients):
     # TODO retry over day if fails
     if '@context' not in activity:
         activity['@context'] = context
+    # TODO investigate is it necessary to sign object
+    # TODO investigate is it necessary to use pyld instead of json.dump
     # if "signature" not in activity:
     #     generate_signature(activity, key)
 

@@ -1,7 +1,7 @@
 
-aiohttp==3.3.2
+aiohttp==3.4.4
 sanic==0.8.3
 sanic-motor==0.3.4
 sanic-openapi==0.4.0
 simple-bcrypt==0.1.0
-pycryptodome==3.7.0
+pycrptodome==3.7.0

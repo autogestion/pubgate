@@ -4,7 +4,7 @@ from sanic.log import logger
 from sanic_openapi import doc
 
 from pubgate.db.models import Inbox, Outbox
-from pubgate.utils import check_original
+from pubgate.utils import check_origin
 from pubgate.networking import deliver, verify_request
 from pubgate.api.auth import user_check, token_check
 from pubgate.activity import Activity
@@ -46,13 +46,12 @@ async def inbox_post(request, user):
             }
             deliverance = Activity(user, deliverance)
             await deliverance.save()
-            # post_to_remote_inbox
             asyncio.ensure_future(deliver(user.key, deliverance.render, [activity["actor"]]))
 
     elif activity["type"] in ["Announce", "Like", "Create"]:
         # TODO validate if local object of reaction exists in outbox
         saved = await Inbox.save(user, activity)
-        local = check_original(activity["object"], user.uri)
+        local = check_origin(activity["object"], user.uri)
         if local and saved:
             await user.forward_to_followers(activity)
 
