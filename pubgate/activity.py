@@ -1,7 +1,8 @@
 from datetime import datetime
 
 from pubgate.utils import random_object_id
-from pubgate.db.models import Outbox
+from pubgate.db.models import Outbox, Inbox
+from pubgate.networking import fetch
 
 
 class FollowersMixin:
@@ -9,6 +10,13 @@ class FollowersMixin:
     async def recipients(self):
         result = await self.user.followers_get()
         return list(set(result))
+
+
+class ReactionsMixin:
+
+    async def recipients(self):
+        followers = await self.user.followers_get()
+        return list(set(followers + self.target))
 
 
 class Activity:
@@ -20,26 +28,19 @@ class Activity:
         activity["id"] = f"{user.uri}/activity/{self.id}"
         activity["actor"] = user.uri
 
+    async def get_target(self, obj_id):
+        target = await Inbox.get_by_object(obj_id)
+        if not target:
+            target = await fetch(obj_id)
+        self.target = target["object"]["attributedTo"]
+        return self.target
+
+    @property
+    def published(self):
+        return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+
     async def save(self):
         await Outbox.save(self.user, self)
-
-
-class Note(Activity, FollowersMixin):
-
-    def __init__(self, user, activity):
-        super().__init__(user, activity)
-        published = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
-        activity["published"] = published
-
-        activity["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
-        activity["cc"] = [user.followers]
-
-        activity["object"]["id"] = f"{user.uri}/object/{self.id}"
-        activity["object"]["attributedTo"] = user.uri
-        activity["object"]["published"] = published
-
-        activity["object"]["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
-        activity["object"]["cc"] = [user.followers]
 
 
 class Follow(Activity):
@@ -48,7 +49,30 @@ class Follow(Activity):
         return [self.render["object"]]
 
 
+class Note(Activity, FollowersMixin):
+
+    def __init__(self, user, activity):
+        super().__init__(user, activity)
+        activity["published"] = activity["object"]["published"] = self.published
+
+        activity["to"] = activity["object"]["to"] = \
+            ["https://www.w3.org/ns/activitystreams#Public"]
+        activity["cc"] = activity["object"]["cc"] = [user.followers]
+
+        activity["object"]["id"] = f"{user.uri}/object/{self.id}"
+        activity["object"]["attributedTo"] = user.uri
+
+
+class Reaction(Activity, ReactionsMixin):
+
+    def __init__(self, user, activity):
+        super().__init__(user, activity)
+        activity["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
+        activity["cc"] = [user.followers, self.get_target(activity["object"])]
+
+
 class Delete(FollowersMixin):
+    # TODO check if post have mentions to add to recipients
 
     def __init__(self, user, activity):
         self.render = activity

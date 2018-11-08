@@ -137,7 +137,6 @@ class Outbox(BaseModel):
     @classmethod
     async def delete(cls, obj_id):
         await cls.update_one(
-            # {'activity.object.id': obj_id},
             {"$or": [{"activity.object.id": obj_id},
                      {"activity.object": obj_id}]},
             {'$set': {"deleted": True}}
@@ -147,6 +146,13 @@ class Outbox(BaseModel):
 class Inbox(BaseModel):
     __coll__ = 'inbox'
     __unique_fields__ = ['_id', 'activity.id']
+
+    @classmethod
+    async def get_by_object(cls, object_id):
+        activity = await cls.find_one(
+            {"activity.object.id": object_id}
+        )
+        return activity
 
     @classmethod
     async def save(cls, user, activity):
@@ -179,12 +185,6 @@ class Inbox(BaseModel):
 
     @classmethod
     async def delete(cls, obj_id):
-        # if undo:
-        #     exists = await cls.find_one({"activity.id": obj_id,
-        #                                  "deleted": False})
-        # else:
-        #     exists = await cls.find_one({"activity.object.id": obj_id,
-        #                                  "deleted": False})
         exists = await cls.find_one({"$or": [{"activity.object.id": obj_id},
                                              {"activity.id": obj_id}],
                                      "deleted": False})

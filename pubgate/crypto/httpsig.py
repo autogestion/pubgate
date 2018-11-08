@@ -6,6 +6,7 @@ Mastodon instances won't accept requests that are not signed using this scheme.
 import base64
 import hashlib
 import logging
+from datetime import datetime
 from typing import Any
 from typing import Dict
 from typing import Optional
@@ -74,10 +75,12 @@ class HTTPSigAuth:
             pass
         bh.update(body)
         bodydigest = "SHA-256=" + base64.b64encode(bh.digest()).decode("utf-8")
+        date = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
+        print(date)
 
-        headers.update({"digest": bodydigest, "host": host})
+        headers.update({"digest": bodydigest, "host": host, "date": date})
 
-        sigheaders = "host digest"
+        sigheaders = "host date digest"
         out = []
         for signed_header in sigheaders.split(" "):
             if signed_header == "digest":

@@ -30,7 +30,7 @@ or as [swagger docs example](http://pubgate.autogestion.org/swagger)
 ## Run
 
 #### Prerequisites
-`MongoDB`
+`MongoDB, Python3.6`
 #### Shell
 ```
 git clone https://github.com/autogestion/pubgate.git
