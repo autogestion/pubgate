@@ -51,6 +51,7 @@ class Create(Activity):
 
         activity["object"]["id"] = f"{user.uri}/object/{self.id}"
         activity["object"]["attributedTo"] = user.uri
+        activity["object"]["actor"] = user.uri
 
 
 class Post(Create):
@@ -98,11 +99,10 @@ def choose(user, activity):
         otype = aobj.get("type", None)
 
     if atype == "Create":
-        local = reply_origin(aobj, user.uri)
-        if local:
-            return Post(user, activity)
-        else:
+        if aobj.get("inReplyTo", None) and not reply_origin(aobj, user.uri):
             return Reply(user, activity)
+        else:
+            return Post(user, activity)
 
     elif atype in ["Announce", "Like"]:
         return Reaction(user, activity)
