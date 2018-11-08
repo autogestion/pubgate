@@ -451,6 +451,46 @@
 			"response": []
 		},
 		{
+			"name": "/<user>/outbox Follow",
+			"request": {
+				"url": "{{host}}/{{user}}/outbox",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"type\": \"Follow\",\n    \"object\": \"https://mastodon.social/users/pubgate\",\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/<user>/outbox Unfollow",
+			"request": {
+				"url": "{{host}}/{{user}}/outbox",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"type\": \"Undo\",\n\t\"actor\": \"https://mastodon.social/users/pubgate\",\n\t\"object\": {\n\t\t\"id\": \"https://mastodon.social/102ec882-a917-4644-bd19-0739dbaa1a3d\",\n\t\t\"type\": \"Follow\",\n\t\t\"actor\": \"https://mastodon.social/users/pubgate\",\n\t\t\"object\": \"{{host}}/{{user}}\"\n\t}\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "/<user>/outbox Create Note",
 			"request": {
 				"url": "{{host}}/{{user}}/outbox",
@@ -464,7 +504,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"type\": \"Create\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"inReplyTo\": \"\",\n        \"sensitive\": false,\n        \"content\": \"Ще Звитяга! Слава Ісу! Ще Карамба хуямба\",\n        \"contentMap\": {\n            \"uk\": \"Звитягаll!\"\n        },\n        \"attachment\": [],\n        \"tag\": []\n    }\n}        "
+					"raw": "{\n    \"type\": \"Create\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"inReplyTo\": \"\",\n        \"sensitive\": false,\n        \"content\": \"Litepub compatible!\",\n        \"attachment\": [],\n        \"tag\": []\n    }\n}        "
 				},
 				"description": ""
 			},
@@ -504,14 +544,14 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"type\": \"Create\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"inReplyTo\": null,\n        \"sensitive\": false,\n        \"atomUri\": \"https://mastodon.social/users/pubgate/statuses/100935709221534471\",\n        \"inReplyToAtomUri\": null,\n        \"conversation\": \"tag:mastodon.social,2018-10-21:objectId=60526490:objectType=Conversation\",\n        \"content\": \"<p>yep</p>\",\n        \"contentMap\": {\n            \"en\": \"<p>yep</p>\"\n        },\n        \"attachment\": [\n            {\n                \"type\": \"Document\",\n                \"mediaType\": \"image/jpeg\",\n                \"url\": \"https://files.mastodon.social/media_attachments/files/007/311/211/original/882db53e64aecbb8.jpg\",\n                \"name\": null\n            }\n        ],\n        \"tag\": []\n    }\n}"
+					"raw": "{\n    \"type\": \"Create\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"inReplyTo\": null,\n        \"sensitive\": false,\n        \"content\": \"<p>yep</p>\",\n        \"contentMap\": {\n            \"en\": \"<p>yep</p>\"\n        },\n        \"attachment\": [\n            {\n                \"type\": \"Document\",\n                \"mediaType\": \"image/jpeg\",\n                \"url\": \"https://files.mastodon.social/media_attachments/files/007/311/211/original/882db53e64aecbb8.jpg\",\n                \"name\": null\n            }\n        ],\n        \"tag\": []\n    }\n}"
 				},
 				"description": ""
 			},
 			"response": []
 		},
 		{
-			"name": "/<user>/outbox Follow",
+			"name": "/<user>/outbox Like/Announce",
 			"request": {
 				"url": "{{host}}/{{user}}/outbox",
 				"method": "POST",
@@ -524,7 +564,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"type\": \"Follow\",\n    \"object\": \"https://mastodon.social/users/pubgate\",\n}"
+					"raw": "{\n  \"type\": \"Announce\",\n  \"object\": \"https://mastodon.social/users/autogestion/statuses/100584040062075154\",\n  \"cc\": [ \"https://mastodon.social/users/autogestion\" ]\n}"
 				},
 				"description": ""
 			},

@@ -1,3 +1,5 @@
+import json
+
 from sanic.server import HttpProtocol
 from sanic.log import logger, access_logger
 from sanic.response import HTTPResponse
@@ -34,9 +36,9 @@ class PGHttpProtocol(HttpProtocol):
 
             access_logger.info('', extra=extra)
             if self.request.app.config.LOG_REQUEST_DETAILS:
-                from pprint import pprint
-                pprint(self.request.headers)
+                print(self.request.headers)
                 if self.request.method == "POST":
+                    from pprint import pprint
                     pprint(self.request.json)
             logger.info("------")
 

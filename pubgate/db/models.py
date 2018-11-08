@@ -1,4 +1,5 @@
 import asyncio
+import copy
 
 from sanic_motor import BaseModel
 # import flask_admin
@@ -123,10 +124,10 @@ class Outbox(BaseModel):
     __unique_fields__ = ['_id']
 
     @classmethod
-    async def save(cls, user, activity, **kwargs):
+    async def save(cls, activity, **kwargs):
         db_obj = {
             "_id": activity.id,
-            "user_id": user.name,
+            "user_id": activity.user.name,
             "activity": activity.render,
             "label": make_label(activity.render),
             "deleted": False,
@@ -173,8 +174,12 @@ class Inbox(BaseModel):
 
         else:
             # TODO validate actor and activity
+            pg_id = random_object_id()
+            # TODO how to get single object from inbox
+            # activity = copy.deepcopy(activity)
+            # activity["pg_id"] = pg_id
             await cls.insert_one({
-                "_id": random_object_id(),
+                "_id": pg_id,
                 "users": [user.name],
                 "activity": activity,
                 "label": make_label(activity),

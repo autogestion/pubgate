@@ -25,9 +25,13 @@ def _to_list(data: Union[List[Any], Any]) -> List[Any]:
     return [data]
 
 
+def reply_origin(obj, uri):
+    reply = obj.get("inReplyTo", None)
+    return reply.startswith(uri) if reply else False
+
+
 def check_origin(obj, uri):
     if isinstance(obj, str):
         return obj.startswith(uri)
     elif isinstance(obj, dict):
-        reply = obj.get("inReplyTo", None)
-        return reply.startswith(uri) if reply else False
+        return reply_origin(obj, uri)
