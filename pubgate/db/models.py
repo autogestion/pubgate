@@ -64,34 +64,36 @@ class User(BaseModel):
     @property
     def outbox(self): return f"{self.uri}/outbox"
 
-    async def followers_get(self):
-        filters = {
+    @property
+    def followers_filter(self):
+        return {
             "deleted": False,
             "user_id": self.name,
             "activity.type": "Accept",
             "activity.object.type": "Follow"
         }
-        data = await Outbox.find(filter=filters)
-        return list(set(actor_clean(data.objects)))
 
-    async def followers_paged(self, request):
-        filters = {
-            "deleted": False,
-            "user_id": self.name,
-            "activity.type": "Accept",
-            "activity.object.type": "Follow"
-        }
-        return await get_ordered(request, Outbox, filters,
-                                 actor_clean, self.followers)
-
-    async def following_paged(self, request):
-        filters = {
+    @property
+    def following_filter(self):
+        return {
             "deleted": False,
             "users": {"$in": [self.name]},
             "activity.type": "Accept",
             "activity.object.type": "Follow"
         }
-        return await get_ordered(request, Inbox, filters,
+
+    async def followers_get(self):
+        data = await Outbox.find(filter=self.followers_filter)
+        return list(set(actor_clean(data.objects)))
+
+    async def followers_paged(self, request):
+        return await get_ordered(request, Outbox,
+                                 self.followers_filter,
+                                 actor_clean, self.followers)
+
+    async def following_paged(self, request):
+        return await get_ordered(request, Inbox,
+                                 self.following_filter,
                                  actor_clean_inbox, self.following)
 
     async def outbox_paged(self, request):
@@ -142,6 +144,23 @@ class Outbox(BaseModel):
                      {"activity.object": obj_id}]},
             {'$set': {"deleted": True}}
         )
+
+    @classmethod
+    async def unfollow(cls, activity):
+        filters = activity.user.following_filter
+        filters["activity.object.object"] = \
+            activity.render["object"]["object"]
+        accept = await Inbox.find_one(filters)
+        if accept:
+            activity.render["object"] = accept.activity["object"]
+            await Inbox.update_one(
+                {'_id': str(accept.id)},
+                {'$set': {"deleted": True}}
+            )
+            await cls.update_one(
+                {'activity.id': accept.activity["object"]["id"]},
+                {'$set': {"deleted": True}}
+            )
 
 
 class Inbox(BaseModel):

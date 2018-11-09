@@ -40,6 +40,7 @@ class PGHttpProtocol(HttpProtocol):
                 if self.request.method == "POST":
                     from pprint import pprint
                     pprint(self.request.json)
+                    print(self.request.body)
             logger.info("------")
 
 

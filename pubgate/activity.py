@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from pubgate.utils import random_object_id, reply_origin
-from pubgate.db.models import Outbox, Inbox
+from pubgate.db.models import Outbox
 
 
 class Activity:
@@ -69,13 +69,25 @@ class Reply(Create):
 
 
 class Reaction(Activity):
-
     def __init__(self, user, activity):
         super().__init__(user, activity)
         self.cc = activity["cc"][:]
         activity["cc"].insert(0, user.followers)
         activity["published"] = self.published
         activity["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
+
+
+class Unfollow:
+    def __init__(self, user, activity):
+        self.render = activity
+        self.user = user
+        activity["actor"] = user.uri
+
+    async def recipients(self):
+        return [self.render["object"]["object"]]
+
+    async def save(self):
+        await Outbox.unfollow(self)
 
 
 class Delete:
@@ -109,6 +121,10 @@ def choose(user, activity):
 
     elif atype == "Follow":
         return Follow(user, activity)
+
+    elif atype == "Undo":
+        if otype == "Follow":
+            return Unfollow(user, activity)
 
     elif atype == "Delete":
         return Delete(user, activity)

@@ -69,6 +69,9 @@ async def inbox_post(request, user):
         await Inbox.delete(activity["object"]["id"])
         # TODO handle(forward) delete of reply to local user post
 
+    else:
+        await Inbox.save(user, activity)
+
     return response.json({'peremoga': 'yep'}, status=202)
 
 
