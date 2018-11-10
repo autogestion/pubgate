@@ -5,7 +5,7 @@ from sanic_openapi import doc
 from pubgate.db.models import Outbox
 from pubgate.renders import context
 from pubgate.activity import choose
-from pubgate.api.auth import user_check, token_check
+from pubgate.utils.auth import user_check, token_check
 
 outbox_v1 = Blueprint('outbox_v1')
 
@@ -17,12 +17,18 @@ outbox_v1 = Blueprint('outbox_v1')
 async def outbox_post(request, user):
     # TODO validate activity
     # TODO support mentions
+    # TODO Accepts non-Activity Objects, and converts to Create Activities per 7.1.1
+    # TODO merges audience properties (to, bto, cc, bcc, audience) with the Create's 'object's audience properties
+    # TODO support collection
 
     activity = choose(user, request.json)
     await activity.save()
     await activity.deliver()
 
-    return response.json({'peremoga': 'yep'})
+    return response.json({'peremoga': 'yep'},
+                         status=201,
+                         headers={'Location': activity.render["id"]}
+                         )
 
 
 @outbox_v1.route('/<user>/outbox', methods=['GET'])
