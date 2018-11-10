@@ -210,6 +210,34 @@
 			"response": []
 		},
 		{
+			"name": "/<user>/inbox/ Create Note Pleroma",
+			"request": {
+				"url": "{{host}}/{{user}}/inbox",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"@context\": [\"https://www.w3.org/ns/activitystreams\",\n\t\t\"https://litepub.github.io/litepub/context.jsonld\"\n\t],\n\t\"actor\": \"https://pleroma.site/users/putinhujlo\",\n\t\"cc\": [\"https://pleroma.site/users/putinhujlo/followers\"],\n\t\"context\": \"https://pleroma.site/contexts/d90cc3ca-288d-447a-a9f9-b634c822ec25\",\n\t\"context_id\": 14823356,\n\t\"id\": \"https://pleroma.site/activities/92f89a1a-9964-4ad9-8076-529938214e97\",\n\t\"object\": {\n\t\t\"actor\": \"https://pleroma.site/users/putinhujlo\",\n\t\t\"attachment\": [],\n\t\t\"attributedTo\": \"https://pleroma.site/users/putinhujlo\",\n\t\t\"cc\": [\"https://pleroma.site/users/putinhujlo/followers\"],\n\t\t\"content\": \"just toot\",\n\t\t\"context\": \"https://pleroma.site/contexts/d90cc3ca-288d-447a-a9f9-b634c822ec25\",\n\t\t\"context_id\": 14823356,\n\t\t\"conversation\": \"https://pleroma.site/contexts/d90cc3ca-288d-447a-a9f9-b634c822ec25\",\n\t\t\"emoji\": {},\n\t\t\"id\": \"https://pleroma.site/objects/85db4a54-b4c2-43ef-994c-50354542c11e\",\n\t\t\"published\": \"2018-11-08T21:29:14.631946Z\",\n\t\t\"sensitive\": false,\n\t\t\"summary\": null,\n\t\t\"tag\": [],\n\t\t\"to\": [\"https://www.w3.org/ns/activitystreams#Public\"],\n\t\t\"type\": \"Note\"\n\t},\n\t\"published\": \"2018-11-08T21:29:14.627223Z\",\n\t\"to\": [\"https://www.w3.org/ns/activitystreams#Public\"],\n\t\"type\": \"Create\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/<user>/inbox/ Create Note Pleroma tags",
+			"request": {
+				"url": "{{host}}/{{user}}/inbox",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{'@context': ['https://www.w3.org/ns/activitystreams',\n              'https://litepub.github.io/litepub/context.jsonld'],\n 'actor': 'https://pleroma.site/users/putinhujlo',\n 'cc': ['https://pleroma.site/users/putinhujlo/followers'],\n 'context': 'https://pleroma.site/contexts/f6c12fd1-236e-45b5-92c3-37a2c58dede0',\n 'context_id': 14831216,\n 'id': 'https://pleroma.site/activities/49fa306f-96ea-4552-9e7e-dd8e9716c153',\n 'object': {'actor': 'https://pleroma.site/users/putinhujlo',\n            'attachment': [],\n            'attributedTo': 'https://pleroma.site/users/putinhujlo',\n            'cc': ['https://pleroma.site/users/putinhujlo/followers'],\n            'content': \"Post with mention <span><a class='mention' \"\n                       \"href='https://mastodon.social/@pubgate'>@<span>pubgate</span></a></span>  \"\n                       \"and tags <a href='https://pleroma.site/tag/gogo' \"\n                       \"rel='tag'>#gogo</a> <a \"\n                       \"href='https://pleroma.site/tag/bu' rel='tag'>#bu</a>\",\n            'context': 'https://pleroma.site/contexts/f6c12fd1-236e-45b5-92c3-37a2c58dede0',\n            'context_id': 14831216,\n            'conversation': 'https://pleroma.site/contexts/f6c12fd1-236e-45b5-92c3-37a2c58dede0',\n            'emoji': {},\n            'id': 'https://pleroma.site/objects/f7bb8493-e72e-4727-980d-101d203969f5',\n            'published': '2018-11-08T22:45:51.889945Z',\n            'sensitive': False,\n            'summary': None,\n            'tag': [{'href': 'https://pleroma.site/tags/gogo',\n                     'name': '#gogo',\n                     'type': 'Hashtag'},\n                    {'href': 'https://pleroma.site/tags/bu',\n                     'name': '#bu',\n                     'type': 'Hashtag'},\n                    {'href': 'https://mastodon.social/users/pubgate',\n                     'name': '@pubgate@mastodon.social',\n                     'type': 'Mention'}],\n            'to': ['https://www.w3.org/ns/activitystreams#Public',\n                   'https://mastodon.social/users/pubgate'],\n            'type': 'Note'},\n 'published': '2018-11-08T22:45:51.884916Z',\n 'to': ['https://www.w3.org/ns/activitystreams#Public',\n        'https://mastodon.social/users/pubgate'],\n 'type': 'Create'}\n"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "/<user>/inbox Follow",
 			"request": {
 				"url": "{{host}}/{{user}}/inbox",
@@ -224,20 +252,6 @@
 			"response": []
 		},
 		{
-			"name": "/<user>/inbox Accept Follow",
-			"request": {
-				"url": "{{host}}/{{user}}/inbox",
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"@context\": [\"https://www.w3.org/ns/activitystreams\",\n\t\t\"https://w3id.org/security/v1\",\n\t\t{\n\t\t\t\"Hashtag\": \"as:Hashtag\",\n\t\t\t\"sensitive\": \"as:sensitive\"\n\t\t}\n\t],\n\t\"actor\": \"https://pubgate.autogestion.org/xatar3\",\n\t\"id\": \"https://pubgate.autogestion.org/xatar3/activity/87a8ccae824698e5\",\n\t\"object\": {\n\t\t\"actor\": \"https://mastodon.social/users/pubgate\",\n\t\t\"id\": \"https://mastodon.social/abeffee3-a374-4272-bf20-7a9134029b72\",\n\t\t\"object\": \"https://pubgate.autogestion.org/xatar3\",\n\t\t\"type\": \"Follow\"\n\t},\n\t\"signature\": {\n\t\t\"created\": \"2018-10-25T21:50:05Z\",\n\t\t\"creator\": \"https://pubgate.autogestion.org/xatar3#main-key\",\n\t\t\"signatureValue\": \"FNDmeO9jEMyN+vCtDSbtFvok+5PWwuZ80HlKhmaRNjF+jHKFKYn9160dB74wSuzsITQ7Yigf6bduTHM+ctdiHVJxbUQAFvq+He+3O0QU7SBX6FpiHYs9yoquiSCPQ2JhVFWHaDjUWQmSiSquUaHsIS7VtD8s56aZoSs0buuA+6OCIy158F4KZJQ092UvbIWpWMSuRV5w4s0A8GU/MAPLlZ4EGWGa2q/Jqn7jX48C7jQUvkxLxTlL7pN/Ya3jetoVDNupuz+PwFt1rrLNBeJj2qgmXuxzai0a2Tzn/zixgYoA7TMTx2an5L/BOzp/MZCvwVKNJ1iZj0DlPsHxSgYd7w==\",\n\t\t\"type\": \"RsaSignature2017\"\n\t},\n\t\"type\": \"Accept\"\n}"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
 			"name": "/<user>/inbox Unfollow",
 			"request": {
 				"url": "{{host}}/{{user}}/inbox",
@@ -246,6 +260,20 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\n\t\"@context\": [\"https://www.w3.org/ns/activitystreams\", \"https://w3id.org/security/v1\", {\n\t\t\"manuallyApprovesFollowers\": \"as:manuallyApprovesFollowers\",\n\t\t\"sensitive\": \"as:sensitive\",\n\t\t\"movedTo\": {\n\t\t\t\"@id\": \"as:movedTo\",\n\t\t\t\"@type\": \"@id\"\n\t\t},\n\t\t\"Hashtag\": \"as:Hashtag\",\n\t\t\"ostatus\": \"http://ostatus.org#\",\n\t\t\"atomUri\": \"ostatus:atomUri\",\n\t\t\"inReplyToAtomUri\": \"ostatus:inReplyToAtomUri\",\n\t\t\"conversation\": \"ostatus:conversation\",\n\t\t\"toot\": \"http://joinmastodon.org/ns#\",\n\t\t\"Emoji\": \"toot:Emoji\",\n\t\t\"focalPoint\": {\n\t\t\t\"@container\": \"@list\",\n\t\t\t\"@id\": \"toot:focalPoint\"\n\t\t},\n\t\t\"featured\": {\n\t\t\t\"@id\": \"toot:featured\",\n\t\t\t\"@type\": \"@id\"\n\t\t},\n\t\t\"schema\": \"http://schema.org#\",\n\t\t\"PropertyValue\": \"schema:PropertyValue\",\n\t\t\"value\": \"schema:value\"\n\t}],\n\t\"id\": \"https://mastodon.social/users/pubgate#follows/4489116/undo\",\n\t\"type\": \"Undo\",\n\t\"actor\": \"https://mastodon.social/users/pubgate\",\n\t\"object\": {\n\t\t\"id\": \"https://mastodon.social/102ec882-a917-4644-bd19-0739dbaa1a3d\",\n\t\t\"type\": \"Follow\",\n\t\t\"actor\": \"https://mastodon.social/users/pubgate\",\n\t\t\"object\": \"{{host}}/{{user}}\"\n\t},\n\t\"signature\": {\n\t\t\"type\": \"RsaSignature2017\",\n\t\t\"creator\": \"https://mastodon.social/users/pubgate#main-key\",\n\t\t\"created\": \"2018-10-25T21:45:16Z\",\n\t\t\"signatureValue\": \"JgeqvVZ4S1ki+TXr3eVOG71JbJUEBF0+q/UoHv7Nj07VdfiN1GnGgmXb76W78e1lJfmW69o4LoBsirMthZAcOBFCBVEGddLLB+olxKi4lRHmQuvSeZkCCZW7mLSMnETOh02KEdU2Z0PQ43l6Tr6KKXqcQIhq19VDCbthpjsIREOpbZD623QA4ByArqSX1dJ0KNXrW4FH+GI6BkQUGWirFOfo9G1yHjE8M8xAezYQA21NVaipTOPtPWM5oOPUr9FAWNaw1WkHzj3sFRQyVK9VRS4Fe6rwvauTnjBIKpFmxGHlssh4nuDVuJBZibZEiivBjQBgUm9YvpIkkKcpP7EgEA==\"\n\t}\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/<user>/inbox Accept Follow",
+			"request": {
+				"url": "{{host}}/{{user}}/inbox",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"@context\": [\"https://www.w3.org/ns/activitystreams\",\n\t\t\"https://w3id.org/security/v1\",\n\t\t{\n\t\t\t\"Hashtag\": \"as:Hashtag\",\n\t\t\t\"sensitive\": \"as:sensitive\"\n\t\t}\n\t],\n\t\"actor\": \"https://mastodon.social/users/pubgate\",\n\t\"id\": \"https://pubgate.autogestion.org/xatar3/activity/87a8ccae824698e5\",\n\t\"object\": {\n\t\t\"actor\": \"{{host}}/{{user}}\",\n\t\t\"id\": \"{{host}}/{{user}}/activity/dfa132c5b0463350\",\n\t\t\"object\": \"https://mastodon.social/users/pubgate\",\n\t\t\"type\": \"Follow\"\n\t},\n\t\"signature\": {\n\t\t\"created\": \"2018-10-25T21:50:05Z\",\n\t\t\"creator\": \"https://pubgate.autogestion.org/xatar3#main-key\",\n\t\t\"signatureValue\": \"FNDmeO9jEMyN+vCtDSbtFvok+5PWwuZ80HlKhmaRNjF+jHKFKYn9160dB74wSuzsITQ7Yigf6bduTHM+ctdiHVJxbUQAFvq+He+3O0QU7SBX6FpiHYs9yoquiSCPQ2JhVFWHaDjUWQmSiSquUaHsIS7VtD8s56aZoSs0buuA+6OCIy158F4KZJQ092UvbIWpWMSuRV5w4s0A8GU/MAPLlZ4EGWGa2q/Jqn7jX48C7jQUvkxLxTlL7pN/Ya3jetoVDNupuz+PwFt1rrLNBeJj2qgmXuxzai0a2Tzn/zixgYoA7TMTx2an5L/BOzp/MZCvwVKNJ1iZj0DlPsHxSgYd7w==\",\n\t\t\"type\": \"RsaSignature2017\"\n\t},\n\t\"type\": \"Accept\"\n}"
 				},
 				"description": ""
 			},
@@ -484,7 +512,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"type\": \"Undo\",\n\t\"actor\": \"https://mastodon.social/users/pubgate\",\n\t\"object\": {\n\t\t\"id\": \"https://mastodon.social/102ec882-a917-4644-bd19-0739dbaa1a3d\",\n\t\t\"type\": \"Follow\",\n\t\t\"actor\": \"https://mastodon.social/users/pubgate\",\n\t\t\"object\": \"{{host}}/{{user}}\"\n\t}\n}"
+					"raw": "{\n\t\"type\": \"Undo\",\n\t\"object\": {\n\t\t\"type\": \"Follow\",\n\t\t\"object\": \"https://mastodon.social/users/pubgate\"\n\t}\n}"
 				},
 				"description": ""
 			},
@@ -504,7 +532,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"type\": \"Create\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"inReplyTo\": \"\",\n        \"sensitive\": false,\n        \"content\": \"Litepub compatible!\",\n        \"attachment\": [],\n        \"tag\": []\n    }\n}        "
+					"raw": "{\n    \"type\": \"Create\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"sensitive\": false,\n        \"content\": \"Litepub compatible!\",\n        \"attachment\": [],\n        \"tag\": []\n    }\n}        "
 				},
 				"description": ""
 			},
@@ -551,6 +579,26 @@
 			"response": []
 		},
 		{
+			"name": "/<user>/outbox Create Reply",
+			"request": {
+				"url": "{{host}}/{{user}}/outbox",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"type\": \"Create\",\n    \"cc\": [\"https://mastodon.social/users/pubgate\"]\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"sensitive\": false,\n        \"content\": \"Litepub compatible!\",\n        \"attachment\": [],\n        \"tag\": [],\n        \"inReplyTo\": \"https://mastodon.social/users/pubgate/statuses/100957939699089852\",\n    }\n}        "
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "/<user>/outbox Like/Announce",
 			"request": {
 				"url": "{{host}}/{{user}}/outbox",
@@ -565,6 +613,26 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\n  \"type\": \"Announce\",\n  \"object\": \"https://mastodon.social/users/autogestion/statuses/100584040062075154\",\n  \"cc\": [ \"https://mastodon.social/users/autogestion\" ]\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/<user>/outbox Undo Like/Announce",
+			"request": {
+				"url": "{{host}}/{{user}}/outbox",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"type\": \"Undo\",\n  \"object\": {\n\t\"type\": \"Announce\",\n\t\"object\": \"https://mastodon.social/users/autogestion/statuses/100584040062075154\",\n\t\"cc\": [\"{{host}}/{{user}}/followers\", \"https://mastodon.social/users/autogestion\"],\n\t\"actor\": \"{{host}}/{{user}}\",\n\t\"id\": \"{{host}}/{{user}}/activity/bebfb213c6fd470f\",\n\t\"published\": \"2018-11-10T14:32:50Z\",\n\t\"to\": [\"https://www.w3.org/ns/activitystreams#Public\"],\n\t\"@context\": [\"https://www.w3.org/ns/activitystreams\", \"https://w3id.org/security/v1\", {\n\t\t\"Hashtag\": \"as:Hashtag\",\n\t\t\"sensitive\": \"as:sensitive\"\n\t}]\n  },\n  \"cc\": [ \"https://mastodon.social/users/autogestion\" ]\n}"
 				},
 				"description": ""
 			},

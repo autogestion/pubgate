@@ -10,6 +10,12 @@ class Outbox(BaseModel, BaseManager):
     __unique_fields__ = ['_id']
 
     @classmethod
+    async def get(cls, filters):
+        filters["deleted"] = False
+        data = await Outbox.find_one(filters)
+        return data
+
+    @classmethod
     async def save(cls, activity, **kwargs):
         db_obj = {
             "_id": activity.id,

@@ -1,11 +1,8 @@
-import asyncio
-
 from sanic_motor import BaseModel
 # import flask_admin
 # from flask_admin.contrib.pymongo.view import ModelView
 from pubgate.renders import ordered_collection
-from pubgate.crypto.key import get_key
-from pubgate.utils.networking import deliver
+from pubgate.utils.user import UserUtils
 from pubgate.db.models import Outbox, Inbox
 
 
@@ -43,25 +40,9 @@ async def get_ordered(request, model, filters, cleaner, coll_id):
     return resp
 
 
-class User(BaseModel):
+class User(BaseModel, UserUtils):
     __coll__ = 'users'
     __unique_fields__ = ['name']
-
-    @property
-    def key(self):
-        return get_key(self.uri)
-
-    @property
-    def following(self): return f"{self.uri}/following"
-
-    @property
-    def followers(self): return f"{self.uri}/followers"
-
-    @property
-    def inbox(self): return f"{self.uri}/inbox"
-
-    @property
-    def outbox(self): return f"{self.uri}/outbox"
 
     @property
     def followers_filter(self):
@@ -110,11 +91,3 @@ class User(BaseModel):
         }
         return await get_ordered(request, Inbox, filters,
                                  activity_clean, self.inbox)
-
-    async def forward_to_followers(self, activity):
-        recipients = await self.followers_get()
-        try:
-            recipients.remove(activity["actor"])
-        except ValueError:
-            pass
-        asyncio.ensure_future(deliver(self.key, activity, recipients))

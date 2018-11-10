@@ -1,4 +1,3 @@
-import asyncio
 
 from sanic import response, Blueprint
 from sanic_openapi import doc
@@ -6,7 +5,6 @@ from sanic_openapi import doc
 from pubgate.db.models import Outbox
 from pubgate.renders import context
 from pubgate.activity import choose
-from pubgate.utils.networking import deliver
 from pubgate.api.auth import user_check, token_check
 
 outbox_v1 = Blueprint('outbox_v1')
@@ -17,19 +15,12 @@ outbox_v1 = Blueprint('outbox_v1')
 @doc.consumes(Outbox, location="body")
 @token_check
 async def outbox_post(request, user):
-    # TODO handle replies
     # TODO validate activity
     # TODO support mentions
 
     activity = choose(user, request.json)
     await activity.save()
-    # for field in ["to", "cc", "bto", "bcc"]:
-    #     if field in activity.render:
-    #         recipients.extend(_to_list(activity.render[field]))
-    recipients = await activity.recipients()
-
-    # post_to_remote_inbox
-    asyncio.ensure_future(deliver(user.key, activity.render, recipients))
+    await activity.deliver()
 
     return response.json({'peremoga': 'yep'})
 
@@ -47,7 +38,7 @@ async def outbox_list(request, user):
 @user_check
 async def outbox_activity(request, user, entity):
 
-    data = await Outbox.find_one(dict(user_id=user.name, _id=entity))
+    data = await Outbox.get(dict(user_id=user.name, _id=entity))
     if not data:
         return response.json({"zrada": "no such activity"}, status=404)
 
@@ -62,9 +53,9 @@ async def outbox_activity(request, user, entity):
 @user_check
 async def outbox_object(request, user, entity):
 
-    data = await Outbox.find_one(dict(user_id=user.name, _id=entity))
+    data = await Outbox.get(dict(user_id=user.name, _id=entity))
     if not data:
-        return response.json({"zrada": "no such activity"}, status=404)
+        return response.json({"zrada": "no such object"}, status=404)
 
     result = data["activity"]["object"]
     result['@context'] = context

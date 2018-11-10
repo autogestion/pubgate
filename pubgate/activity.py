@@ -1,37 +1,42 @@
+import asyncio
 from datetime import datetime
 
-from pubgate.utils import random_object_id, reply_origin
+from pubgate.utils import random_object_id
+from pubgate.utils.networking import deliver
 from pubgate.db.models import Outbox
 
 
-class Activity:
-
+class BaseActivity:
     def __init__(self, user, activity):
-        self.id = random_object_id()
         self.render = activity
         self.user = user
-        self.cc = []
-        activity["id"] = f"{user.uri}/activity/{self.id}"
+        self.cc = activity.get("cc", [])[:]
         activity["actor"] = user.uri
-    #
-    # @staticmethod
-    # async def get_target(obj_id):
-    #     target = await Inbox.get_by_object(obj_id)
-    #     if not target:
-    #         target = await fetch(obj_id)
-    #     return target["object"]["attributedTo"]
-
-    @property
-    def published(self):
-        return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
-
-    async def save(self):
-        await Outbox.save(self)
 
     async def recipients(self):
         result = await self.user.followers_get()
         result.extend(self.cc)
         return list(set(result))
+
+    async def deliver(self):
+        recipients = await self.recipients()
+        asyncio.ensure_future(deliver(
+            self.user.key, self.render, recipients))
+
+
+class Activity(BaseActivity):
+
+    def __init__(self, user, activity):
+        super().__init__(user, activity)
+        self.id = random_object_id()
+        activity["id"] = f"{user.uri}/activity/{self.id}"
+
+    @property
+    def published(self):
+        return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+
+    async def save(self, **kwargs):
+        await Outbox.save(self, **kwargs)
 
 
 class Follow(Activity):
@@ -53,36 +58,19 @@ class Create(Activity):
         activity["object"]["attributedTo"] = user.uri
         activity["object"]["actor"] = user.uri
 
-
-class Post(Create):
-    def __init__(self, user, activity):
-        super().__init__(user, activity)
-        activity["cc"] = activity["object"]["cc"] = [user.followers]
-
-
-class Reply(Create):
-    def __init__(self, user, activity):
-        super().__init__(user, activity)
-        self.cc = activity["cc"][:]
         activity["cc"].insert(0, user.followers)
-        activity["object"]["cc"].insert(0, user.followers)
+        activity["object"]["cc"] = activity["cc"]
 
 
 class Reaction(Activity):
     def __init__(self, user, activity):
         super().__init__(user, activity)
-        self.cc = activity["cc"][:]
         activity["cc"].insert(0, user.followers)
         activity["published"] = self.published
         activity["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
 
 
-class Unfollow:
-    def __init__(self, user, activity):
-        self.render = activity
-        self.user = user
-        activity["actor"] = user.uri
-
+class Unfollow(BaseActivity):
     async def recipients(self):
         return [self.render["object"]["object"]]
 
@@ -90,13 +78,10 @@ class Unfollow:
         await Outbox.unfollow(self)
 
 
-class Delete:
+class Delete(BaseActivity):
     # TODO check if post have mentions to add to recipients
-
     def __init__(self, user, activity):
-        self.render = activity
-        self.user = user
-        activity["actor"] = user.uri
+        super().__init__(user, activity)
         activity["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
 
     async def save(self):
@@ -111,10 +96,7 @@ def choose(user, activity):
         otype = aobj.get("type", None)
 
     if atype == "Create":
-        if aobj.get("inReplyTo", None) and not reply_origin(aobj, user.uri):
-            return Reply(user, activity)
-        else:
-            return Post(user, activity)
+        return Create(user, activity)
 
     elif atype in ["Announce", "Like"]:
         return Reaction(user, activity)
@@ -125,6 +107,8 @@ def choose(user, activity):
     elif atype == "Undo":
         if otype == "Follow":
             return Unfollow(user, activity)
+        elif otype in ["Announce", "Like"]:
+            return Delete(user, activity)
 
     elif atype == "Delete":
         return Delete(user, activity)
