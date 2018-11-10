@@ -4,7 +4,7 @@ from sanic import response, Blueprint, exceptions
 from sanic_openapi import doc
 from simple_bcrypt import check_password_hash
 
-from pubgate.db.models import User
+from pubgate.db.user import User
 from pubgate.utils import random_object_id
 
 

@@ -5,7 +5,7 @@ from sanic_openapi import doc
 
 from pubgate.db.models import Inbox, Outbox
 from pubgate.utils import check_origin
-from pubgate.networking import deliver, verify_request
+from pubgate.utils.networking import deliver, verify_request
 from pubgate.api.auth import user_check, token_check
 from pubgate.activity import Activity
 
@@ -68,6 +68,9 @@ async def inbox_post(request, user):
     elif activity["type"] == "Delete":
         await Inbox.delete(activity["object"]["id"])
         # TODO handle(forward) delete of reply to local user post
+
+    else:
+        await Inbox.save(user, activity)
 
     return response.json({'peremoga': 'yep'}, status=202)
 

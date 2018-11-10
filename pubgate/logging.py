@@ -1,3 +1,5 @@
+import json
+
 from sanic.server import HttpProtocol
 from sanic.log import logger, access_logger
 from sanic.response import HTTPResponse
@@ -34,12 +36,11 @@ class PGHttpProtocol(HttpProtocol):
 
             access_logger.info('', extra=extra)
             if self.request.app.config.LOG_REQUEST_DETAILS:
-                sign = self.request.headers.get("signature")
-                if sign: logger.info(sign)
+                print(self.request.headers)
                 if self.request.method == "POST":
-                    # logger.info(self.request.json)
                     from pprint import pprint
                     pprint(self.request.json)
+                    print(self.request.body)
             logger.info("------")
 
 

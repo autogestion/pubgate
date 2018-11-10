@@ -2,7 +2,6 @@
 ## Asyncronous Lightweight ActivityPub API
 Based on [little-boxes](https://github.com/tsileo/little-boxes).
 Implements both the client-to-server API and the federated server-to-server API.
-Uses asyncio (Sanic) for non-blocking request handling.
 Compatible with Mastodon, Pleroma(?) and microblog.pub
 
 ##### Support extensions (collects blueprints and listeners):
@@ -30,7 +29,7 @@ or as [swagger docs example](http://pubgate.autogestion.org/swagger)
 ## Run
 
 #### Prerequisites
-`MongoDB`
+`MongoDB, Python3.6`
 #### Shell
 ```
 git clone https://github.com/autogestion/pubgate.git

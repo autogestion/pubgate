@@ -1,45 +1,42 @@
+import asyncio
 from datetime import datetime
 
 from pubgate.utils import random_object_id
+from pubgate.utils.networking import deliver
 from pubgate.db.models import Outbox
 
 
-class FollowersMixin:
+class BaseActivity:
+    def __init__(self, user, activity):
+        self.render = activity
+        self.user = user
+        self.cc = activity.get("cc", [])[:]
+        activity["actor"] = user.uri
 
     async def recipients(self):
         result = await self.user.followers_get()
+        result.extend(self.cc)
         return list(set(result))
 
-
-class Activity:
-
-    def __init__(self, user, activity):
-        self.id = random_object_id()
-        self.render = activity
-        self.user = user
-        activity["id"] = f"{user.uri}/activity/{self.id}"
-        activity["actor"] = user.uri
-
-    async def save(self):
-        await Outbox.save(self.user, self)
+    async def deliver(self):
+        recipients = await self.recipients()
+        asyncio.ensure_future(deliver(
+            self.user.key, self.render, recipients))
 
 
-class Note(Activity, FollowersMixin):
+class Activity(BaseActivity):
 
     def __init__(self, user, activity):
         super().__init__(user, activity)
-        published = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
-        activity["published"] = published
+        self.id = random_object_id()
+        activity["id"] = f"{user.uri}/activity/{self.id}"
 
-        activity["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
-        activity["cc"] = [user.followers]
+    @property
+    def published(self):
+        return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
 
-        activity["object"]["id"] = f"{user.uri}/object/{self.id}"
-        activity["object"]["attributedTo"] = user.uri
-        activity["object"]["published"] = published
-
-        activity["object"]["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
-        activity["object"]["cc"] = [user.followers]
+    async def save(self, **kwargs):
+        await Outbox.save(self, **kwargs)
 
 
 class Follow(Activity):
@@ -48,12 +45,43 @@ class Follow(Activity):
         return [self.render["object"]]
 
 
-class Delete(FollowersMixin):
+class Create(Activity):
 
     def __init__(self, user, activity):
-        self.render = activity
-        self.user = user
-        activity["actor"] = user.uri
+        super().__init__(user, activity)
+        activity["published"] = activity["object"]["published"] = self.published
+
+        activity["to"] = activity["object"]["to"] = \
+            ["https://www.w3.org/ns/activitystreams#Public"]
+
+        activity["object"]["id"] = f"{user.uri}/object/{self.id}"
+        activity["object"]["attributedTo"] = user.uri
+        activity["object"]["actor"] = user.uri
+
+        activity["cc"].insert(0, user.followers)
+        activity["object"]["cc"] = activity["cc"]
+
+
+class Reaction(Activity):
+    def __init__(self, user, activity):
+        super().__init__(user, activity)
+        activity["cc"].insert(0, user.followers)
+        activity["published"] = self.published
+        activity["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
+
+
+class Unfollow(BaseActivity):
+    async def recipients(self):
+        return [self.render["object"]["object"]]
+
+    async def save(self):
+        await Outbox.unfollow(self)
+
+
+class Delete(BaseActivity):
+    # TODO check if post have mentions to add to recipients
+    def __init__(self, user, activity):
+        super().__init__(user, activity)
         activity["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
 
     async def save(self):
@@ -68,11 +96,19 @@ def choose(user, activity):
         otype = aobj.get("type", None)
 
     if atype == "Create":
-        if otype == "Note":
-            return Note(user, activity)
+        return Create(user, activity)
+
+    elif atype in ["Announce", "Like"]:
+        return Reaction(user, activity)
 
     elif atype == "Follow":
         return Follow(user, activity)
+
+    elif atype == "Undo":
+        if otype == "Follow":
+            return Unfollow(user, activity)
+        elif otype in ["Announce", "Like"]:
+            return Delete(user, activity)
 
     elif atype == "Delete":
         return Delete(user, activity)
