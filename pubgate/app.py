@@ -3,7 +3,7 @@ from sanic import Sanic
 from sanic_openapi import swagger_blueprint, openapi_blueprint
 from sanic_motor import BaseModel
 
-from pubgate.api import user_v1, inbox_v1, outbox_v1, well_known, auth_v1
+from pubgate.api import user_v1, inbox_v1, outbox_v1, well_known
 from pubgate.db.models import register_admin
 from pubgate.logging import PGErrorHandler
 
@@ -19,7 +19,6 @@ def create_app(config_path):
     app.blueprint(openapi_blueprint)
     app.blueprint(swagger_blueprint)
 
-    app.blueprint(auth_v1)
     # app.blueprint(instance)
     app.blueprint(well_known)
     app.blueprint(user_v1)

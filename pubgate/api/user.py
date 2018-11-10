@@ -1,10 +1,11 @@
-
+from simple_bcrypt import check_password_hash
 from simple_bcrypt import generate_password_hash
 from sanic import response, Blueprint
 from sanic_openapi import doc
 
 from pubgate.renders import Actor
-from pubgate.api.auth import user_check, token_check
+from pubgate.utils import random_object_id
+from pubgate.utils.auth import user_check, token_check
 from pubgate.db.user import User
 
 user_v1 = Blueprint('user_v1')
@@ -44,7 +45,7 @@ async def user_create(request):
 @user_v1.route('/<user>', methods=['PATCH'])
 @doc.summary("Update user details or profile")
 @token_check
-async def user_get(request, user):
+async def user_update(request, user):
 
     profile = request.json.get("profile")
     if profile:
@@ -70,6 +71,23 @@ async def user_get(request, user):
 async def user_get(request, user):
     return response.json(Actor(user).render,
                          headers={'Content-Type': 'application/activity+json; charset=utf-8'})
+
+
+@user_v1.route('/<user>/token', methods=['POST'])
+@doc.summary("Get token")
+@user_check
+async def token_get(request, user):
+    if not check_password_hash(user.password, request.json["password"]):
+        return response.json({"zrada": "password incorrect"}, status=401)
+
+    token = getattr(user, "token")
+    if not token:
+        token = random_object_id()
+        #TODO make token expire
+        await User.update_one({'name': request.json["username"]},
+                              {'$set': {'token': token}})
+
+    return response.json({'token': token})
 
 
 @user_v1.route('/<user>/followers', methods=['GET'])

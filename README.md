@@ -13,13 +13,12 @@ Compatible with Mastodon, Pleroma(?) and microblog.pub
 #### Federated
 
  - /.well-known/    (webfinger, nodeinfo)
- - /user/           (create, profile, following)
+ - /user/           (create, profile, token, following)
  - /inbox/          (create, list)
  - /outbox/         (create, list, details)
  
 
 #### Additional
- - /auth            (get token)
  - /swagger         (api docs)
 
 Full list of endpoints and their payloads available as [Postman collection](https://github.com/autogestion/pubgate/blob/master/pubgate.postman_collection.json)
