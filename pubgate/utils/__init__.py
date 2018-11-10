@@ -7,7 +7,7 @@ from typing import Union
 
 def make_label(activity):
     label = activity["type"]
-    if isinstance(activity["object"], dict):
+    if isinstance(activity.get("object", None), dict):
         label = f'{label}: {activity["object"]["type"]}'
     return label
 

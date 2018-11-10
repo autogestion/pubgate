@@ -8,6 +8,8 @@ from pubgate.db.models import Outbox
 
 class BaseActivity:
     def __init__(self, user, activity):
+        activity.pop("bto", None)
+        activity.pop("bcc", None)
         self.render = activity
         self.user = user
         self.cc = activity.get("cc", [])[:]
@@ -58,14 +60,20 @@ class Create(Activity):
         activity["object"]["attributedTo"] = user.uri
         activity["object"]["actor"] = user.uri
 
-        activity["cc"].insert(0, user.followers)
+        check = activity.get("cc", None)
+        if check:
+            activity["cc"].insert(0, user.followers)
+        else: activity["cc"] = [user.followers]
         activity["object"]["cc"] = activity["cc"]
 
 
 class Reaction(Activity):
     def __init__(self, user, activity):
         super().__init__(user, activity)
-        activity["cc"].insert(0, user.followers)
+        check = activity.get("cc", None)
+        if check:
+            activity["cc"].insert(0, user.followers)
+        else: activity["cc"] = [user.followers]
         activity["published"] = self.published
         activity["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
 

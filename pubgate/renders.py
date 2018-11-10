@@ -33,7 +33,7 @@ class Actor:
             "publicKey": self.user.key.to_dict(),
             "endpoints": {
                 # "sharedInbox": f"{base_url}/inbox"
-                # "oauthTokenEndpoint": f"{self.base_url}/auth/token"
+                "oauthTokenEndpoint": f"{self.user.uri}/auth/token"
             }
         })
         return actor
