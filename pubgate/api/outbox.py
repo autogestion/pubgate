@@ -6,7 +6,7 @@ from sanic_openapi import doc
 from pubgate.db.models import Outbox
 from pubgate.renders import context
 from pubgate.activity import choose
-from pubgate.networking import deliver
+from pubgate.utils.networking import deliver
 from pubgate.api.auth import user_check, token_check
 
 outbox_v1 = Blueprint('outbox_v1')

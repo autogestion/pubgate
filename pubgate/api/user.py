@@ -5,7 +5,7 @@ from sanic_openapi import doc
 
 from pubgate.renders import Actor
 from pubgate.api.auth import user_check, token_check
-from pubgate.db.models import User
+from pubgate.db.user import User
 
 user_v1 = Blueprint('user_v1')
 
