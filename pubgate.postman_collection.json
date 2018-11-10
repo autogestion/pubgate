@@ -592,7 +592,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"type\": \"Create\",\n    \"cc\": [\"https://mastodon.social/users/pubgate\"]\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"sensitive\": false,\n        \"content\": \"Litepub compatible!\",\n        \"attachment\": [],\n        \"tag\": [],\n        \"inReplyTo\": \"https://mastodon.social/users/pubgate/statuses/100957939699089852\",\n    }\n}        "
+					"raw": "{\n    \"type\": \"Create\",\n    \"cc\": [\"https://mastodon.social/users/pubgate\"],\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"sensitive\": false,\n        \"content\": \"Litepub compatible Reply!\",\n        \"attachment\": [],\n        \"tag\": [],\n        \"inReplyTo\": \"https://mastodon.social/users/pubgate/statuses/101047834927446681\"\n    }\n}        "
 				},
 				"description": ""
 			},
