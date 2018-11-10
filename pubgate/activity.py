@@ -97,6 +97,7 @@ class Delete(BaseActivity):
 
 
 def choose(user, activity):
+    # TODO add support for Add, Remove, Update
     atype = activity.get("type", None)
     otype = None
     aobj = activity.get("object", None)
@@ -119,6 +120,7 @@ def choose(user, activity):
             return Delete(user, activity)
 
     elif atype == "Delete":
+        # TODO Replaces deleted object with a Tombstone object
         return Delete(user, activity)
 
     return Activity(user, activity)

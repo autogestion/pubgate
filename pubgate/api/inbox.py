@@ -17,6 +17,8 @@ inbox_v1 = Blueprint('inbox_v1')
 @doc.consumes(Inbox, location="body")
 @user_check
 async def inbox_post(request, user):
+    # TODO implement shared inbox
+    # TODO https://www.w3.org/TR/activitypub/#inbox-forwarding
     activity = request.json.copy()
 
     verified = await verify_request(
