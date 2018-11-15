@@ -13,7 +13,7 @@ Compatible with Mastodon, Pleroma(?) and microblog.pub
 #### Federated
 
  - /.well-known/    (webfinger, nodeinfo)
- - /user/           (create, profile, token, following)
+ - /user/           (create, profile, token(password grant OAuth 2), following)
  - /inbox/          (create, list)
  - /outbox/         (create, list, details)
  

@@ -78,7 +78,7 @@ async def user_get(request, user):
 @user_check
 async def token_get(request, user):
     if not check_password_hash(user.password, request.json["password"]):
-        return response.json({"zrada": "password incorrect"}, status=401)
+        return response.json({"error": "password incorrect"}, status=401)
 
     token = getattr(user, "token")
     if not token:
@@ -87,7 +87,7 @@ async def token_get(request, user):
         await User.update_one({'name': request.json["username"]},
                               {'$set': {'token': token}})
 
-    return response.json({'token': token})
+    return response.json({'access_token': token})
 
 
 @user_v1.route('/<user>/followers', methods=['GET'])

@@ -58,7 +58,6 @@ class Create(Activity):
 
         activity["object"]["id"] = f"{user.uri}/object/{self.id}"
         activity["object"]["attributedTo"] = user.uri
-        activity["object"]["actor"] = user.uri
 
         check = activity.get("cc", None)
         if check:
