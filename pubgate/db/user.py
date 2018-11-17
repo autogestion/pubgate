@@ -44,6 +44,11 @@ class User(BaseModel, UserUtils):
     __coll__ = 'users'
     __unique_fields__ = ['name']
 
+    # @classmethod
+    # async def get(cls, name):
+    #     user = await cls.find_one(dict(name=name))
+    #     return user
+
     @property
     def followers_filter(self):
         return {

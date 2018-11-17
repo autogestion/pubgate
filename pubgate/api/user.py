@@ -27,7 +27,7 @@ async def user_create(request):
     username = request.json["username"]
     password = request.json["password"]
     if username and password:
-        is_uniq = await User.is_unique(doc=dict(username=username))
+        is_uniq = await User.is_unique(doc=dict(name=username))
         if is_uniq in (True, None):
             await User.insert_one(dict(name=username,
                                        password=generate_password_hash(password),

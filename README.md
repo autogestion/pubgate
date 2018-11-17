@@ -1,3 +1,4 @@
+![python_version](https://img.shields.io/badge/python-3.6-blue.svg)
 
 ## Asyncronous Lightweight ActivityPub API
 Based on [little-boxes](https://github.com/tsileo/little-boxes).
@@ -21,9 +22,12 @@ Compatible with Mastodon, Pleroma(?) and microblog.pub
 #### Additional
  - /swagger         (api docs)
 
-Full list of endpoints and their payloads available as [Postman collection](https://github.com/autogestion/pubgate/blob/master/pubgate.postman_collection.json)
-or as [swagger docs example](http://pubgate.autogestion.org/swagger)
 
+
+#### API documentation:
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://documenter.getpostman.com/view/4625755/RzZCFdXv) 
+or [swagger docs example](http://pubgate.autogestion.org/swagger)
 
 ## Run
 
