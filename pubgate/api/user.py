@@ -39,7 +39,7 @@ async def user_create(request):
                                   )
             return response.json({'peremoga': 'yep'}, status=201)
         else:
-            return response.json({'zrada': 'username n/a'})
+            return response.json({'error': 'username n/a'})
 
 
 @user_v1.route('/<user>', methods=['PATCH'])

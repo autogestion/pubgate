@@ -52,3 +52,9 @@ cp -r config/extensions_sample_conf.cfg config/conf.cfg
 ```
 python run_api.py
 ```
+
+### Tests
+
+```
+python -m pytest tests/
+```

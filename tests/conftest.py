@@ -2,6 +2,7 @@ import pytest
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from pubgate.app import create_app
+from tests.test_data import user_data
 
 
 @pytest.yield_fixture
