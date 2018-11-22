@@ -54,6 +54,20 @@
 			"response": []
 		},
 		{
+			"name": "/nodeinfo/2.0.json",
+			"request": {
+				"url": "{{host}}/nodeinfo/2.0.json",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"dev1\", \"password\":\"dev1\", \"email\": \"bu\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "/<user>",
 			"request": {
 				"url": "{{host}}/{{user}}/",

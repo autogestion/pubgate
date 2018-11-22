@@ -1,4 +1,5 @@
 from sanic_motor import BaseModel
+from simple_bcrypt import generate_password_hash
 # import flask_admin
 # from flask_admin.contrib.pymongo.view import ModelView
 from pubgate.renders import ordered_collection
@@ -48,6 +49,15 @@ class User(BaseModel, UserUtils):
     # async def get(cls, name):
     #     user = await cls.find_one(dict(name=name))
     #     return user
+
+    @classmethod
+    async def create(cls, user_data, base_url):
+        user_data["name"] = user_data.pop("username")
+        user_data["password"] = generate_password_hash(user_data["password"])
+        user_data["uri"] = f"{base_url}/{user_data['name']}"
+        await cls.insert_one(user_data)
+        user = await cls.find_one({"name": user_data['name']})
+        return user
 
     @property
     def followers_filter(self):

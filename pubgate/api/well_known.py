@@ -21,13 +21,12 @@ instance = Blueprint('instance')
 async def webfinger(request):
     resource = request.args.get('resource')
     if request.app.config.DOMAIN not in resource:
-        return response.json({"zrada": "wrong domain"}, status=404)
+        return response.json({"error": "wrong domain"}, status=404)
 
-    id_list = resource.split(":")[1].split("@")[0]
-    user_id = id_list
+    user_id = resource.split(":")[1].split("@")[0]
     user = await User.find_one(dict(name=user_id))
     if not user:
-        return response.json({"zrada": "no such user"}, status=404)
+        return response.json({"error": "no such user"}, status=404)
 
     return response.json(Actor(user).webfinger(resource), headers={'Content-Type': 'application/jrd+json; charset=utf-8'})
 
