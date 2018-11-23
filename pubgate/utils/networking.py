@@ -57,9 +57,9 @@ async def deliver_task(recipient, http_sig, activity):
     body = json.dumps(activity)
     url = profile["inbox"]
     headers = http_sig.sign(url)
-    # from pprint import pprint
-    # pprint(activity)
-    # pprint(headers)
+    from pprint import pprint
+    pprint(activity)
+    pprint(headers)
 
     async with aiohttp.ClientSession() as session:
         async with session.post(url,
