@@ -56,7 +56,7 @@ async def deliver_task(recipient, http_sig, activity):
     profile = await fetch(recipient)
     body = json.dumps(activity)
     url = profile["inbox"]
-    headers = http_sig.sign(url, body)
+    headers = http_sig.sign(url)
     # from pprint import pprint
     # pprint(activity)
     # pprint(headers)

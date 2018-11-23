@@ -47,4 +47,14 @@ class TestSignup:
 
 
 class TestUser:
-    pass
+    async def test_update_user_profile(self, test_cli, user):
+        new_summary = "new summary"
+        profile = user.profile
+        profile["summary"] = new_summary
+
+        res = await test_cli.patch(f"/{user.name}", data=ujson.dumps({"profile": profile}))
+        assert res.status == 201
+        user_resp = await test_cli.get(f"/{user.name}")
+        assert user_resp.status == 200
+        user_prof = await user_resp.json()
+        assert user_prof["summary"] == new_summary

@@ -31,14 +31,9 @@ def test_cli_close_reg(loop, app, test_client):
     app.config.REGISTRATION = "closed"
     return loop.run_until_complete(test_client(app))
 
+
 @pytest.fixture
-async def user(loop, app, user_data):
-    user = await User.insert_one(dict(name=user_data["username"],
-                         password=generate_password_hash(user_data["password"]),
-                         email=request.json.get("email"),
-                         profile=request.json.get("profile"),
-                         details=request.json.get("details"),
-                         uri=f"{request.app.base_url}/{username}"
-                         )
-                    )
+async def user(app, user_data):
+    user = await User.create(user_data, app.base_url)
+    return user
 

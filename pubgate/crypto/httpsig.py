@@ -10,12 +10,17 @@ from datetime import datetime
 from typing import Any
 from typing import Dict
 from typing import Optional
-from urllib.parse import urlparse
+from urllib.parse import urlsplit
+
 
 from Crypto.Hash import SHA256
 from Crypto.Signature import PKCS1_v1_5
 
 logger = logging.getLogger(__name__)
+
+
+def build_signing_string(headers, used_headers):
+    return '\n'.join(map(lambda x: ': '.join([x.lower(), headers[x]]), used_headers))
 
 
 def _build_signed_string(
@@ -60,45 +65,29 @@ class HTTPSigAuth:
 
     def __init__(self, key, headers) -> None:
         self.key = key
-        self.headers = headers
+        self.headers = headers.copy()
 
-    def sign(self, url, r_body):
-        logger.info(f"keyid={self.key.key_id()}")
-        host = urlparse(url).netloc
+    def sign(self, url):
         headers = self.headers.copy()
+        self.headers.update({
+            '(request-target)': f'post {urlsplit(url).path}',
+            "date": datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
+        })
 
-        bh = hashlib.new("sha256")
-        body = r_body
-        try:
-            body = r_body.encode("utf-8")
-        except AttributeError:
-            pass
-        bh.update(body)
-        bodydigest = "SHA-256=" + base64.b64encode(bh.digest()).decode("utf-8")
-        date = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
-        print(date)
-
-        headers.update({"digest": bodydigest, "host": host, "date": date})
-
-        sigheaders = "host date digest"
-        out = []
-        for signed_header in sigheaders.split(" "):
-            if signed_header == "digest":
-                out.append("digest: " + bodydigest)
-            else:
-                out.append(signed_header + ": " + headers[signed_header])
-        to_be_signed = "\n".join(out)
+        sigheaders = headers.keys()
+        sigstring = build_signing_string(headers, sigheaders)
 
         signer = PKCS1_v1_5.new(self.key.privkey)
         digest = SHA256.new()
-        digest.update(to_be_signed.encode("utf-8"))
-        sig = base64.b64encode(signer.sign(digest))
-        sig = sig.decode("utf-8")
+        digest.update(sigstring.encode("ascii"))
+        sigdata = base64.b64encode(signer.sign(digest))
 
-        key_id = self.key.key_id()
-        headers.update({
-            "Signature": f'keyId="{key_id}",algorithm="rsa-sha256",headers="{sigheaders}",signature="{sig}"'
-        })
-        logger.debug(f"signed request headers={headers}")
+        sig = {
+            'keyId': self.key.key_id(),
+            'algorithm': 'rsa-sha256',
+            'headers': ' '.join(sigheaders),
+            'signature': sigdata.decode('ascii')
+        }
+        headers["signature"] = ','.join(['{}="{}"'.format(k, v) for k, v in sig.items()])
 
         return headers
