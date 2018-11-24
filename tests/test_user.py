@@ -58,3 +58,23 @@ class TestUser:
         assert user_resp.status == 200
         user_prof = await user_resp.json()
         assert user_prof["summary"] == new_summary
+
+    async def test_get_user_profile(self, test_cli, user_data, user_profile):
+        user_resp = await test_cli.get(f"/{user_data['username']}")
+        assert user_resp.status == 200
+        user_prof = await user_resp.json()
+        assert user_prof == user_profile
+
+    async def test_get_token(self, test_cli, user_data, user):
+        user_resp = await test_cli.post(f"/{user_data['username']}/token",
+                                        data=ujson.dumps({"username": user_data["username"],
+                                                          "password": user_data["password"]}))
+        assert user_resp.status == 200
+        token = await user_resp.json()
+        user = await User.find_one({"name": user_data["username"]})
+        assert token["access_token"] == user.token
+
+        user_resp = await test_cli.post(f"/{user_data['username']}/token",
+                                        data=ujson.dumps({"username": user_data["username"],
+                                                          "password": "wrong_password"}))
+        assert user_resp.status == 401

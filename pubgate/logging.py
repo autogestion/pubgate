@@ -35,7 +35,7 @@ class PGHttpProtocol(HttpProtocol):
                 extra['request'] = 'nil'
 
             access_logger.info('', extra=extra)
-            if self.request.app.config.LOG_REQUEST_DETAILS:
+            if self.request.app.config.LOG_INCOMING_REQUEST:
                 print(self.request.headers)
                 if self.request.method == "POST":
                     from pprint import pprint

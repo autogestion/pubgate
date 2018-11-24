@@ -23,7 +23,7 @@ async def outbox_post(request, user):
 
     activity = choose(user, request.json)
     await activity.save()
-    await activity.deliver()
+    await activity.deliver(debug=request.app.config.LOG_OUTGOING_REQUEST)
 
     return response.json({'peremoga': 'yep'},
                          status=201,

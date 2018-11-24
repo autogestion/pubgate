@@ -18,3 +18,36 @@ def user_data():
                 }
             }
         }
+
+
+@pytest.fixture
+def user_profile(app, user, user_data):
+    return {
+        "type": user_data["profile"]["type"],
+        "preferredUsername": user_data["profile"]["preferredUsername"],
+        "summary": user_data["profile"]["summary"],
+        "icon": user_data["profile"]["icon"],
+        "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+                "Hashtag": "as:Hashtag",
+                "sensitive": "as:sensitive"
+            }
+        ],
+        "id": f"{app.base_url}/{user_data['username']}",
+        "following": f"{app.base_url}/{user_data['username']}/following",
+        "followers": f"{app.base_url}/{user_data['username']}/followers",
+        "inbox": f"{app.base_url}/{user_data['username']}/inbox",
+        "outbox": f"{app.base_url}/{user_data['username']}/outbox",
+        "name": "",
+        "manuallyApprovesFollowers": False,
+        "publicKey": {
+            "id": f"{app.base_url}/{user_data['username']}#main-key",
+            "owner": f"{app.base_url}/{user_data['username']}",
+            "publicKeyPem": f"{user.key.pubkey_pem}"
+        },
+        "endpoints": {
+            "oauthTokenEndpoint": f"{app.base_url}/{user_data['username']}/token"
+        }
+    }

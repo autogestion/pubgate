@@ -1,9 +1,10 @@
 import pytest
+import copy
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from pubgate.app import create_app
 from pubgate.db.user import User
-from tests.test_data import user_data
+from tests.test_data import user_data, user_profile
 
 
 @pytest.yield_fixture
@@ -34,6 +35,7 @@ def test_cli_close_reg(loop, app, test_client):
 
 @pytest.fixture
 async def user(app, user_data):
+    user_data = copy.deepcopy(user_data)
     user = await User.create(user_data, app.base_url)
     return user
 
