@@ -20,10 +20,10 @@ class BaseActivity:
         result.extend(self.cc)
         return list(set(result))
 
-    async def deliver(self):
+    async def deliver(self, debug=False):
         recipients = await self.recipients()
         asyncio.ensure_future(deliver(
-            self.user.key, self.render, recipients))
+            self.user.key, self.render, recipients, debug=debug))
 
 
 class Activity(BaseActivity):
@@ -58,7 +58,6 @@ class Create(Activity):
 
         activity["object"]["id"] = f"{user.uri}/object/{self.id}"
         activity["object"]["attributedTo"] = user.uri
-        activity["object"]["actor"] = user.uri
 
         check = activity.get("cc", None)
         if check:

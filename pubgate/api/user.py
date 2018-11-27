@@ -1,5 +1,4 @@
 from simple_bcrypt import check_password_hash
-from simple_bcrypt import generate_password_hash
 from sanic import response, Blueprint
 from sanic_openapi import doc
 
@@ -17,29 +16,22 @@ user_v1 = Blueprint('user_v1')
 async def user_create(request):
 
     if request.app.config.REGISTRATION == "closed":
-        return response.json({'zrada': 'registration closed'})
+        return response.json({'error': 'registration closed'})
 
     invite = request.json.pop("invite", None)
     if request.app.config.REGISTRATION == "invite":
         if not invite or invite != request.app.config.INVITE_CODE:
-            return response.json({'zrada': 'need valid invite'})
+            return response.json({'error': 'need valid invite'})
 
     username = request.json["username"]
     password = request.json["password"]
     if username and password:
-        is_uniq = await User.is_unique(doc=dict(username=username))
+        is_uniq = await User.is_unique(doc=dict(name=username))
         if is_uniq in (True, None):
-            await User.insert_one(dict(name=username,
-                                       password=generate_password_hash(password),
-                                       email=request.json.get("email"),
-                                       profile=request.json.get("profile"),
-                                       details=request.json.get("details"),
-                                       uri=f"{request.app.base_url}/{username}"
-                                       )
-                                  )
-            return response.json({'peremoga': 'yep'}, status=201)
+            user = await User.create(request.json, request.app.base_url)
+            return response.json({'profile': Actor(user).render}, status=201)
         else:
-            return response.json({'zrada': 'username n/a'})
+            return response.json({'error': 'username n/a'})
 
 
 @user_v1.route('/<user>', methods=['PATCH'])
@@ -78,7 +70,7 @@ async def user_get(request, user):
 @user_check
 async def token_get(request, user):
     if not check_password_hash(user.password, request.json["password"]):
-        return response.json({"zrada": "password incorrect"}, status=401)
+        return response.json({"error": "password incorrect"}, status=401)
 
     token = getattr(user, "token")
     if not token:
@@ -87,7 +79,7 @@ async def token_get(request, user):
         await User.update_one({'name': request.json["username"]},
                               {'$set': {'token': token}})
 
-    return response.json({'token': token})
+    return response.json({'access_token': token})
 
 
 @user_v1.route('/<user>/followers', methods=['GET'])

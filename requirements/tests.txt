@@ -1,0 +1,2 @@
+
+pytest-sanic==0.1.15

@@ -51,15 +51,16 @@ async def fetch_text(url):
             return await resp.text()
 
 
-async def deliver_task(recipient, http_sig, activity):
+async def deliver_task(recipient, http_sig, activity, debug=False):
     logger.info(f"Delivering {make_label(activity)} ===>> {recipient}")
     profile = await fetch(recipient)
     body = json.dumps(activity)
     url = profile["inbox"]
-    headers = http_sig.sign(url, body)
-    # from pprint import pprint
-    # pprint(activity)
-    # pprint(headers)
+    headers = http_sig.sign(url)
+    if debug:
+        from pprint import pprint
+        pprint(activity)
+        pprint(headers)
 
     async with aiohttp.ClientSession() as session:
         async with session.post(url,
@@ -70,7 +71,7 @@ async def deliver_task(recipient, http_sig, activity):
             print("\n")
 
 
-async def deliver(key, activity, recipients):
+async def deliver(key, activity, recipients, debug=False):
     # TODO retry over day if fails
     if '@context' not in activity:
         activity['@context'] = context
@@ -86,6 +87,6 @@ async def deliver(key, activity, recipients):
 
     for recipient in recipients:
         try:
-            await deliver_task(recipient, http_sig, activity)
+            await deliver_task(recipient, http_sig, activity, debug=debug)
         except Exception as e:
             logger.error(e)

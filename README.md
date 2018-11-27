@@ -1,8 +1,9 @@
+![python_version](https://img.shields.io/badge/python-3.6-blue.svg)
 
 ## Asyncronous Lightweight ActivityPub API
 Based on [little-boxes](https://github.com/tsileo/little-boxes).
 Implements both the client-to-server API and the federated server-to-server API.
-Compatible with Mastodon, Pleroma(?) and microblog.pub
+Compatible with Mastodon, Pleroma and microblog.pub
 
 ##### Support extensions (collects blueprints and listeners):
 
@@ -13,7 +14,7 @@ Compatible with Mastodon, Pleroma(?) and microblog.pub
 #### Federated
 
  - /.well-known/    (webfinger, nodeinfo)
- - /user/           (create, profile, token, following)
+ - /user/           (create, profile, token(password grant OAuth 2), following)
  - /inbox/          (create, list)
  - /outbox/         (create, list, details)
  
@@ -21,9 +22,12 @@ Compatible with Mastodon, Pleroma(?) and microblog.pub
 #### Additional
  - /swagger         (api docs)
 
-Full list of endpoints and their payloads available as [Postman collection](https://github.com/autogestion/pubgate/blob/master/pubgate.postman_collection.json)
-or as [swagger docs example](http://pubgate.autogestion.org/swagger)
 
+
+#### API documentation:
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://documenter.getpostman.com/view/4625755/RzZCFdXv) 
+or [swagger docs example](http://pubgate.autogestion.org/swagger)
 
 ## Run
 
@@ -47,4 +51,10 @@ cp -r config/extensions_sample_conf.cfg config/conf.cfg
 
 ```
 python run_api.py
+```
+
+### Tests
+
+```
+python -m pytest tests/
 ```

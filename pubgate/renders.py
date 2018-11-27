@@ -62,15 +62,6 @@ class Actor:
                     "rel": "magic-public-key",
                     "href": self.user.key.to_magic_key()
                 },
-                # {
-                #     "rel": "salmon",
-                #     "href": "{method}://mastodon.social/api/salmon/285169"
-                # },
-
-                # {
-                #     "rel": "http://ostatus.org/schema/1.0/subscribe",
-                #     "template": "{method}://mastodon.social/authorize_follow?acct={uri}"
-                # }
             ]
         }
 
