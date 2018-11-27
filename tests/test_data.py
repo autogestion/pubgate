@@ -51,3 +51,24 @@ def user_profile(app, user, user_data):
             "oauthTokenEndpoint": f"{app.base_url}/{user_data['username']}/token"
         }
     }
+
+
+@pytest.fixture
+def user_webfinger(app, user, user_data):
+    return {
+        "subject": f"acct:{user_data['username']}@{app.config.DOMAIN}",
+        "aliases": [
+            f"{app.base_url}/{user_data['username']}"
+        ],
+        "links": [
+            {
+                "rel": "self",
+                "type": "application/activity+json",
+                "href": f"{app.base_url}/{user_data['username']}"
+            },
+            {
+                "rel": "magic-public-key",
+                "href": user.key.to_magic_key()
+            }
+        ]
+    }
