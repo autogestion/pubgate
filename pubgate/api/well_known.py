@@ -47,7 +47,7 @@ async def nodeinfo20(request):
         },
         "protocols": ["activitypub"],
         "services": {"inbound": [], "outbound": []},
-        "openRegistrations": False,
+        "openRegistrations": request.app.config.REGISTRATION == "open",
         "usage": {"users": {"total": users}, "localPosts": statuses},
         "metadata": {
             "sourceCode": "https://github.com/autogestion/pubgate",

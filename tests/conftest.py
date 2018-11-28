@@ -4,7 +4,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 from pubgate.app import create_app
 from pubgate.db.user import User
-from tests.test_data import user_data, user_profile, user_webfinger
+from tests.test_data import user_data, user_profile
 
 
 @pytest.yield_fixture
