@@ -2,8 +2,8 @@ import pytest
 
 
 @pytest.fixture
-def follow():
+def follow(remote_user):
     return {
         "type": "Follow",
-        "object": "https://mastodon.social/users/pubgate",
+        "object": remote_user.uri,
 }

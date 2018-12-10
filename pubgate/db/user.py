@@ -51,12 +51,14 @@ class User(BaseModel, UserUtils):
     #     return user
 
     @classmethod
-    async def create(cls, user_data, base_url):
+    async def create(cls, user_data, base_url, db=None):
+        print(cls.__dbkey__)
+        print(cls.__motor_dbs__)
         user_data["name"] = user_data.pop("username")
         user_data["password"] = generate_password_hash(user_data["password"])
         user_data["uri"] = f"{base_url}/{user_data['name']}"
-        await cls.insert_one(user_data)
-        user = await cls.find_one({"name": user_data['name']})
+        await cls.insert_one(user_data, db=db)
+        user = await cls.find_one({"name": user_data['name']}, db=db)
         return user
 
     @property

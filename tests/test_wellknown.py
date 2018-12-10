@@ -10,13 +10,13 @@ class TestWellknown:
         wf = await user_wf.json()
         assert wf == user_webfinger
 
-    async def test_nodeinfo(self, app, test_cli, nodeinfo):
+    async def test_nodeinfo(self, test_cli, nodeinfo):
         user_wf = await test_cli.get("/.well-known/nodeinfo")
         assert user_wf.status == 200
         wf = await user_wf.json()
         assert wf == nodeinfo
 
-    async def test_nodeinfo20(self, app, test_cli, nodeinfo20):
+    async def test_nodeinfo20(self, test_cli, nodeinfo20):
         user_wf = await test_cli.get("/nodeinfo/2.0.json")
         assert user_wf.status == 200
         wf = await user_wf.json()
