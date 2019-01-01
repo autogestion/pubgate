@@ -86,7 +86,7 @@ class HTTPSigAuth:
         headers = self.headers.copy()
         headers.update({
             '(request-target)': f'post {urlsplit(url).path}',
-            "date": datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
+            # "date": datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
         })
 
         sigheaders = headers.keys()

@@ -47,16 +47,16 @@ async def deliver_task(recipient, http_sig, activity, debug=False):
     body = json.dumps(activity)
     url = profile["inbox"]
     headers = http_sig.sign(url)
-    if debug:
-        from pprint import pprint
-        pprint(activity)
-        pprint(headers)
 
     async with aiohttp.ClientSession() as session:
         async with session.post(url,
                                 data=body,
                                 headers=headers) as resp:
             logger.info(f"Post to inbox {resp.real_url}, status: {resp.status}, {resp.reason}")
+            if debug:
+                from pprint import pprint
+                pprint(activity)
+                print(resp.request_info.headers)
             # print(resp.request_info.headers)
             print("\n")
 

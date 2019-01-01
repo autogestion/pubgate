@@ -40,7 +40,7 @@ class PGHttpProtocol(HttpProtocol):
                     from pprint import pprint
                     print(self.request.headers)
                     pprint(self.request.json)
-                    print(self.request.body)
+                    # print(self.request.body)
             logger.info("------")
 
 
