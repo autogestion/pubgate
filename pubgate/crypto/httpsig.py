@@ -16,6 +16,8 @@ from urllib.parse import urlsplit
 from Crypto.Hash import SHA256
 from Crypto.Signature import PKCS1_v1_5
 
+from pubgate.crypto.key import Key
+
 logger = logging.getLogger(__name__)
 
 
@@ -43,7 +45,7 @@ def _parse_sig_header(val: Optional[str]) -> Optional[Dict[str, str]]:
     out = {}
     for data in val.split(","):
         k, v = data.split("=", 1)
-        out[k] = v[1 : len(v) - 1]  # noqa: black conflict
+        out[k] = v[1: len(v) - 1]  # noqa: black conflict
     return out
 
 
@@ -52,6 +54,19 @@ def _verify_h(signed_string, signature, pubkey):
     digest = SHA256.new()
     digest.update(signed_string.encode("utf-8"))
     return signer.verify(digest, signature)
+
+
+def verify(hsig, request, actor):
+    k = Key(actor["id"])
+    k.load_pub(actor["publicKey"]["publicKeyPem"])
+    if k.key_id() != hsig["keyId"]:
+        return False
+
+    signed_string = _build_signed_string(
+        hsig["headers"], request.method, request.path,
+        request.headers, _body_digest(request.body)
+    )
+    return _verify_h(signed_string, base64.b64decode(hsig["signature"]), k.pubkey)
 
 
 def _body_digest(body: str) -> str:
@@ -65,7 +80,7 @@ class HTTPSigAuth:
 
     def __init__(self, key, headers) -> None:
         self.key = key
-        self.headers = headers.copy()
+        self.headers = headers
 
     def sign(self, url):
         headers = self.headers.copy()

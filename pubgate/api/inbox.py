@@ -20,10 +20,7 @@ async def inbox_post(request, user):
     # TODO implement shared inbox
     # TODO https://www.w3.org/TR/activitypub/#inbox-forwarding
     activity = request.json.copy()
-
-    verified = await verify_request(
-        request.method, request.path, request.headers, request.body
-    )
+    verified = await verify_request(request)
     if not verified:
         if request.app.config.DEBUG:
             logger.info("signature incorrect")

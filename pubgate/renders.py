@@ -57,11 +57,11 @@ class Actor:
                     "rel": "self",
                     "type": "application/activity+json",
                     "href": self.user.uri
-                },
-                {
-                    "rel": "magic-public-key",
-                    "href": self.user.key.to_magic_key()
-                },
+                }
+                # {
+                #     "rel": "magic-public-key",
+                #     "href": self.user.key.to_magic_key()
+                # },
             ]
         }
 

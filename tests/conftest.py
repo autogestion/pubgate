@@ -5,7 +5,6 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from pubgate.app import create_app
 from pubgate.db.user import User
 from tests.test_data import user_data, user_profile
-from tests.test_data.client_activity import s2c_follow
 from tests.fakeserver import FakeServer
 
 
