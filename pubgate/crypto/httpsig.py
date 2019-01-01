@@ -84,7 +84,7 @@ class HTTPSigAuth:
 
     def sign(self, url):
         headers = self.headers.copy()
-        self.headers.update({
+        headers.update({
             '(request-target)': f'post {urlsplit(url).path}',
             "date": datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
         })
