@@ -16,10 +16,10 @@ def user_webfinger(app, user, user_data):
                 "type": "application/activity+json",
                 "href": f"{app.base_url}/{user_data['username']}"
             },
-            {
-                "rel": "magic-public-key",
-                "href": user.key.to_magic_key()
-            }
+            # {
+            #     "rel": "magic-public-key",
+            #     "href": user.key.to_magic_key()
+            # }
         ]
     }
 
