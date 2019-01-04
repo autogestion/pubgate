@@ -51,7 +51,8 @@ class Create(Activity):
 
     def __init__(self, user, activity):
         super().__init__(user, activity)
-        activity["published"] = activity["object"]["published"] = self.published
+        if "published" not in activity:
+            activity["published"] = activity["object"]["published"] = self.published
 
         activity["to"] = activity["object"]["to"] = \
             ["https://www.w3.org/ns/activitystreams#Public"]
