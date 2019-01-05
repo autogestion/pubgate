@@ -13,13 +13,12 @@ from pubgate import KEY_DIR
 class Key(object):
     DEFAULT_KEY_SIZE = 2048
 
-    def __init__(self, owner: str, id_: Optional[str] = None) -> None:
+    def __init__(self, owner: str) -> None:
         self.owner = owner
         self.privkey_pem: Optional[str] = None
         self.pubkey_pem: Optional[str] = None
         self.privkey: Optional[Any] = None
         self.pubkey: Optional[Any] = None
-        self.id_ = id_
 
     def load_pub(self, pubkey_pem: str) -> None:
         self.pubkey_pem = pubkey_pem
@@ -45,15 +44,6 @@ class Key(object):
             "owner": self.owner,
             "publicKeyPem": self.pubkey_pem,
         }
-
-    @classmethod
-    def from_dict(cls, data):
-        try:
-            k = cls(data["owner"], data["id"])
-            k.load_pub(data["publicKeyPem"])
-        except KeyError:
-            raise ValueError(f"bad key data {data!r}")
-        return k
 
     def to_magic_key(self) -> str:
         mod = base64.urlsafe_b64encode(

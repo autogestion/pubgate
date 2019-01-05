@@ -5,29 +5,28 @@ Based on [little-boxes](https://github.com/tsileo/little-boxes).
 Implements both the client-to-server API and the federated server-to-server API.
 Compatible with Mastodon, Pleroma and microblog.pub
 
+
 ##### Support extensions (collects blueprints and listeners):
 
  - [pubgate-rssbot](https://github.com/autogestion/pubgate-rssbot):  federates rss-feeds*
+ - [pubgate-philip](https://github.com/autogestion/pubgate-philip):  minimalist blogging UI(early development)*
 
-## Endpoints
+### API documentation
+Support create / delete / un-/follow users / share / like
 
-#### Federated
-
+#### Endpoints
+Overview [swagger docs example](http://pubgate.autogestion.org/swagger)
+##### Federated
  - /.well-known/    (webfinger, nodeinfo)
  - /user/           (create, profile, token(password grant OAuth 2), following)
  - /inbox/          (create, list)
  - /outbox/         (create, list, details)
- 
-
-#### Additional
+##### Additional
  - /swagger         (api docs)
 
+More details:
 
-
-#### API documentation:
-
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://documenter.getpostman.com/view/4625755/RzZCFdXv) 
-or [swagger docs example](http://pubgate.autogestion.org/swagger)
+At [Postmat documenter](https://documenter.getpostman.com/view/4625755/RzZCFdXv) or download latest [Postman collection](https://github.com/autogestion/pubgate/blob/master/pubgate.postman_collection.json)
 
 ## Run
 

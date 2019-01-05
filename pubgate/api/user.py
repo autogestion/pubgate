@@ -58,7 +58,7 @@ async def user_update(request, user):
 
 
 @user_v1.route('/<user>', methods=['GET'])
-@doc.summary("Returns user details")
+@doc.summary("Returns user profile")
 @user_check
 async def user_get(request, user):
     return response.json(Actor(user).render,
