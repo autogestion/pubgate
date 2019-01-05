@@ -4,7 +4,7 @@ from sanic_openapi import swagger_blueprint, openapi_blueprint
 from sanic_motor import BaseModel
 
 from pubgate.api import user_v1, inbox_v1, outbox_v1, well_known
-from pubgate.db.models import register_admin
+from pubgate.db import register_admin
 from pubgate.logging import PGErrorHandler
 
 

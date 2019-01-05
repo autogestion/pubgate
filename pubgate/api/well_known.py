@@ -2,8 +2,7 @@
 from sanic import response, Blueprint
 from sanic_openapi import doc
 
-from pubgate.db.models import Outbox
-from pubgate.db.user import User
+from pubgate.db import Outbox, User
 from pubgate.renders import Actor
 from pubgate import __version__
 

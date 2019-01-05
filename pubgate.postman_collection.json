@@ -162,6 +162,58 @@
 			"response": []
 		},
 		{
+			"name": "/timeline/local",
+			"request": {
+				"url": "{{host}}/timeline/local",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/timeline/local strip tags",
+			"request": {
+				"url": {
+					"raw": "{{host}}/timeline/local?strip_tags=true",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"timeline",
+						"local"
+					],
+					"query": [
+						{
+							"key": "strip_tags",
+							"value": "true",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "/<user>/activity/<entity>",
 			"request": {
 				"url": "{{host}}/{{user}}/activity/{{entity}}",
@@ -473,6 +525,23 @@
 					{
 						"key": "Authorization",
 						"value": "Bearer {{token}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/timeline/federated",
+			"request": {
+				"url": "{{host}}/timeline/federated",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json",
 						"description": ""
 					}
 				],

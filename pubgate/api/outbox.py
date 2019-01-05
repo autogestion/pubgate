@@ -2,7 +2,7 @@
 from sanic import response, Blueprint
 from sanic_openapi import doc
 
-from pubgate.db.models import Outbox
+from pubgate.db import Outbox
 from pubgate.renders import context
 from pubgate.activity import choose
 from pubgate.utils.auth import user_check, token_check
@@ -67,3 +67,10 @@ async def outbox_object(request, user, entity):
     result['@context'] = context
 
     return response.json(result, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
+
+
+@outbox_v1.route('/timeline/local', methods=['GET'])
+@doc.summary("Returns local timeline")
+async def outbox_all(request):
+    resp = await Outbox.timeline_paged(request, f"{request.app.base_url}/timeline/local")
+    return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})

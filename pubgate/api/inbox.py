@@ -3,7 +3,7 @@ from sanic import response, Blueprint
 from sanic.log import logger
 from sanic_openapi import doc
 
-from pubgate.db.models import Inbox, Outbox
+from pubgate.db import Inbox, Outbox
 from pubgate.utils import check_origin
 from pubgate.utils.networking import deliver, verify_request
 from pubgate.utils.auth import user_check, token_check
@@ -79,4 +79,11 @@ async def inbox_post(request, user):
 @token_check
 async def inbox_list(request, user):
     resp = await user.inbox_paged(request)
+    return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
+
+
+@inbox_v1.route('/timeline/federated', methods=['GET'])
+@doc.summary("Returns federated timeline")
+async def inbox_all(request):
+    resp = await Inbox.timeline_paged(request, f"{request.app.base_url}/timeline/federated")
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})

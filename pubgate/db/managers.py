@@ -1,5 +1,5 @@
 from pubgate.renders import ordered_collection
-
+from pubgate.utils import strip_tags
 
 class BaseManager:
 
@@ -14,12 +14,17 @@ class BaseManager:
         return result.modified_count
 
     @staticmethod
-    def activity_clean(data):
-        return [item["activity"] for item in data]
+    def activity_clean(data, striptags=False):
+        cleaned = [item["activity"] for item in data]
+        if striptags:
+            for post in cleaned:
+                post["object"]["content"] = strip_tags(post["object"]["content"])
+        return cleaned
 
     @staticmethod
     async def get_ordered(request, model, filters, cleaner, coll_id):
         page = request.args.get("page")
+
         if page:
             total = None
             page = int(page)
@@ -36,5 +41,15 @@ class BaseManager:
             data = data.objects
         else:
             data = []
-        resp = ordered_collection(coll_id, total, page, cleaner(data))
+        resp = ordered_collection(coll_id, total, page,
+                                  cleaner(data, request.args.get("strip_tags")))
         return resp
+
+    @classmethod
+    async def timeline_paged(cls, request, uri):
+        filters = {
+            "deleted": False,
+            "activity.type": "Create"
+        }
+        return await cls.get_ordered(request, cls, filters,
+                                     cls.activity_clean, uri)
