@@ -26,7 +26,7 @@ Overview [swagger docs example](http://pubgate.autogestion.org/swagger)
 
 More details:
 
-At [Postmat documenter](https://documenter.getpostman.com/view/4625755/RzZCFdXv) or download latest [Postman collection](https://github.com/autogestion/pubgate/blob/master/pubgate.postman_collection.json)
+At [Postman documenter](https://documenter.getpostman.com/view/4625755/RzZCFdXv) or download latest [Postman collection](https://github.com/autogestion/pubgate/blob/master/pubgate.postman_collection.json)
 
 ## Run
 
