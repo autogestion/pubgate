@@ -4,8 +4,9 @@ from sanic_openapi import swagger_blueprint, openapi_blueprint
 from sanic_motor import BaseModel
 
 from pubgate.api import user_v1, inbox_v1, outbox_v1, well_known
-from pubgate.db.models import register_admin
+from pubgate.db import register_admin
 from pubgate.logging import PGErrorHandler
+from pubgate.utils.streams import Streams
 
 
 def create_app(config_path):
@@ -13,6 +14,7 @@ def create_app(config_path):
     app = Sanic(error_handler=PGErrorHandler())
     app.config.from_pyfile(config_path)
     app.base_url = f"{app.config.METHOD}://{app.config.DOMAIN}"
+    app.streams = Streams()
     BaseModel.init_app(app)
 
     # TODO Find viable openapi fork

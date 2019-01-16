@@ -2,7 +2,7 @@ from functools import wraps
 
 from sanic import exceptions
 
-from pubgate.db.user import User
+from pubgate.db import User
 
 
 def token_check(handler=None):

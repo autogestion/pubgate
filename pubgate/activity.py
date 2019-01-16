@@ -3,7 +3,7 @@ from datetime import datetime
 
 from pubgate.utils import random_object_id
 from pubgate.utils.networking import deliver
-from pubgate.db.models import Outbox
+from pubgate.db import Outbox
 
 
 class BaseActivity:

@@ -1,8 +1,9 @@
+import asyncio
 
 from sanic import response, Blueprint
 from sanic_openapi import doc
 
-from pubgate.db.models import Outbox
+from pubgate.db import Outbox
 from pubgate.renders import context
 from pubgate.activity import choose
 from pubgate.utils.auth import user_check, token_check
@@ -24,6 +25,8 @@ async def outbox_post(request, user):
     activity = choose(user, request.json)
     await activity.save()
     await activity.deliver(debug=request.app.config.LOG_OUTGOING_REQUEST)
+    if activity.render["type"] == "Create":
+        await request.app.streams.outbox.put(activity.render)
 
     return response.json({'peremoga': 'yep'},
                          status=201,
@@ -67,3 +70,20 @@ async def outbox_object(request, user, entity):
     result['@context'] = context
 
     return response.json(result, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
+
+
+@outbox_v1.route('/timeline/local', methods=['GET'])
+@doc.summary("Returns local timeline")
+async def outbox_all(request):
+    resp = await Outbox.timeline_paged(request, f"{request.app.base_url}/timeline/local")
+    return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
+
+
+@outbox_v1.websocket('/timeline/local/stream')
+async def outbox_stream(request, ws):
+    while True:
+        update = await request.app.streams.outbox.get()
+        if update:
+            print('Sending: ')
+            await ws.send(update)
+        await asyncio.sleep(1)

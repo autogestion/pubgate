@@ -22,6 +22,7 @@ Overview [swagger docs example](http://pubgate.autogestion.org/swagger)
  - /inbox/          (create, list)
  - /outbox/         (create, list, details)
 ##### Additional
+ - /timeline        (local, federated)
  - /swagger         (api docs)
 
 More details:

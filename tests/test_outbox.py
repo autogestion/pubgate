@@ -2,7 +2,7 @@ import ujson
 import logging
 import aiohttp
 
-from pubgate.db.models import Outbox
+from pubgate.db.boxes import Outbox
 from tests.test_data.client_activity import s2c_follow
 from tests.test_data.server_activity import s2s_follow
 
