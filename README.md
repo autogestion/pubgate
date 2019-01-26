@@ -18,7 +18,7 @@ Support create / delete / un-/follow users / share / like
 Overview [swagger docs example](http://pubgate.autogestion.org/swagger)
 ##### Federated
  - /.well-known/    (webfinger, nodeinfo)
- - /user/           (create, profile, token(password grant OAuth 2), following)
+ - /user/           (create, profile, token(password grant OAuth 2), following, liked)
  - /inbox/          (create, list)
  - /outbox/         (create, list, details)
 ##### Additional

@@ -15,9 +15,14 @@ def actor_clean_inbox(data, striptags=False):
     return [item["activity"]["object"]["object"] for item in data]
 
 
+def actor_clean_liked(data, striptags=False):
+    return [item["activity"]["object"] for item in data]
+
+
 class User(BaseModel, UserUtils, BaseManager):
     __coll__ = 'users'
     __unique_fields__ = ['name']
+
 
     # @classmethod
     # async def get(cls, name):
@@ -64,6 +69,15 @@ class User(BaseModel, UserUtils, BaseManager):
         return await self.get_ordered(request, Inbox,
                                       self.following_filter,
                                       actor_clean_inbox, self.following)
+
+    async def liked_paged(self, request):
+        filter = {
+            "deleted": False,
+            "user_id": self.name,
+            "activity.type": "Like"
+        }
+        return await self.get_ordered(request, Outbox, filter,
+                                      actor_clean_liked, self.liked)
 
     async def outbox_paged(self, request):
         filters = {

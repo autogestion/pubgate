@@ -22,6 +22,9 @@ class UserUtils:
     @property
     def outbox(self): return f"{self.uri}/outbox"
 
+    @property
+    def liked(self): return f"{self.uri}/liked"
+
     async def forward_to_followers(self, activity):
         recipients = await self.followers_get()
         try:

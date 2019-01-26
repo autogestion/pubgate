@@ -96,3 +96,11 @@ async def followers_get(request, user):
 async def following_get(request, user):
     resp = await user.following_paged(request)
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
+
+
+@user_v1.route('/<user>/liked', methods=['GET'])
+@doc.summary("Returns user likes")
+@user_check
+async def liked_get(request, user):
+    resp = await user.liked_paged(request)
+    return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
