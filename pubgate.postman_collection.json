@@ -110,6 +110,20 @@
 			"response": []
 		},
 		{
+			"name": "/<user>/liked",
+			"request": {
+				"url": "{{host}}/{{user}}/liked",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"dev1\", \"password\":\"dev1\", \"email\": \"bu\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "/<user>/outbox get outbox",
 			"request": {
 				"url": "{{host}}/{{user}}/outbox",

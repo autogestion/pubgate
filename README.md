@@ -12,7 +12,7 @@ Compatible with Mastodon, Pleroma and microblog.pub
  - [pubgate-philip](https://github.com/autogestion/pubgate-philip):  minimalist blogging UI(early development)*
 
 ### API documentation
-Support create / delete / un-/follow users / share / like
+Support create / delete / un-/follow users / share / like / undo
 
 #### Endpoints
 Overview [swagger docs example](http://pubgate.autogestion.org/swagger)

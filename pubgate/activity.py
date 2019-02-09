@@ -97,7 +97,7 @@ class Delete(BaseActivity):
 
 
 def choose(user, activity):
-    # TODO add support for Add, Remove, Update
+    # TODO add support for Collections (Add, Remove), Update, Block
     atype = activity.get("type", None)
     otype = None
     aobj = activity.get("object", None)

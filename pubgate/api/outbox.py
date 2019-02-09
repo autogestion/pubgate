@@ -10,6 +10,8 @@ from pubgate.utils.auth import user_check, token_check
 
 outbox_v1 = Blueprint('outbox_v1')
 
+# TODO implement replies endpoint
+
 
 @outbox_v1.route('/<user>/outbox', methods=['POST'])
 @doc.summary("Post to user outbox, auth required")

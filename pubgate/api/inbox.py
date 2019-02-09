@@ -20,6 +20,7 @@ async def inbox_post(request, user):
     # TODO implement shared inbox
     # TODO https://www.w3.org/TR/activitypub/#inbox-forwarding
     activity = request.json.copy()
+    # TODO The receiver must verify the notification by fetching its source from the origin server.
     verified = await verify_request(request)
     if not verified:
         if request.app.config.DEBUG:
