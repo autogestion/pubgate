@@ -6,7 +6,7 @@ Implements both the client-to-server API and the federated server-to-server API.
 Compatible with Mastodon, Pleroma and microblog.pub
 
 
-##### Support extensions (collects blueprints and listeners):
+##### Support extensions (collects blueprints):
 
  - [pubgate-rssbot](https://github.com/autogestion/pubgate-rssbot):  federates rss-feeds*
  - [pubgate-philip](https://github.com/autogestion/pubgate-philip):  minimalist blogging UI(early development)*

@@ -33,8 +33,8 @@ class Activity(BaseActivity):
         self.id = random_object_id()
         activity["id"] = f"{user.uri}/activity/{self.id}"
 
-    @property
-    def published(self):
+    @staticmethod
+    def published():
         return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
 
     async def save(self, **kwargs):
@@ -52,7 +52,7 @@ class Create(Activity):
     def __init__(self, user, activity):
         super().__init__(user, activity)
         if "published" not in activity:
-            activity["published"] = activity["object"]["published"] = self.published
+            activity["published"] = activity["object"]["published"] = self.published()
 
         activity["to"] = activity["object"]["to"] = \
             ["https://www.w3.org/ns/activitystreams#Public"]

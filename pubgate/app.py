@@ -28,7 +28,7 @@ def create_app(config_path):
     app.blueprint(outbox_v1)
 
     # app.add_task(register_client(app))
-    app.add_task(register_admin(app))
+    # app.add_task(register_admin(app))
     register_extensions(app)
 
     return app
@@ -46,7 +46,3 @@ def register_extensions(app):
         ext_bps = getattr(ext, 'pg_blueprints', [])
         for bp in ext_bps:
             app.blueprint(bp)
-
-        ext_tasks = getattr(ext, 'pg_tasks', [])
-        for task in ext_tasks:
-            task(app)
