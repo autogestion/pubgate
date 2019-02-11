@@ -1,5 +1,5 @@
 
-aiohttp==3.4.4
+aiohttp==3.5.4
 sanic==18.12.0
 sanic-motor==0.3.4
 sanic-openapi==0.4.0
