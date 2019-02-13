@@ -20,7 +20,7 @@ Overview [swagger docs example](http://pubgate.autogestion.org/swagger)
  - /.well-known/    (webfinger, nodeinfo)
  - /user/           (create, profile, token(password grant OAuth 2), following, liked)
  - /inbox/          (create, list)
- - /outbox/         (create, list, details)
+ - /outbox/         (create, list, details, replies)
 ##### Additional
  - /timeline        (local, federated)
  - /swagger         (api docs)
@@ -32,7 +32,7 @@ At [Postman documenter](https://documenter.getpostman.com/view/4625755/RzZCFdXv)
 ## Run
 
 #### Prerequisites
-`MongoDB, Python3.6`
+`MongoDB 3.6, Python 3.6`
 #### Shell
 ```
 git clone https://github.com/autogestion/pubgate.git

@@ -88,6 +88,15 @@ class User(BaseModel, UserUtils, BaseManager):
         return await self.get_ordered(request, Outbox, filters,
                                       self.activity_clean, self.outbox)
 
+    async def outbox_replies(self, request, entity):
+        filters = {
+            "deleted": False,
+            "activity.type": "Create",
+            "activity.object.inReplyTo": entity
+        }
+        return await self.get_replies(request, Outbox, Inbox, filters,
+                                      self.activity_clean, f"{entity}/replies")
+
     async def inbox_paged(self, request):
         filters = {
             "deleted": False,

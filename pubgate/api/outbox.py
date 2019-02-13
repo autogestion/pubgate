@@ -51,7 +51,7 @@ async def outbox_activity(request, user, entity):
 
     data = await Outbox.get(dict(user_id=user.name, _id=entity))
     if not data:
-        return response.json({"zrada": "no such activity"}, status=404)
+        return response.json({"error": "no such activity"}, status=404)
 
     result = data["activity"]
     result['@context'] = context
@@ -63,15 +63,26 @@ async def outbox_activity(request, user, entity):
 @doc.summary("Returns object from outbox")
 @user_check
 async def outbox_object(request, user, entity):
-
     data = await Outbox.get(dict(user_id=user.name, _id=entity))
     if not data:
-        return response.json({"zrada": "no such object"}, status=404)
+        return response.json({"error": "no such object"}, status=404)
 
     result = data["activity"]["object"]
     result['@context'] = context
 
     return response.json(result, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
+
+
+@outbox_v1.route('/<user>/object/<entity>/replies', methods=['GET'])
+@doc.summary("Returns object from outbox")
+@user_check
+async def outbox_replies(request, user, entity):
+    data = await Outbox.get(dict(user_id=user.name, _id=entity))
+    if not data:
+        return response.json({"error": "no such object"}, status=404)
+
+    resp = await user.outbox_replies(request, data["activity"]["object"]["id"])
+    return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
 @outbox_v1.route('/timeline/local', methods=['GET'])
