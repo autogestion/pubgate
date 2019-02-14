@@ -46,7 +46,6 @@ class BaseManager:
                                   cleaner(data, request.args.get("strip_tags")))
         return resp
 
-
     @staticmethod
     async def get_replies(request, t1, t2, filters, cleaner, coll_id):
         page = request.args.get("page")
@@ -83,9 +82,7 @@ class BaseManager:
                     }
                 }},
                 {"$unwind": "$items"},
-                {"$replaceRoot": {
-                    "newRoot": "$items"
-                }},
+                {"$replaceRoot": {"newRoot": "$items"}},
                 {'$match': filters},
                 {'$sort': {"activity.published": -1}},
                 {'$limit': limit},

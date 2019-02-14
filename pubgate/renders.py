@@ -44,7 +44,6 @@ class Actor:
         return {
             "subject": resource,
             "aliases": [
-                # "{method}://mastodon.social/@user",
                 self.user.uri
             ],
             "links": [
