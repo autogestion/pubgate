@@ -34,7 +34,7 @@ async def user_create(request):
             return response.json({'error': 'username n/a'})
 
 
-@user_v1.route('/@<user>', methods=['PATCH'])
+@user_v1.route('/<user>', methods=['PATCH'])
 @doc.summary("Update user details or profile")
 @token_check
 async def user_update(request, user):
@@ -57,6 +57,7 @@ async def user_update(request, user):
     return response.json({'peremoga': 'yep'}, status=201)
 
 
+@user_v1.route('/<user>', methods=['GET'])
 @user_v1.route('/@<user>', methods=['GET'])
 @doc.summary("Returns user profile")
 @user_check

@@ -35,7 +35,7 @@ def user_profile(app, user, user_data):
                 "sensitive": "as:sensitive"
             }
         ],
-        "id": f"{app.base_url}/@{user_data['username']}",
+        "id": f"{app.base_url}/{user_data['username']}",
         "following": f"{app.base_url}/{user_data['username']}/following",
         "followers": f"{app.base_url}/{user_data['username']}/followers",
         "inbox": f"{app.base_url}/{user_data['username']}/inbox",
@@ -44,8 +44,8 @@ def user_profile(app, user, user_data):
         "name": "",
         "manuallyApprovesFollowers": False,
         "publicKey": {
-            "id": f"{app.base_url}/@{user_data['username']}#main-key",
-            "owner": f"{app.base_url}/@{user_data['username']}",
+            "id": f"{app.base_url}/{user_data['username']}#main-key",
+            "owner": f"{app.base_url}/{user_data['username']}",
             "publicKeyPem": f"{user.key.pubkey_pem}"
         },
         "endpoints": {
