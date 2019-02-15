@@ -6,11 +6,14 @@ from sanic_openapi import doc
 from pubgate.db import Outbox
 from pubgate.renders import context
 from pubgate.activity import choose
-from pubgate.utils.auth import user_check, token_check
+from pubgate.utils.checks import user_check, token_check, outbox_check
 
 outbox_v1 = Blueprint('outbox_v1')
 
-# TODO implement replies endpoint
+# disabled because it affects all app blueprints, still bugged
+# @outbox_v1.middleware('response')
+# async def update_headers(request, response):
+#     response.headers["Content-Type"] = "application/activity+json; charset=utf-8"
 
 
 @outbox_v1.route('/<user>/outbox', methods=['POST'])
@@ -27,8 +30,9 @@ async def outbox_post(request, user):
     activity = choose(user, request.json)
     await activity.save()
     await activity.deliver(debug=request.app.config.LOG_OUTGOING_REQUEST)
-    if activity.render["type"] == "Create":
-        await request.app.streams.outbox.put(activity.render)
+    # TODO implement streaming
+    # if activity.render["type"] == "Create":
+    #     await request.app.streams.outbox.put(activity.render)
 
     return response.json({'peremoga': 'yep'},
                          status=201,
@@ -47,41 +51,47 @@ async def outbox_list(request, user):
 @outbox_v1.route('/<user>/activity/<entity>', methods=['GET'])
 @doc.summary("Returns activity from outbox")
 @user_check
+@outbox_check
 async def outbox_activity(request, user, entity):
-
-    data = await Outbox.get(dict(user_id=user.name, _id=entity))
-    if not data:
-        return response.json({"error": "no such activity"}, status=404)
-
-    result = data["activity"]
+    result = entity["activity"]
     result['@context'] = context
-
     return response.json(result, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
 @outbox_v1.route('/<user>/object/<entity>', methods=['GET'])
 @doc.summary("Returns object from outbox")
 @user_check
+@outbox_check
 async def outbox_object(request, user, entity):
-    data = await Outbox.get(dict(user_id=user.name, _id=entity))
-    if not data:
-        return response.json({"error": "no such object"}, status=404)
-
-    result = data["activity"]["object"]
+    result = entity["activity"]["object"]
     result['@context'] = context
-
     return response.json(result, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
 @outbox_v1.route('/<user>/object/<entity>/replies', methods=['GET'])
-@doc.summary("Returns object from outbox")
+@doc.summary("Returns replies for object")
 @user_check
+@outbox_check
 async def outbox_replies(request, user, entity):
-    data = await Outbox.get(dict(user_id=user.name, _id=entity))
-    if not data:
-        return response.json({"error": "no such object"}, status=404)
+    resp = await user.outbox_replies(request, entity["activity"]["object"]["id"])
+    return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
-    resp = await user.outbox_replies(request, data["activity"]["object"]["id"])
+
+@outbox_v1.route('/<user>/object/<entity>/likes', methods=['GET'])
+@doc.summary("Returns likes for object")
+@user_check
+@outbox_check
+async def outbox_likes(request, user, entity):
+    resp = await user.outbox_likes(request, entity["activity"]["object"]["id"])
+    return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
+
+
+@outbox_v1.route('/<user>/object/<entity>/shares', methods=['GET'])
+@doc.summary("Returns shares for object")
+@user_check
+@outbox_check
+async def outbox_shares(request, user, entity):
+    resp = await user.outbox_shares(request, entity["activity"]["object"]["id"])
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
@@ -92,11 +102,11 @@ async def outbox_all(request):
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
-@outbox_v1.websocket('/timeline/local/stream')
-async def outbox_stream(request, ws):
-    while True:
-        update = await request.app.streams.outbox.get()
-        if update:
-            print('Sending: ')
-            await ws.send(update)
-        await asyncio.sleep(1)
+# @outbox_v1.websocket('/timeline/local/stream')
+# async def outbox_stream(request, ws):
+#     while True:
+#         update = await request.app.streams.outbox.get()
+#         if update:
+#             print('Sending: ')
+#             await ws.send(update)
+#         await asyncio.sleep(1)

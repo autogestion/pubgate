@@ -54,12 +54,17 @@ class Create(Activity):
         if "published" not in activity:
             activity["published"] = activity["object"]["published"] = self.published()
 
+        # TODO iplement filtering of public and non-public posts in timelines
+        # https://www.w3.org/TR/activitypub/#public-addressing
+
         activity["to"] = activity["object"]["to"] = \
             ["https://www.w3.org/ns/activitystreams#Public"]
 
         activity["object"]["id"] = f"{user.uri}/object/{self.id}"
         activity["object"]["attributedTo"] = user.uri
         activity["object"]["replies"] = f"{user.uri}/object/{self.id}/replies"
+        activity["object"]["likes"] = f"{user.uri}/object/{self.id}/likes"
+        activity["object"]["shares"] = f"{user.uri}/object/{self.id}/shares"
 
         check = activity.get("cc", None)
         if check:

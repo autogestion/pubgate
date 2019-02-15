@@ -88,6 +88,24 @@ class User(BaseModel, UserUtils, BaseManager):
         return await self.get_ordered(request, Outbox, filters,
                                       self.activity_clean, self.outbox)
 
+    async def outbox_likes(self, request, entity):
+        filters = {
+            "deleted": False,
+            "activity.type": "Like",
+            "activity.object": entity
+        }
+        return await self.get_ordered(request, Inbox, filters,
+                                      self.activity_clean, f"{entity}/likes")
+
+    async def outbox_shares(self, request, entity):
+        filters = {
+            "deleted": False,
+            "activity.type": "Announce",
+            "activity.object": entity
+        }
+        return await self.get_ordered(request, Inbox, filters,
+                                      self.activity_clean, f"{entity}/shares")
+
     async def outbox_replies(self, request, entity):
         filters = {
             "deleted": False,

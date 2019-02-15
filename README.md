@@ -16,12 +16,12 @@ Support create / delete / un-/follow users / share / like / undo
 
 #### Endpoints
 Overview [swagger docs example](http://pubgate.autogestion.org/swagger)
-##### Federated
- - /.well-known/    (webfinger, nodeinfo)
- - /user/           (create, profile, token(password grant OAuth 2), following, liked)
+##### ActivityPub
+ - /user/           (create, profile, token(password grant OAuth 2), following/ers, liked)
  - /inbox/          (create, list)
- - /outbox/         (create, list, details, replies)
+ - /outbox/         (create, list, details (replies, likes, shares))
 ##### Additional
+ - /.well-known/    (webfinger, nodeinfo)
  - /timeline        (local, federated)
  - /swagger         (api docs)
 
