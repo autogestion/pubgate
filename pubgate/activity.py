@@ -33,8 +33,8 @@ class Activity(BaseActivity):
         self.id = random_object_id()
         activity["id"] = f"{user.uri}/activity/{self.id}"
 
-    @property
-    def published(self):
+    @staticmethod
+    def published():
         return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
 
     async def save(self, **kwargs):
@@ -52,13 +52,19 @@ class Create(Activity):
     def __init__(self, user, activity):
         super().__init__(user, activity)
         if "published" not in activity:
-            activity["published"] = activity["object"]["published"] = self.published
+            activity["published"] = activity["object"]["published"] = self.published()
+
+        # TODO iplement filtering of public and non-public posts in timelines
+        # https://www.w3.org/TR/activitypub/#public-addressing
 
         activity["to"] = activity["object"]["to"] = \
             ["https://www.w3.org/ns/activitystreams#Public"]
 
         activity["object"]["id"] = f"{user.uri}/object/{self.id}"
         activity["object"]["attributedTo"] = user.uri
+        activity["object"]["replies"] = f"{user.uri}/object/{self.id}/replies"
+        activity["object"]["likes"] = f"{user.uri}/object/{self.id}/likes"
+        activity["object"]["shares"] = f"{user.uri}/object/{self.id}/shares"
 
         check = activity.get("cc", None)
         if check:
@@ -97,7 +103,7 @@ class Delete(BaseActivity):
 
 
 def choose(user, activity):
-    # TODO add support for Add, Remove, Update
+    # TODO add support for Collections (Add, Remove), Update, Block
     atype = activity.get("type", None)
     otype = None
     aobj = activity.get("object", None)

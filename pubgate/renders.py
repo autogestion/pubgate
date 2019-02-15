@@ -27,6 +27,7 @@ class Actor:
             "followers": self.user.followers,
             "inbox": self.user.inbox,
             "outbox": self.user.outbox,
+            "liked": self.user.liked,
             "name": "",
             # "url": f"{base_url}/@{user_id}",
             "manuallyApprovesFollowers": False,
@@ -43,7 +44,7 @@ class Actor:
         return {
             "subject": resource,
             "aliases": [
-                # "{method}://mastodon.social/@user",
+                self.user.alias,
                 self.user.uri
             ],
             "links": [

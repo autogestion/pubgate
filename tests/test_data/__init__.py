@@ -40,6 +40,7 @@ def user_profile(app, user, user_data):
         "followers": f"{app.base_url}/{user_data['username']}/followers",
         "inbox": f"{app.base_url}/{user_data['username']}/inbox",
         "outbox": f"{app.base_url}/{user_data['username']}/outbox",
+        "liked": f"{app.base_url}/{user_data['username']}/liked",
         "name": "",
         "manuallyApprovesFollowers": False,
         "publicKey": {

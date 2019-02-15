@@ -15,9 +15,14 @@ def actor_clean_inbox(data, striptags=False):
     return [item["activity"]["object"]["object"] for item in data]
 
 
+def actor_clean_liked(data, striptags=False):
+    return [item["activity"]["object"] for item in data]
+
+
 class User(BaseModel, UserUtils, BaseManager):
     __coll__ = 'users'
     __unique_fields__ = ['name']
+
 
     # @classmethod
     # async def get(cls, name):
@@ -29,6 +34,7 @@ class User(BaseModel, UserUtils, BaseManager):
         user_data["name"] = user_data.pop("username")
         user_data["password"] = generate_password_hash(user_data["password"])
         user_data["uri"] = f"{base_url}/{user_data['name']}"
+        user_data["alias"] = f"{base_url}/@{user_data['name']}"
         await cls.insert_one(user_data)
         user = await cls.find_one({"name": user_data['name']})
         return user
@@ -65,6 +71,15 @@ class User(BaseModel, UserUtils, BaseManager):
                                       self.following_filter,
                                       actor_clean_inbox, self.following)
 
+    async def liked_paged(self, request):
+        filter = {
+            "deleted": False,
+            "user_id": self.name,
+            "activity.type": "Like"
+        }
+        return await self.get_ordered(request, Outbox, filter,
+                                      actor_clean_liked, self.liked)
+
     async def outbox_paged(self, request):
         filters = {
             "deleted": False,
@@ -73,6 +88,33 @@ class User(BaseModel, UserUtils, BaseManager):
         }
         return await self.get_ordered(request, Outbox, filters,
                                       self.activity_clean, self.outbox)
+
+    async def outbox_likes(self, request, entity):
+        filters = {
+            "deleted": False,
+            "activity.type": "Like",
+            "activity.object": entity
+        }
+        return await self.get_ordered(request, Inbox, filters,
+                                      self.activity_clean, f"{entity}/likes")
+
+    async def outbox_shares(self, request, entity):
+        filters = {
+            "deleted": False,
+            "activity.type": "Announce",
+            "activity.object": entity
+        }
+        return await self.get_ordered(request, Inbox, filters,
+                                      self.activity_clean, f"{entity}/shares")
+
+    async def outbox_replies(self, request, entity):
+        filters = {
+            "deleted": False,
+            "activity.type": "Create",
+            "activity.object.inReplyTo": entity
+        }
+        return await self.get_replies(request, Outbox, Inbox, filters,
+                                      self.activity_clean, f"{entity}/replies")
 
     async def inbox_paged(self, request):
         filters = {

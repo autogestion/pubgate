@@ -4,7 +4,7 @@ from sanic_openapi import doc
 
 from pubgate.renders import Actor
 from pubgate.utils import random_object_id
-from pubgate.utils.auth import user_check, token_check
+from pubgate.utils.checks import user_check, token_check
 from pubgate.db import User
 
 user_v1 = Blueprint('user_v1')
@@ -58,6 +58,7 @@ async def user_update(request, user):
 
 
 @user_v1.route('/<user>', methods=['GET'])
+@user_v1.route('/@<user>', methods=['GET'])
 @doc.summary("Returns user profile")
 @user_check
 async def user_get(request, user):
@@ -95,4 +96,12 @@ async def followers_get(request, user):
 @user_check
 async def following_get(request, user):
     resp = await user.following_paged(request)
+    return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
+
+
+@user_v1.route('/<user>/liked', methods=['GET'])
+@doc.summary("Returns user likes")
+@user_check
+async def liked_get(request, user):
+    resp = await user.liked_paged(request)
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})

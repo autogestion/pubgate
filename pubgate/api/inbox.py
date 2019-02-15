@@ -6,10 +6,14 @@ from sanic_openapi import doc
 from pubgate.db import Inbox, Outbox
 from pubgate.utils import check_origin
 from pubgate.utils.networking import deliver, verify_request
-from pubgate.utils.auth import user_check, token_check
+from pubgate.utils.checks import user_check, token_check
 from pubgate.activity import Activity
 
 inbox_v1 = Blueprint('inbox_v1')
+
+# @inbox_v1.middleware('response')
+# async def update_headers(request, response):
+#     response.headers["Content-Type"] = "application/activity+json; charset=utf-8"
 
 
 @inbox_v1.route('/<user>/inbox', methods=['POST'])
@@ -20,6 +24,7 @@ async def inbox_post(request, user):
     # TODO implement shared inbox
     # TODO https://www.w3.org/TR/activitypub/#inbox-forwarding
     activity = request.json.copy()
+    # TODO The receiver must verify the notification by fetching its source from the origin server.
     verified = await verify_request(request)
     if not verified:
         if request.app.config.DEBUG:

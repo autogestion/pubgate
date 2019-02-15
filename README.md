@@ -2,26 +2,26 @@
 
 ## Asyncronous Lightweight ActivityPub API
 Based on [little-boxes](https://github.com/tsileo/little-boxes).
-Implements both the client-to-server API and the federated server-to-server API.
-Compatible with Mastodon, Pleroma and microblog.pub
+Implements both the client-to-server(C2S) API and the federated server-to-server(S2S) API.
+ - S2S compatible with Mastodon, Pleroma and microblog.pub
 
 
-##### Support extensions (collects blueprints and listeners):
+##### Support extensions (collects blueprints):
 
  - [pubgate-rssbot](https://github.com/autogestion/pubgate-rssbot):  federates rss-feeds*
  - [pubgate-philip](https://github.com/autogestion/pubgate-philip):  minimalist blogging UI(early development)*
 
 ### API documentation
-Support create / delete / un-/follow users / share / like
+Support create / delete / un-/follow users / share / like / undo
 
 #### Endpoints
 Overview [swagger docs example](http://pubgate.autogestion.org/swagger)
-##### Federated
- - /.well-known/    (webfinger, nodeinfo)
- - /user/           (create, profile, token(password grant OAuth 2), following)
+##### ActivityPub
+ - /user/           (create, profile, token(password grant OAuth 2), following/ers, liked)
  - /inbox/          (create, list)
- - /outbox/         (create, list, details)
+ - /outbox/         (create, list, details (replies, likes, shares))
 ##### Additional
+ - /.well-known/    (webfinger, nodeinfo)
  - /timeline        (local, federated)
  - /swagger         (api docs)
 
@@ -32,7 +32,7 @@ At [Postman documenter](https://documenter.getpostman.com/view/4625755/RzZCFdXv)
 ## Run
 
 #### Prerequisites
-`MongoDB, Python3.6`
+`MongoDB 3.6, Python 3.6`
 #### Shell
 ```
 git clone https://github.com/autogestion/pubgate.git
