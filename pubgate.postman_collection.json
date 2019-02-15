@@ -82,6 +82,20 @@
 			"response": []
 		},
 		{
+			"name": "/<user>",
+			"request": {
+				"url": "{{host}}/{{user}}/",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"dev1\", \"password\":\"dev1\", \"email\": \"bu\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "/<user>/following",
 			"request": {
 				"url": "{{host}}/{{user}}/following",
@@ -363,9 +377,9 @@
 			"response": []
 		},
 		{
-			"name": "/@<user>   Update user profile",
+			"name": "/<user>   Update user profile",
 			"request": {
-				"url": "{{host}}/@{{user}}",
+				"url": "{{host}}/{{user}}",
 				"method": "PATCH",
 				"header": [
 					{
@@ -385,7 +399,7 @@
 		{
 			"name": "/<user>/token",
 			"request": {
-				"url": "{{host}}/oauth/token",
+				"url": "{{host}}/{{user}}/token",
 				"method": "POST",
 				"header": [],
 				"body": {
