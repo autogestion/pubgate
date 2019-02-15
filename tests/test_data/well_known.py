@@ -8,13 +8,13 @@ def user_webfinger(app, user, user_data):
     return {
         "subject": f"acct:{user_data['username']}@{app.config.DOMAIN}",
         "aliases": [
-            f"{app.base_url}/{user_data['username']}"
+            f"{app.base_url}/@{user_data['username']}"
         ],
         "links": [
             {
                 "rel": "self",
                 "type": "application/activity+json",
-                "href": f"{app.base_url}/{user_data['username']}"
+                "href": f"{app.base_url}/@{user_data['username']}"
             },
             # {
             #     "rel": "magic-public-key",

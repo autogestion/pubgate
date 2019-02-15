@@ -52,15 +52,15 @@ class TestUser:
         profile = user.profile
         profile["summary"] = new_summary
 
-        res = await test_cli.patch(f"/{user.name}", data=ujson.dumps({"profile": profile}))
+        res = await test_cli.patch(f"/@{user.name}", data=ujson.dumps({"profile": profile}))
         assert res.status == 201
-        user_resp = await test_cli.get(f"/{user.name}")
+        user_resp = await test_cli.get(f"/@{user.name}")
         assert user_resp.status == 200
         user_prof = await user_resp.json()
         assert user_prof["summary"] == new_summary
 
     async def test_get_user_profile(self, test_cli, user_data, user_profile):
-        user_resp = await test_cli.get(f"/{user_data['username']}")
+        user_resp = await test_cli.get(f"/@{user_data['username']}")
         assert user_resp.status == 200
         user_prof = await user_resp.json()
         assert user_prof == user_profile

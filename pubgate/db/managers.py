@@ -70,7 +70,7 @@ class BaseManager:
                     "_id": "null",
                     "outbox": {
                         "$push": {
-                            "_id":"$_id",
+                            "_id": "$_id",
                             "activity": "$activity",
                             "deleted": "$deleted"}},
                     "inbox": {

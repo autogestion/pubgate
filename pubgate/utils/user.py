@@ -8,7 +8,7 @@ class UserUtils:
 
     @property
     def key(self):
-        return get_key(self.uri)
+        return get_key(self.alias)
 
     @property
     def following(self): return f"{self.uri}/following"

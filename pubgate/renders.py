@@ -22,7 +22,7 @@ class Actor:
         actor = self.user.profile
         actor.update({
             "@context": context,
-            "id": self.user.uri,
+            "id": self.user.alias,
             "following": self.user.following,
             "followers": self.user.followers,
             "inbox": self.user.inbox,
@@ -44,7 +44,7 @@ class Actor:
         return {
             "subject": resource,
             "aliases": [
-                self.user.uri
+                self.user.alias
             ],
             "links": [
                 # {
@@ -56,7 +56,7 @@ class Actor:
                 {
                     "rel": "self",
                     "type": "application/activity+json",
-                    "href": self.user.uri
+                    "href": self.user.alias
                 }
                 # {
                 #     "rel": "magic-public-key",
