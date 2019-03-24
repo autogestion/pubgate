@@ -23,6 +23,13 @@ class TestSignup:
         users = await User.find(filter=dict(name=user_data["username"]))
         assert len(users.objects) == 1
 
+        # test no case duplication
+        user_data["username"] = user_data["username"].upper()
+        res = await test_cli.post("/user", data=ujson.dumps(user_data))
+        assert res.status == 200
+        users = await User.find(filter=dict(name=user_data["username"]))
+        assert len(users.objects) == 0
+
     async def test_invite_registration(self, test_cli_invite_reg, user_data):
         res = await test_cli_invite_reg.post("/user", data=ujson.dumps(user_data))
         assert res.status == 200

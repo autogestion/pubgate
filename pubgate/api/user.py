@@ -23,7 +23,7 @@ async def user_create(request):
         if not invite or invite != request.app.config.INVITE_CODE:
             return response.json({'error': 'need valid invite'})
 
-    username = request.json["username"]
+    username = request.json["username"].lower()
     password = request.json["password"]
     if username and password:
         is_uniq = await User.is_unique(doc=dict(name=username))
