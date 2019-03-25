@@ -746,6 +746,40 @@
 			"response": []
 		},
 		{
+			"name": "/user   Create telegram bot   (pubgate-telegram required)",
+			"request": {
+				"url": "{{host}}/user",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"{{user}}\",\n\t\"password\": \"{{pass}}\",\n\t\"email\": \"\",\n\t\"invite\": \"{{invite}}\",\n\t\"profile\": {\n\t\t\"type\": \"Service\",\n\t\t\"preferredUsername\": \"TelePub\",\n\t\t\"summary\": \"Broadcast from <a href='https://t.me/telapub' target='_blank'>Telegram channel\",\n\t    \"icon\": {\n\t        \"type\": \"Image\",\n\t        \"mediaType\": \"image/png\",\n\t        \"url\": \"https://cdn1.iconfinder.com/data/icons/blockchain-8/48/icon0008_decentralize-512.png\"\n\t    }\t\t\n\t},\n\t\"details\": {\n\t\t\"tgbot\": {\n\t\t\t\"channels\": [\"telapub\"],\n\t\t\t\"enable\": true,\n\t\t\t\"tags\": [\"перемога\", \"покріщення\"]\n\t\t}\n\t}\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/<user> Disable telegram bot  (pubgate-telegram required)",
+			"request": {
+				"url": "{{host}}/{{user}}",
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"details\": {\n\t\t\"tgbot\": {\n\t\t\t\"channels\": [\"telapub\"],\n\t\t\t\"enable\": false,\n\t\t\t\"tags\": []\n\t\t}\n\t}\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "----  Inbox tests in debug mode------",
 			"request": {
 				"url": "",
