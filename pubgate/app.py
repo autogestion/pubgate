@@ -46,3 +46,7 @@ def register_extensions(app):
         ext_bps = getattr(ext, 'pg_blueprints', [])
         for bp in ext_bps:
             app.blueprint(bp)
+
+        ext_tasks = getattr(ext, 'pg_tasks', [])
+        for task in ext_tasks:
+            app.add_task(task)

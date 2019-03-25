@@ -6,9 +6,10 @@ Implements both the client-to-server(C2S) API and the federated server-to-server
  - S2S compatible with Mastodon, Pleroma and microblog.pub
 
 
-##### Support extensions (collects blueprints):
+##### Support extensions (collects blueprints and tasks):
 
  - [pubgate-rssbot](https://github.com/autogestion/pubgate-rssbot):  federates rss-feeds*
+ - [pubgate-telegram](https://github.com/autogestion/pubgate-telegram):  Telegram -> ActivityPub bridge
  - [pubgate-philip](https://github.com/autogestion/pubgate-philip):  minimalist blogging UI(early development)*
 
 ### API documentation
