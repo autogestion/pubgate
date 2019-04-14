@@ -1,5 +1,6 @@
 from pubgate.renders import ordered_collection
 from pubgate.utils import strip_tags
+from pubgate.db.queries import aggregate_boxes
 
 
 class BaseManager:
@@ -61,33 +62,13 @@ class BaseManager:
 
         limit = request.app.config.PAGINATION_LIMIT
         if total != 0:
-            data = await t1.aggregate([
-                {"$lookup": {
-                    "from": "inbox",
-                    "pipeline": [],
-                    "as": "inbox"}},
-                {"$group": {
-                    "_id": "null",
-                    "outbox": {
-                        "$push": {
-                            "_id": "$_id",
-                            "activity": "$activity",
-                            "deleted": "$deleted"}},
-                    "inbox": {
-                        "$first": "$inbox"}
-                }},
-                {"$project": {
-                    "items": {
-                        "$setUnion": ["$outbox", "$inbox"]
-                    }
-                }},
-                {"$unwind": "$items"},
-                {"$replaceRoot": {"newRoot": "$items"}},
+            db_query = aggregate_boxes()
+            db_query.extend([
                 {'$match': filters},
-                {'$sort': {"activity.published": -1}},
                 {'$limit': limit},
                 {'$skip': limit * (page - 1)}
             ])
+            data = await t1.aggregate(db_query)
         else:
             data = []
         resp = ordered_collection(coll_id, total, page,
