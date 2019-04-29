@@ -111,5 +111,6 @@ venv.bak/
 # pubgate
 /config/conf.cfg
 /storage/*
+/media/*
 *.session
 *.session-journal

@@ -3,6 +3,7 @@ from sanic import Sanic
 from sanic_openapi import swagger_blueprint, openapi_blueprint
 from sanic_motor import BaseModel
 
+from pubgate import MEDIA
 from pubgate.api import user_v1, inbox_v1, outbox_v1, well_known
 from pubgate.db import register_admin
 from pubgate.logging import PGErrorHandler
@@ -30,6 +31,8 @@ def create_app(config_path):
     # app.add_task(register_client(app))
     # app.add_task(register_admin(app))
     register_extensions(app)
+
+    app.static('/media', MEDIA)
 
     return app
 
