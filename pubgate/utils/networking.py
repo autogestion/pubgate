@@ -43,10 +43,12 @@ async def fetch_text(url):
 
 async def deliver_task(recipient, http_sig, activity, debug=False):
     logger.info(f"Delivering {make_label(activity)} ===>> {recipient}")
+
     profile = await fetch(recipient)
-    body = json.dumps(activity)
     url = profile["inbox"]
     headers = http_sig.sign(url)
+
+    body = json.dumps(activity)
 
     async with aiohttp.ClientSession() as session:
         async with session.post(url,
@@ -70,8 +72,9 @@ async def deliver(key, activity, recipients, debug=False):
     # if "signature" not in activity:
     #     generate_signature(activity, key)
 
-    headers = {"content-type": 'application/activity+json',
-               "user-agent": f"PubGate v:{__version__}"}
+    headers = {"Content-Type": "application/activity+json",
+               "Accept": "application/activity+json",
+               "User-Agent": f"PubGate v:{__version__}"}
 
     http_sig = HTTPSigAuth(key, headers)
 
