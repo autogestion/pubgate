@@ -46,9 +46,8 @@ async def deliver_task(recipient, http_sig, activity, debug=False):
 
     profile = await fetch(recipient)
     url = profile["inbox"]
-    headers = http_sig.sign(url)
-
     body = json.dumps(activity)
+    headers = http_sig.sign(url, body)
 
     async with aiohttp.ClientSession() as session:
         async with session.post(url,
