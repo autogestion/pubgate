@@ -36,7 +36,7 @@ class PGHttpProtocol(HttpProtocol):
 
             access_logger.info('', extra=extra)
             if self.request.app.config.LOG_INCOMING_REQUEST:
-                if self.request.method == "POST":
+                if self.request.method == "POST" and response.status != 401:
                     from pprint import pprint
                     print(self.request.headers)
                     pprint(self.request.json)

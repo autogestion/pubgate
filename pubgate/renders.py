@@ -1,15 +1,6 @@
 
 
-context = [
-        "https://www.w3.org/ns/activitystreams",
-        "https://w3id.org/security/v1",
-        {
-            "Hashtag": "as:Hashtag",
-            "sensitive": "as:sensitive"
-            # "toot": "http://joinmastodon.org/ns#",
-            # "featured": "toot:featured"
-        }
-    ]
+context = "https://www.w3.org/ns/activitystreams"
 
 
 class Actor:
