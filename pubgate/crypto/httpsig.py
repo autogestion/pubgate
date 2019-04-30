@@ -84,9 +84,11 @@ class HTTPSigAuth:
 
     def sign(self, url):
         headers = self.headers.copy()
+        spl_url = urlsplit(url)
         headers.update({
-            '(request-target)': f'post {urlsplit(url).path}',
-            # "date": datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
+            '(request-target)': f'post {spl_url.path}',
+            "date": datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT"),
+            'host': spl_url.netloc
         })
 
         sigheaders = headers.keys()
