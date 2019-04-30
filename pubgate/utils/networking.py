@@ -72,9 +72,8 @@ async def deliver(key, activity, recipients, debug=False):
     # if "signature" not in activity:
     #     generate_signature(activity, key)
 
-    headers = {"Content-Type": "application/activity+json",
-               "Accept": "application/activity+json",
-               "User-Agent": f"PubGate v:{__version__}"}
+    headers = {"content-type": "application/activity+json",
+               "user-agent": f"PubGate v:{__version__}"}
 
     http_sig = HTTPSigAuth(key, headers)
 
