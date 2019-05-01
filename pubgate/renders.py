@@ -20,7 +20,6 @@ class Actor:
             "inbox": self.user.inbox,
             "outbox": self.user.outbox,
             "liked": self.user.liked,
-            "name": "",
             # "url": f"{base_url}/@{user_id}",
             "manuallyApprovesFollowers": False,
             "publicKey": self.user.key.to_dict(),

@@ -9,7 +9,7 @@ def user_data():
             "email": "bu",
             "profile": {
                 "type": "Person",
-                "preferredUsername": "{{user}}",
+                "name": "Test User",
                 "summary": "activitypub federator, written on Python/ Sanic <a href='https://github.com/autogestion/pubgate' target='blank'> https://github.com/autogestion/pubgate</a>",
                 "icon": {
                     "type": "Image",
@@ -24,24 +24,17 @@ def user_data():
 def user_profile(app, user, user_data):
     return {
         "type": user_data["profile"]["type"],
-        "preferredUsername": user_data["profile"]["preferredUsername"],
+        "preferredUsername": user_data['username'],
         "summary": user_data["profile"]["summary"],
         "icon": user_data["profile"]["icon"],
-        "@context": [
-            "https://www.w3.org/ns/activitystreams",
-            "https://w3id.org/security/v1",
-            {
-                "Hashtag": "as:Hashtag",
-                "sensitive": "as:sensitive"
-            }
-        ],
+        "name": user_data["profile"]['name'],
+        "@context": "https://www.w3.org/ns/activitystreams",
         "id": f"{app.base_url}/{user_data['username']}",
         "following": f"{app.base_url}/{user_data['username']}/following",
         "followers": f"{app.base_url}/{user_data['username']}/followers",
         "inbox": f"{app.base_url}/{user_data['username']}/inbox",
         "outbox": f"{app.base_url}/{user_data['username']}/outbox",
         "liked": f"{app.base_url}/{user_data['username']}/liked",
-        "name": "",
         "manuallyApprovesFollowers": False,
         "publicKey": {
             "id": f"{app.base_url}/{user_data['username']}#main-key",
