@@ -1,9 +1,10 @@
 import asyncio
 from datetime import datetime
+from sanic.exceptions import SanicException
 
 from pubgate.utils import random_object_id
 from pubgate.utils.networking import deliver
-from pubgate.db import Outbox
+from pubgate.db import Outbox, Inbox
 
 
 class BaseActivity:
@@ -45,6 +46,15 @@ class Follow(Activity):
 
     async def recipients(self):
         return [self.render["object"]]
+
+    async def save(self, **kwargs):
+        filters = self.user.following_filter
+        filters["activity.object.object"] = self.render["object"]
+        followed = await Inbox.find_one(filters)
+        if followed:
+            raise SanicException('This user is already followed', status_code=409)
+
+        await Outbox.save(self, **kwargs)
 
 
 class Create(Activity):

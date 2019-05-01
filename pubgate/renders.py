@@ -13,6 +13,7 @@ class Actor:
         actor = self.user.profile
         actor.update({
             "@context": context,
+            "preferredUsername": self.user.name,
             "id": self.user.uri,
             "following": self.user.following,
             "followers": self.user.followers,

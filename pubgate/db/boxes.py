@@ -31,6 +31,7 @@ class Outbox(BaseModel, BaseManager):
         filters = activity.user.following_filter
         filters["activity.object.object"] = \
             activity.render["object"]["object"]
+
         accept = await Inbox.find_one(filters)
         if accept:
             activity.render["object"] = accept.activity["object"]

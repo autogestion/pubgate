@@ -92,7 +92,7 @@ class HTTPSigAuth:
         except AttributeError:
             pass
         bh.update(body)
-        
+
         headers.update({
             '(request-target)': f'post {spl_url.path}',
             "date": datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT"),
