@@ -481,7 +481,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"username\": \"{{user}}\", \n\t\"password\":\"{{pass}}\", \n\t\"invite\": \"{{invite}}\",\n\t\"profile\": {\n\t\t\"type\": \"Person\",\n\t\t\"preferredUsername\": \"{{user}}\",\n\t\t\"summary\": \"activitypub federator, written on Python/ Sanic <br> <a href='https://github.com/autogestion/pubgate' target='blank'> https://github.com/autogestion/pubgate</a>\",\n\t    \"icon\": {\n\t        \"type\": \"Image\",\n\t        \"mediaType\": \"image/jpeg\",\n\t        \"url\": \"https://avatars2.githubusercontent.com/u/1098257\"\n\t    }\t\t\n\t}\n}"
+					"raw": "{\n\t\"username\": \"{{user}}\", \n\t\"password\":\"{{pass}}\", \n\t\"invite\": \"{{invite}}\",\n\t\"profile\": {\n\t\t\"type\": \"Person\",\n\t\t\"name\": \"{{user}}\",\n\t\t\"summary\": \"activitypub federator, written on Python/ Sanic <br> <a href='https://github.com/autogestion/pubgate' target='blank'> https://github.com/autogestion/pubgate</a>\",\n\t    \"icon\": {\n\t        \"type\": \"Image\",\n\t        \"mediaType\": \"image/jpeg\",\n\t        \"url\": \"https://avatars2.githubusercontent.com/u/1098257\"\n\t    }\t\t\n\t}\n}"
 				},
 				"url": {
 					"raw": "{{host}}/user",
@@ -502,7 +502,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"username\": \"{{user}}\", \n\t\"password\":\"{{pass}}\", \n\t\"email\": \"bu\",\n\t\"profile\": {\n\t\t\"type\": \"Person\",\n\t\t\"preferredUsername\": \"{{user}}\",\n\t\t\"summary\": \"activitypub federator, written on Python/ Sanic <a href='https://github.com/autogestion/pubgate' target='blank'> https://github.com/autogestion/pubgate</a>\",\n\t    \"icon\": {\n\t        \"type\": \"Image\",\n\t        \"mediaType\": \"image/jpeg\",\n\t        \"url\": \"https://avatars2.githubusercontent.com/u/1098257\"\n\t    }\t\t\n\t}\t\n}"
+					"raw": "{\n\t\"username\": \"{{user}}\", \n\t\"password\":\"{{pass}}\", \n\t\"email\": \"bu\",\n\t\"profile\": {\n\t\t\"type\": \"Person\",\n\t\t\"name\": \"{{user}}\",\n\t\t\"summary\": \"activitypub federator, written on Python/ Sanic <a href='https://github.com/autogestion/pubgate' target='blank'> https://github.com/autogestion/pubgate</a>\",\n\t    \"icon\": {\n\t        \"type\": \"Image\",\n\t        \"mediaType\": \"image/jpeg\",\n\t        \"url\": \"https://avatars2.githubusercontent.com/u/1098257\"\n\t    }\t\t\n\t}\t\n}"
 				},
 				"url": {
 					"raw": "{{host}}/user",
@@ -528,7 +528,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"profile\": {\n\t\t\"type\": \"Person\",\n\t\t\"preferredUsername\": \"{{user}}\",\n\t\t\"summary\": \"Gotta go fast! <br> <a href='https://github.com/autogestion/pubgate' target='blank'> https://github.com/autogestion/pubgate</a>\",\n\t    \"icon\": {\n\t        \"type\": \"Image\",\n\t        \"mediaType\": \"image/jpeg\",\n\t        \"url\": \"https://avatars2.githubusercontent.com/u/1098257\"\n\t    }\t\t\n\t}\t\n}"
+					"raw": "{\n\t\"profile\": {\n\t\t\"type\": \"Person\",\n\t\t\"name\": \"{{user}}\",\n\t\t\"summary\": \"Gotta go fast! <br> <a href='https://github.com/autogestion/pubgate' target='blank'> https://github.com/autogestion/pubgate</a>\",\n\t    \"icon\": {\n\t        \"type\": \"Image\",\n\t        \"mediaType\": \"image/jpeg\",\n\t        \"url\": \"https://avatars2.githubusercontent.com/u/1098257\"\n\t    }\t\t\n\t}\t\n}"
 				},
 				"url": {
 					"raw": "{{host}}/{{user}}",
@@ -960,7 +960,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"username\": \"{{user}}\",\n\t\"password\": \"{{pass}}\",\n\t\"email\": \"\",\n\t\"invite\": \"{{invite}}\",\n\t\"profile\": {\n\t\t\"type\": \"Service\",\n\t\t\"preferredUsername\": \"Xatarsis\",\n\t\t\"summary\": \"Blog of co-living. News, reflections, review and our expressions <br> Broadcast from <a href='https://xatarsis.blogspot.com' target='_blank'> https://xatarsis.blogspot.com</a>\",\n\t    \"icon\": {\n\t        \"type\": \"Image\",\n\t        \"mediaType\": \"image/png\",\n\t        \"url\": \"https://scontent-mxp1-1.xx.fbcdn.net/v/t1.0-1/p320x320/30762577_367140987121136_8721509227190812672_n.png?_nc_cat=102&_nc_ht=scontent-mxp1-1.xx&oh=4451ff8948c6e5d7161291695139381f&oe=5C442443\"\n\t    }\t\t\n\t},\n\t\"details\": {\n\t\t\"rssbot\": {\n\t\t\t\"feed\": \"https://xatarsis.blogspot.com/feeds/posts/default?alt=rss\",\n\t\t\t\"enable\": true,\n\t\t\t\"tags\": [\"tag1\", \"tag2\"],\n\t\t\t\"html\": true \n\t\t}\n\t}\n}"
+					"raw": "{\n\t\"username\": \"{{user}}\",\n\t\"password\": \"{{pass}}\",\n\t\"email\": \"\",\n\t\"invite\": \"{{invite}}\",\n\t\"profile\": {\n\t\t\"type\": \"Service\",\n\t\t\"name\": \"Xatarsis\",\n\t\t\"summary\": \"Blog of co-living. News, reflections, review and our expressions <br> Broadcast from <a href='https://xatarsis.blogspot.com' target='_blank'> https://xatarsis.blogspot.com</a>\",\n\t    \"icon\": {\n\t        \"type\": \"Image\",\n\t        \"mediaType\": \"image/png\",\n\t        \"url\": \"https://scontent-mxp1-1.xx.fbcdn.net/v/t1.0-1/p320x320/30762577_367140987121136_8721509227190812672_n.png?_nc_cat=102&_nc_ht=scontent-mxp1-1.xx&oh=4451ff8948c6e5d7161291695139381f&oe=5C442443\"\n\t    }\t\t\n\t},\n\t\"details\": {\n\t\t\"rssbot\": {\n\t\t\t\"feed\": \"https://xatarsis.blogspot.com/feeds/posts/default?alt=rss\",\n\t\t\t\"enable\": true,\n\t\t\t\"tags\": [\"tag1\", \"tag2\"],\n\t\t\t\"html\": true \n\t\t}\n\t}\n}"
 				},
 				"url": {
 					"raw": "{{host}}/user",
@@ -1007,7 +1007,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"username\": \"{{user}}\",\n\t\"password\": \"{{pass}}\",\n\t\"email\": \"\",\n\t\"invite\": \"{{invite}}\",\n\t\"profile\": {\n\t\t\"type\": \"Service\",\n\t\t\"preferredUsername\": \"TelePub\",\n\t\t\"summary\": \"Broadcast from <a href='https://t.me/telapub' target='_blank'>Telegram channel\",\n\t    \"icon\": {\n\t        \"type\": \"Image\",\n\t        \"mediaType\": \"image/png\",\n\t        \"url\": \"https://cdn1.iconfinder.com/data/icons/blockchain-8/48/icon0008_decentralize-512.png\"\n\t    }\t\t\n\t},\n\t\"details\": {\n\t\t\"tgbot\": {\n\t\t\t\"channels\": [\"telapub\"],\n\t\t\t\"enable\": true,\n\t\t\t\"tags\": [\"перемога\", \"покріщення\"]\n\t\t}\n\t}\n}"
+					"raw": "{\n\t\"username\": \"{{user}}\",\n\t\"password\": \"{{pass}}\",\n\t\"email\": \"\",\n\t\"invite\": \"{{invite}}\",\n\t\"profile\": {\n\t\t\"type\": \"Service\",\n\t\t\"name\": \"TelePub\",\n\t\t\"summary\": \"Broadcast from <a href='https://t.me/telapub' target='_blank'>Telegram channel\",\n\t    \"icon\": {\n\t        \"type\": \"Image\",\n\t        \"mediaType\": \"image/png\",\n\t        \"url\": \"https://cdn1.iconfinder.com/data/icons/blockchain-8/48/icon0008_decentralize-512.png\"\n\t    }\t\t\n\t},\n\t\"details\": {\n\t\t\"tgbot\": {\n\t\t\t\"channels\": [\"telapub\"],\n\t\t\t\"enable\": true,\n\t\t\t\"tags\": [\"перемога\", \"покріщення\"]\n\t\t}\n\t}\n}"
 				},
 				"url": {
 					"raw": "{{host}}/user",
@@ -1043,6 +1043,18 @@
 					"path": [
 						"{{user}}"
 					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "-------------------------------------",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": ""
 				}
 			},
 			"response": []
