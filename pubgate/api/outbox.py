@@ -36,7 +36,7 @@ async def outbox_post(request, user):
 
     return response.json({'peremoga': 'yep'},
                          status=201,
-                         headers={'Location': activity.render["id"]}
+                         headers={'Location': activity.render.get("id", '')}
                          )
 
 

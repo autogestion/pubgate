@@ -13,13 +13,13 @@ class Actor:
         actor = self.user.profile
         actor.update({
             "@context": context,
+            "preferredUsername": self.user.name,
             "id": self.user.uri,
             "following": self.user.following,
             "followers": self.user.followers,
             "inbox": self.user.inbox,
             "outbox": self.user.outbox,
             "liked": self.user.liked,
-            "name": "",
             # "url": f"{base_url}/@{user_id}",
             "manuallyApprovesFollowers": False,
             "publicKey": self.user.key.to_dict(),

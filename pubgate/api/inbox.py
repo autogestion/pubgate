@@ -27,10 +27,10 @@ async def inbox_post(request, user):
     # TODO The receiver must verify the notification by fetching its source from the origin server.
     verified = await verify_request(request)
     if not verified:
-        if request.app.config.DEBUG:
+        if getattr(request.app.config, 'DEBUG_INBOX', False):
             logger.info("signature incorrect")
         else:
-            return response.json({"zrada": "signature incorrect"}, status=401)
+            return response.json({"error": "signature incorrect"}, status=401)
 
     # TODO skip blocked
     # if Outbox.find_one(

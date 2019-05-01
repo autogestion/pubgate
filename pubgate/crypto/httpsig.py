@@ -82,13 +82,22 @@ class HTTPSigAuth:
         self.key = key
         self.headers = headers
 
-    def sign(self, url):
+    def sign(self, url, body):
         headers = self.headers.copy()
         spl_url = urlsplit(url)
+
+        bh = hashlib.new("sha256")
+        try:
+            body = body.encode("utf-8")
+        except AttributeError:
+            pass
+        bh.update(body)
+
         headers.update({
             '(request-target)': f'post {spl_url.path}',
             "date": datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT"),
-            'host': spl_url.netloc
+            'host': spl_url.netloc,
+            'digest': "SHA-256=" + base64.b64encode(bh.digest()).decode("utf-8")
         })
 
         sigheaders = headers.keys()
