@@ -10,10 +10,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{host}}/.well-known/webfinger?resource=acct:{{user}}@{{domain}}",
 					"host": [
@@ -38,10 +34,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{host}}/.well-known/nodeinfo",
 					"host": [
@@ -60,10 +52,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{host}}/nodeinfo/2.0.json",
 					"host": [
@@ -82,10 +70,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{host}}/@{{user}}/",
 					"host": [
@@ -104,10 +88,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{host}}/{{user}}/",
 					"host": [
@@ -126,10 +106,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{host}}/{{user}}/following",
 					"host": [
@@ -148,10 +124,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{host}}/{{user}}/followers",
 					"host": [
@@ -170,10 +142,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{host}}/{{user}}/liked",
 					"host": [
@@ -197,10 +165,6 @@
 						"value": "application/activity+json"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{host}}/{{user}}/outbox",
 					"host": [
@@ -224,10 +188,6 @@
 						"value": "application/activity+json"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{host}}/{{user}}/outbox?page=2",
 					"host": [
@@ -257,10 +217,6 @@
 						"value": "application/activity+json"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{host}}/timeline/local",
 					"host": [
@@ -284,10 +240,6 @@
 						"value": "application/activity+json"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{host}}/timeline/local?strip_tags=true",
 					"host": [
@@ -317,10 +269,6 @@
 						"value": "application/activity+json"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{host}}/{{user}}/activity/{{entity}}",
 					"host": [
@@ -345,10 +293,6 @@
 						"value": "application/activity+json"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{host}}/{{user}}/object/{{entity}}",
 					"host": [
@@ -373,10 +317,6 @@
 						"value": "application/activity+json"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{host}}/{{user}}/object/{{entity}}/replies",
 					"host": [
@@ -402,10 +342,6 @@
 						"value": "application/activity+json"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{host}}/{{user}}/object/{{entity}}/likes",
 					"host": [
@@ -431,10 +367,6 @@
 						"value": "application/activity+json"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{host}}/{{user}}/object/{{entity}}/shares",
 					"host": [
@@ -455,7 +387,10 @@
 			"request": {
 				"method": "OPTIONS",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
 				"url": {
 					"raw": ""
 				}
@@ -467,7 +402,10 @@
 			"request": {
 				"method": "OPTIONS",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
 				"url": {
 					"raw": ""
 				}
@@ -848,10 +786,6 @@
 						"value": "Bearer {{token}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{host}}/{{user}}/inbox",
 					"host": [
@@ -879,10 +813,6 @@
 						"value": "Bearer {{token}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{host}}/{{user}}/inbox?page=2",
 					"host": [
@@ -912,10 +842,6 @@
 						"value": "application/activity+json"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{host}}/timeline/federated",
 					"host": [
@@ -934,7 +860,10 @@
 			"request": {
 				"method": "OPTIONS",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
 				"url": {
 					"raw": ""
 				}
@@ -946,7 +875,10 @@
 			"request": {
 				"method": "OPTIONS",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
 				"url": {
 					"raw": ""
 				}
@@ -1048,11 +980,61 @@
 			"response": []
 		},
 		{
+			"name": "/user   Create steemit bot   (pubgate-steemit required)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"{{user}}\",\n\t\"password\": \"{{pass}}\",\n\t\"email\": \"\",\n\t\"invite\": \"{{invite}}\",\n\t\"profile\": {\n\t\t\"type\": \"Service\",\n\t\t\"name\": \"LiberLandPress\",\n\t\t\"summary\": \"Broadcast from <a href='https://steemit.com/@liberlandpress' target='_blank'>Steemit blog</a>\",\n\t    \"icon\": {\n\t        \"type\": \"Image\",\n\t        \"mediaType\": \"image/png\",\n\t        \"url\": \"https://liberland.org/en/assets/images/logo.png\"\n\t    }\n\t},\n\t\"details\": {\n\t\t\"stbot\": {\n\t\t\t\"blogs\": [\"liberlandpress\"],\n\t\t\t\"enable\": true,\n\t\t\t\"tags\": [\"liberland\", \"steemit\", \"selfgoverned\"] \n\t\t}\n\t}\n}"
+				},
+				"url": {
+					"raw": "{{host}}/user",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/<user> Disable  steemit bot  (pubgate-steemit required)",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"details\": {\n\t\t\"stbot\": {\n\t\t\t\"blogs\": [\"liberlandpress\"],\n\t\t\t\"enable\": false,\n\t\t\t\"tags\": []\n\t\t}\n\t}\n}"
+				},
+				"url": {
+					"raw": "{{host}}/{{user}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{user}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "-------------------------------------",
 			"request": {
 				"method": "OPTIONS",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
 				"url": {
 					"raw": ""
 				}
@@ -1064,7 +1046,10 @@
 			"request": {
 				"method": "OPTIONS",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
 				"url": {
 					"raw": ""
 				}

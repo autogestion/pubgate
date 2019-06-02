@@ -10,6 +10,7 @@ Implements both the client-to-server(C2S) API and the federated server-to-server
 
  - [pubgate-rssbot](https://github.com/autogestion/pubgate-rssbot):  federates rss-feeds*
  - [pubgate-telegram](https://github.com/autogestion/pubgate-telegram):  Telegram <-> ActivityPub bridge
+ - [pubgate-steemit](https://github.com/autogestion/pubgate-steemit):  Steemit Blog -> ActivityPub bridge
  - [pubgate-philip](https://github.com/autogestion/pubgate-philip):  minimalist blogging UI(early development)*
 
 ### API documentation
