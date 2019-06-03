@@ -111,6 +111,17 @@ class Delete(BaseActivity):
     async def save(self):
         await Outbox.delete(self.render["object"]["id"])
 
+    @classmethod
+    def construct(cls, user, obj_id):
+        return cls(user, {
+            "id": f"{obj_id}#delete",
+            "type": "Delete",
+            "object": {
+                "id": obj_id,
+                "type": "Tombstone"
+            }
+        })
+
 
 def choose(user, activity):
     # TODO add support for Collections (Add, Remove), Update, Block
