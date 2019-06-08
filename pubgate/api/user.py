@@ -5,7 +5,9 @@ from sanic_openapi import doc
 from pubgate.renders import Actor
 from pubgate.utils import random_object_id
 from pubgate.utils.checks import user_check, token_check
-from pubgate.db import User
+from pubgate.db import User, Outbox
+from pubgate.activity import Delete
+
 
 user_v1 = Blueprint('user_v1')
 
@@ -57,13 +59,33 @@ async def user_update(request, user):
     return response.json({'peremoga': 'yep'}, status=201)
 
 
+@user_v1.route('/<user>/mass_delete', methods=['POST'])
+@doc.summary("Delete all user's posts")
+@token_check
+# TODO delete user's reactions (Like, Announce)
+async def user_mass_delete(request, user):
+    posts = await Outbox.find(filter={
+        "deleted": False,
+        "user_id": user.name,
+        "activity.type": "Create"
+    })
+    for post in posts.objects:
+        del_activity = Delete.construct(
+            user, post.activity["object"]["id"]
+        )
+        await del_activity.save()
+        await del_activity.deliver()
+    return response.json({'peremoga': 'yep'}, status=201)
+
+
 @user_v1.route('/<user>', methods=['GET'])
 @user_v1.route('/@<user>', methods=['GET'])
 @doc.summary("Returns user profile")
 @user_check
 async def user_get(request, user):
-    return response.json(Actor(user).render,
-                         headers={'Content-Type': 'application/activity+json; charset=utf-8'})
+    return response.json(Actor(user).render, headers={
+        'Content-Type': 'application/activity+json; charset=utf-8'
+    })
 
 
 @user_v1.route('/<user>/token', methods=['POST'])
@@ -88,7 +110,9 @@ async def token_get(request, user):
 @user_check
 async def followers_get(request, user):
     resp = await user.followers_paged(request)
-    return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
+    return response.json(resp, headers={
+        'Content-Type': 'application/activity+json; charset=utf-8'
+    })
 
 
 @user_v1.route('/<user>/following', methods=['GET'])
@@ -96,7 +120,9 @@ async def followers_get(request, user):
 @user_check
 async def following_get(request, user):
     resp = await user.following_paged(request)
-    return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
+    return response.json(resp, headers={
+        'Content-Type': 'application/activity+json; charset=utf-8'
+    })
 
 
 @user_v1.route('/<user>/liked', methods=['GET'])
@@ -104,4 +130,6 @@ async def following_get(request, user):
 @user_check
 async def liked_get(request, user):
     resp = await user.liked_paged(request)
-    return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
+    return response.json(resp, headers={
+        'Content-Type': 'application/activity+json; charset=utf-8'
+    })

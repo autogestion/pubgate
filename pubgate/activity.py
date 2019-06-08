@@ -90,7 +90,7 @@ class Reaction(Activity):
         if check:
             activity["cc"].insert(0, user.followers)
         else: activity["cc"] = [user.followers]
-        activity["published"] = self.published
+        activity["published"] = self.published()
         activity["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
 
 
@@ -110,6 +110,17 @@ class Delete(BaseActivity):
 
     async def save(self):
         await Outbox.delete(self.render["object"]["id"])
+
+    @classmethod
+    def construct(cls, user, obj_id):
+        return cls(user, {
+            "id": f"{obj_id}#delete",
+            "type": "Delete",
+            "object": {
+                "id": obj_id,
+                "type": "Tombstone"
+            }
+        })
 
 
 def choose(user, activity):

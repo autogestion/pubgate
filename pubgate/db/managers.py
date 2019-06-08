@@ -98,7 +98,7 @@ class BaseManager:
     async def timeline_paged(cls, request, uri):
         filters = {
             "deleted": False,
-            "activity.type": "Create"
+            "activity.type": {'$in': ["Create", "Announce", "Like"]}
         }
         return await cls.get_ordered(request, cls, filters,
                                      cls.activity_clean, uri)
