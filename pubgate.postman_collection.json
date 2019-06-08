@@ -481,6 +481,33 @@
 			"response": []
 		},
 		{
+			"name": "/<user>/mass_delete  delete all user's posts",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}/{{user}}/mass_delete",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{user}}",
+						"mass_delete"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "/<user>/token",
 			"request": {
 				"method": "POST",

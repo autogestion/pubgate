@@ -11,9 +11,9 @@ from pubgate.activity import Activity
 
 inbox_v1 = Blueprint('inbox_v1')
 
-# @inbox_v1.middleware('response')
-# async def update_headers(request, response):
-#     response.headers["Content-Type"] = "application/activity+json; charset=utf-8"
+@inbox_v1.middleware('response')
+async def update_headers(request, response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
 
 
 @inbox_v1.route('/<user>/inbox', methods=['POST'])

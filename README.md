@@ -3,7 +3,7 @@
 ## Asyncronous Lightweight ActivityPub API
 Based on [little-boxes](https://github.com/tsileo/little-boxes).
 Implements both the client-to-server(C2S) API and the federated server-to-server(S2S) API.
- - S2S compatible with Mastodon, Pixelfed, Pleroma and microblog.pub
+ - S2S compatible with Mastodon, Pixelfed, Pleroma, WriteFreely and microblog.pub
 
 
 ##### Support extensions (collects blueprints and tasks):
