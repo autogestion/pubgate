@@ -84,7 +84,7 @@ class User(BaseModel, UserUtils, BaseManager):
         filters = {
             "deleted": False,
             "user_id": self.name,
-            "activity.type": "Create"
+            "activity.type": {'$in': ["Create", "Announce", "Like"]}
         }
         return await self.get_ordered(request, Outbox, filters,
                                       self.activity_clean, self.outbox)
@@ -120,7 +120,7 @@ class User(BaseModel, UserUtils, BaseManager):
         filters = {
             "deleted": False,
             "users": {"$in": [self.name]},
-            "activity.type": "Create"
+            "activity.type": {'$in': ["Create", "Announce", "Like"]}
         }
         return await self.get_ordered(request, Inbox, filters,
                                       self.activity_clean, self.inbox)

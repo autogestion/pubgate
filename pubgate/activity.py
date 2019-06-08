@@ -90,7 +90,7 @@ class Reaction(Activity):
         if check:
             activity["cc"].insert(0, user.followers)
         else: activity["cc"] = [user.followers]
-        activity["published"] = self.published
+        activity["published"] = self.published()
         activity["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
 
 
