@@ -7,6 +7,8 @@ from pubgate.db import Outbox
 from pubgate.renders import context
 from pubgate.activity import choose
 from pubgate.utils.checks import user_check, token_check, outbox_check
+from pubgate.utils import check_origin
+from pubgate.utils.cached import ensure_cached
 
 outbox_v1 = Blueprint('outbox_v1')
 
@@ -30,6 +32,11 @@ async def outbox_post(request, user):
     activity = choose(user, request.json)
     await activity.save()
     await activity.deliver(debug=request.app.config.LOG_OUTGOING_REQUEST)
+    if activity.render["type"] in ["Announce", "Like"]:
+        local = check_origin(activity.render["object"], request.app.base_url)
+        if not local:
+            await ensure_cached(activity.render['object'])
+
     # TODO implement streaming
     # if activity.render["type"] == "Create":
     #     await request.app.streams.outbox.put(activity.render)

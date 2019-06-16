@@ -5,7 +5,7 @@ from sanic_motor import BaseModel
 
 from pubgate import MEDIA
 from pubgate.api import user_v1, inbox_v1, outbox_v1, well_known
-from pubgate.db import register_admin
+from pubgate.db import register_admin, setup_cached_user
 from pubgate.logging import PGErrorHandler
 from pubgate.utils.streams import Streams
 
@@ -28,6 +28,9 @@ def create_app(config_path):
     app.blueprint(inbox_v1)
     app.blueprint(outbox_v1)
 
+    app.register_listener(
+        setup_cached_user, 'before_server_start'
+    )
     # app.add_task(register_client(app))
     # app.add_task(register_admin(app))
     register_extensions(app)

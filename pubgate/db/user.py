@@ -2,6 +2,7 @@ from sanic_motor import BaseModel
 from simple_bcrypt import generate_password_hash
 # import flask_admin
 # from flask_admin.contrib.pymongo.view import ModelView
+from pubgate.utils import random_object_id
 from pubgate.utils.user import UserUtils
 from pubgate.db.boxes import Outbox, Inbox
 from pubgate.db.managers import BaseManager
@@ -124,3 +125,12 @@ class User(BaseModel, UserUtils, BaseManager):
         }
         return await self.get_ordered(request, Inbox, filters,
                                       self.activity_clean, self.inbox)
+
+
+async def setup_cached_user(app, loop):
+    exists = await User.find_one(dict(name="cached"))
+    if not exists:
+        await User.create({
+            'username': 'cached',
+            'password': random_object_id()
+        }, app.base_url)

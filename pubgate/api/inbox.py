@@ -7,6 +7,7 @@ from pubgate.db import Inbox, Outbox
 from pubgate.utils import check_origin
 from pubgate.utils.networking import deliver, verify_request
 from pubgate.utils.checks import user_check, token_check
+from pubgate.utils.cached import ensure_cached
 from pubgate.activity import Activity
 
 inbox_v1 = Blueprint('inbox_v1')
@@ -55,9 +56,13 @@ async def inbox_post(request, user):
     elif activity["type"] in ["Announce", "Like", "Create"]:
         # TODO validate if local object of reaction exists in outbox
         saved = await Inbox.save(user, activity)
-        local = check_origin(activity["object"], user.uri)
-        if local and saved:
-            await user.forward_to_followers(activity)
+        local_user = check_origin(activity["object"], user.uri)
+        if saved:
+            if local_user:
+                await user.forward_to_followers(activity)
+            elif activity["type"] in ["Announce", "Like"]:
+                if not check_origin(activity["object"], request.app.base_url):
+                    await ensure_cached(activity['object'])
 
     elif activity["type"] == "Undo":
         deleted = await Inbox.delete(activity["object"]["id"])
