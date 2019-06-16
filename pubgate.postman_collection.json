@@ -231,6 +231,35 @@
 			"response": []
 		},
 		{
+			"name": "/timeline/local cached",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/timeline/local?cached=1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"timeline",
+						"local"
+					],
+					"query": [
+						{
+							"key": "cached",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "/timeline/local strip tags",
 			"request": {
 				"method": "GET",
@@ -253,6 +282,58 @@
 						{
 							"key": "strip_tags",
 							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/timeline/federated",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/timeline/federated",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"timeline",
+						"federated"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/timeline/federated cached",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/timeline/federated?cached=1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"timeline",
+						"federated"
+					],
+					"query": [
+						{
+							"key": "cached",
+							"value": "1"
 						}
 					]
 				}
@@ -854,29 +935,6 @@
 							"key": "page",
 							"value": "2"
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/timeline/federated",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Accept",
-						"value": "application/activity+json"
-					}
-				],
-				"url": {
-					"raw": "{{host}}/timeline/federated",
-					"host": [
-						"{{host}}"
-					],
-					"path": [
-						"timeline",
-						"federated"
 					]
 				}
 			},

@@ -66,14 +66,22 @@ class BaseManager:
                                     limit=limit)
             data = data.objects
             if cached:
-                for entry in data:
+                get_cached, get_cached_index = [], []
+                for index, entry in enumerate(data):
                     if entry.activity['type'] in ["Announce", "Like"] and\
                             isinstance(entry.activity['object'], str):
-                        ref_activity = await model.aggregate(cls.aggregate_query + [
-                            {'$match': {"activity.object.id": entry.activity['object']}}
-                        ])
-                        if ref_activity:
-                            entry.activity['object'] = ref_activity[0]['activity']['object']
+                        get_cached.append(entry.activity['object'])
+                        get_cached_index.append(index)
+
+                ref_activity = await model.aggregate(cls.aggregate_query + [
+                    {'$match': {"activity.object.id": {'$in': get_cached}}}
+                ])
+                ref_activity_dict = {
+                    x['activity']['object']['id']: x['activity']['object'] for x in ref_activity
+                }
+                for index in get_cached_index:
+                    obj_id = data[index].activity['object']
+                    data[index].activity['object'] = ref_activity_dict.get(obj_id, obj_id)
 
         else:
             data = []
