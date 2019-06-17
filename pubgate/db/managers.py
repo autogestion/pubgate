@@ -59,11 +59,17 @@ class BaseManager:
 
         limit = request.app.config.PAGINATION_LIMIT
         if total != 0:
+
+            import datetime
+            time1 = datetime.datetime.now()
             data = await model.find(filter=filters,
                                     sort="activity.published desc",
                                     skip=limit * (page - 1),
                                     limit=limit)
             data = data.objects
+            time2 = datetime.datetime.now()
+            elapsedTime = time2 - time1
+            print(divmod(elapsedTime.total_seconds(), 60))
             if cached:
                 get_cached, get_cached_index = [], []
                 for index, entry in enumerate(data):
@@ -72,20 +78,10 @@ class BaseManager:
                         get_cached.append(entry.activity['object'])
                         get_cached_index.append(index)
 
-                from pprint import pprint
-                pprint(cls.aggregate_query + [
-                    {'$match': {"activity.object.id": {'$in': get_cached}}}
-                ])
-
-                import datetime
-                time1 = datetime.datetime.now()
-
                 ref_activity = await model.aggregate(cls.aggregate_query + [
                     {'$match': {"activity.object.id": {'$in': get_cached}}}
                 ])
-                time2 = datetime.datetime.now()
-                elapsedTime = time2 - time1
-                print(divmod(elapsedTime.total_seconds(), 60))
+
 
                 ref_activity_dict = {
                     x['activity']['object']['id']: x['activity']['object'] for x in ref_activity
