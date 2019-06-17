@@ -26,7 +26,6 @@ class BaseManager:
         }},
         {"$unwind": "$items"},
         {"$replaceRoot": {"newRoot": "$items"}},
-        {'$sort': {"activity.published": -1}},
     ]
 
     @classmethod
@@ -73,9 +72,21 @@ class BaseManager:
                         get_cached.append(entry.activity['object'])
                         get_cached_index.append(index)
 
+                from pprint import pprint
+                pprint(cls.aggregate_query + [
+                    {'$match': {"activity.object.id": {'$in': get_cached}}}
+                ])
+
+                import datetime
+                time1 = datetime.datetime.now()
+
                 ref_activity = await model.aggregate(cls.aggregate_query + [
                     {'$match': {"activity.object.id": {'$in': get_cached}}}
                 ])
+                time2 = datetime.datetime.now()
+                elapsedTime = time2 - time1
+                print(divmod(elapsedTime.total_seconds(), 60))
+
                 ref_activity_dict = {
                     x['activity']['object']['id']: x['activity']['object'] for x in ref_activity
                 }
@@ -105,6 +116,7 @@ class BaseManager:
         limit = request.app.config.PAGINATION_LIMIT
         if total != 0:
             data = await t1.aggregate(cls.aggregate_query + [
+                {'$sort': {"activity.published": -1}},
                 {'$match': filters},
                 {'$limit': limit},
                 {'$skip': limit * (page - 1)}
