@@ -4,6 +4,7 @@ from sanic.log import logger
 from sanic_openapi import doc
 
 from pubgate.db import Inbox, Outbox
+from pubgate.db.cached import timeline_cached
 from pubgate.utils import check_origin
 from pubgate.utils.networking import deliver, verify_request
 from pubgate.utils.checks import user_check, token_check
@@ -95,5 +96,8 @@ async def inbox_list(request, user):
 @inbox_v1.route('/timeline/federated', methods=['GET'])
 @doc.summary("Returns federated timeline")
 async def inbox_all(request):
-    resp = await Inbox.timeline_paged(request, f"{request.app.base_url}/timeline/federated")
+    if request.args.get('cached'):
+        resp = await timeline_cached(Inbox, request, f"{request.app.base_url}/timeline/federated")
+    else:
+        resp = await Inbox.timeline_paged(request, f"{request.app.base_url}/timeline/federated")
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
