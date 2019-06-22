@@ -42,6 +42,7 @@ async def outbox_post(request, user):
     # if activity.render["type"] == "Create":
     #     await request.app.streams.outbox.put(activity.render)
 
+    await request.app.cache.clear()
     return response.json({'peremoga': 'yep'},
                          status=201,
                          headers={'Location': activity.render.get("id", '')}
@@ -52,7 +53,10 @@ async def outbox_post(request, user):
 @doc.summary("Returns user outbox")
 @user_check
 async def outbox_list(request, user):
-    resp = await user.outbox_paged(request)
+    if request.args.get('cached'):
+        resp = await timeline_cached(Outbox, request, user.outbox, user=user.name)
+    else:
+        resp = await user.outbox_paged(request)
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 

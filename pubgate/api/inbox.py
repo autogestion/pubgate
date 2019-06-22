@@ -82,6 +82,7 @@ async def inbox_post(request, user):
     else:
         await Inbox.save(user, activity)
 
+    await request.app.cache.clear()
     return response.json({'peremoga': 'yep'}, status=202)
 
 
@@ -89,7 +90,10 @@ async def inbox_post(request, user):
 @doc.summary("Returns user inbox, auth required")
 @token_check
 async def inbox_list(request, user):
-    resp = await user.inbox_paged(request)
+    if request.args.get('cached'):
+        resp = await timeline_cached(Inbox, request, user.inbox, user=user.name)
+    else:
+        resp = await user.inbox_paged(request)
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 

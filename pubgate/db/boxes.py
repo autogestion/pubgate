@@ -8,6 +8,10 @@ class Outbox(BaseModel, BaseManager):
     __coll__ = 'outbox'
     __unique_fields__ = ['_id']
 
+    @staticmethod
+    def by_user(name):
+        return {"user_id": name}
+
     @classmethod
     async def get(cls, filters):
         filters["deleted"] = False
@@ -48,6 +52,10 @@ class Outbox(BaseModel, BaseManager):
 class Inbox(BaseModel, BaseManager):
     __coll__ = 'inbox'
     __unique_fields__ = ['_id', 'activity.id']
+
+    @staticmethod
+    def by_user(name):
+        return {"users": {"$in": [name]}}
 
     @classmethod
     async def get_by_object(cls, object_id):

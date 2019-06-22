@@ -75,7 +75,7 @@ class User(BaseModel, UserUtils, BaseManager):
     async def liked_paged(self, request):
         filter = {
             "deleted": False,
-            "user_id": self.name,
+            **Outbox.by_user(self.name),
             "activity.type": "Like"
         }
         return await self.get_ordered(request, Outbox, filter,
@@ -84,7 +84,7 @@ class User(BaseModel, UserUtils, BaseManager):
     async def outbox_paged(self, request):
         filters = {
             "deleted": False,
-            "user_id": self.name,
+            **Outbox.by_user(self.name),
             "activity.type": {'$in': ["Create", "Announce", "Like"]}
         }
         return await self.get_ordered(request, Outbox, filters,
@@ -120,7 +120,7 @@ class User(BaseModel, UserUtils, BaseManager):
     async def inbox_paged(self, request):
         filters = {
             "deleted": False,
-            "users": {"$in": [self.name]},
+            **Inbox.by_user(self.name),
             "activity.type": {'$in': ["Create", "Announce", "Like"]}
         }
         return await self.get_ordered(request, Inbox, filters,

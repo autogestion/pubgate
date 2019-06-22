@@ -1,15 +1,28 @@
+
 from pubgate.renders import ordered_collection
 from pubgate.db import Inbox, Outbox
 
 
-async def timeline_cached(cls, request, uri):
+async def timeline_cached(cls, request, uri, user='stream'):
+
+    cache = request.app.cache
+    cache_key = f'{cls.__coll__}_{user}'
+    data = await cache.get("cache_key")
+    if data:
+        return data
+
     filters = {
         "deleted": False,
         "activity.type": {'$in': ["Create", "Announce", "Like"]}
     }
-    return await get_ordered_cached(
+    if user != 'stream':
+        filters.update(cls.by_user(user))
+
+    data = await get_ordered_cached(
         request, cls, filters, cls.activity_clean, uri
     )
+    await cache.set(cache_key, data)
+    return data
 
 
 async def get_ordered_cached(request, model, filters, cleaner, coll_id):
