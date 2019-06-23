@@ -7,7 +7,7 @@ async def timeline_cached(cls, request, uri, user='stream'):
 
     cache = request.app.cache
     cache_key = f'{cls.__coll__}_{user}'
-    data = await cache.get("cache_key")
+    data = await cache.get(cache_key)
     if data:
         return data
 
@@ -76,6 +76,5 @@ async def get_ordered_cached(request, model, filters, cleaner, coll_id):
 
     else:
         data = []
-    resp = ordered_collection(coll_id, total, page,
-                              cleaner(data, request.args.get("strip_tags")))
-    return resp
+
+    return ordered_collection(coll_id, total, page, cleaner(data))

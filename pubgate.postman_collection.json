@@ -179,6 +179,35 @@
 			"response": []
 		},
 		{
+			"name": "/<user>/outbox get outbox cached",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/{{user}}/outbox?cached=1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{user}}",
+						"outbox"
+					],
+					"query": [
+						{
+							"key": "cached",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "/<user>/outbox?page=2 get outbox paged",
 			"request": {
 				"method": "GET",
@@ -902,6 +931,39 @@
 					"path": [
 						"{{user}}",
 						"inbox"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/<user>/inbox get inbox cached",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/{{user}}/inbox?cached=1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{user}}",
+						"inbox"
+					],
+					"query": [
+						{
+							"key": "cached",
+							"value": "1"
+						}
 					]
 				}
 			},

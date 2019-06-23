@@ -1,5 +1,4 @@
 from pubgate.renders import ordered_collection
-from pubgate.utils import strip_tags
 
 
 class BaseManager:
@@ -39,12 +38,8 @@ class BaseManager:
         return result.modified_count
 
     @staticmethod
-    def activity_clean(data, striptags=False):
-        cleaned = [item["activity"] for item in data]
-        if striptags:
-            for post in cleaned:
-                post["object"]["content"] = strip_tags(post["object"]["content"])
-        return cleaned
+    def activity_clean(data):
+        return [item["activity"] for item in data]
 
     @staticmethod
     async def get_ordered(request, model, filters, cleaner, coll_id):
@@ -67,9 +62,8 @@ class BaseManager:
 
         else:
             data = []
-        resp = ordered_collection(coll_id, total, page,
-                                  cleaner(data, request.args.get("strip_tags")))
-        return resp
+
+        return ordered_collection(coll_id, total, page, cleaner(data))
 
     @classmethod
     async def get_replies(cls, request, t1, t2, filters, cleaner, coll_id):
@@ -94,9 +88,8 @@ class BaseManager:
             ])
         else:
             data = []
-        resp = ordered_collection(coll_id, total, page,
-                                  cleaner(data, request.args.get("strip_tags")))
-        return resp
+
+        return ordered_collection(coll_id, total, page, cleaner(data))
 
     @classmethod
     async def timeline_paged(cls, request, uri):

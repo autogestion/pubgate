@@ -3,7 +3,6 @@ import os
 from typing import Any
 from typing import List
 from typing import Union
-from html.parser import HTMLParser
 
 
 def make_label(activity):
@@ -36,22 +35,3 @@ def check_origin(obj, uri):
         return obj.startswith(uri)
     elif isinstance(obj, dict):
         return reply_origin(obj, uri)
-
-
-class MLStripper(HTMLParser):
-    def __init__(self):
-        super().__init__()
-        self.reset()
-        self.fed = []
-
-    def handle_data(self, d):
-        self.fed.append(d)
-
-    def get_data(self):
-        return ''.join(self.fed)
-
-
-def strip_tags(html):
-    s = MLStripper()
-    s.feed(html)
-    return s.get_data()
