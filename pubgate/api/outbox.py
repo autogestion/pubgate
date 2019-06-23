@@ -42,7 +42,6 @@ async def outbox_post(request, user):
     # if activity.render["type"] == "Create":
     #     await request.app.streams.outbox.put(activity.render)
 
-    await request.app.cache.clear()
     return response.json({'peremoga': 'yep'},
                          status=201,
                          headers={'Location': activity.render.get("id", '')}

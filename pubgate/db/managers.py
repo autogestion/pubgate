@@ -1,7 +1,12 @@
+from aiocache.backends.memory import SimpleMemoryCache
+from aiocache.serializers import JsonSerializer
+
 from pubgate.renders import ordered_collection
 
 
 class BaseManager:
+
+    cache = SimpleMemoryCache(serializer=JsonSerializer())
 
     aggregate_query = [
         {"$lookup": {
@@ -35,6 +40,7 @@ class BaseManager:
              "deleted": False},
             {'$set': {"deleted": True}}
         )
+        await cls.cache.clear()
         return result.modified_count
 
     @staticmethod

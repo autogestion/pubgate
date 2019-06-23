@@ -29,6 +29,7 @@ class Outbox(BaseModel, BaseManager):
         }
         db_obj.update(kwargs)
         await Outbox.insert_one(db_obj)
+        await cls.cache.clear()
 
     @classmethod
     async def unfollow(cls, activity):
@@ -95,6 +96,7 @@ class Inbox(BaseModel, BaseManager):
                 "deleted": False,
                 "first_user": user.name
             })
+        await cls.cache.clear()
         return True
 
     async def inbox_paged(self, request):

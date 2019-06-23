@@ -5,9 +5,8 @@ from pubgate.db import Inbox, Outbox
 
 async def timeline_cached(cls, request, uri, user='stream'):
 
-    cache = request.app.cache
     cache_key = f'{cls.__coll__}_{user}'
-    data = await cache.get(cache_key)
+    data = await cls.cache.get(cache_key)
     if data:
         return data
 
@@ -21,7 +20,7 @@ async def timeline_cached(cls, request, uri, user='stream'):
     data = await get_ordered_cached(
         request, cls, filters, cls.activity_clean, uri
     )
-    await cache.set(cache_key, data)
+    await cls.cache.set(cache_key, data)
     return data
 
 

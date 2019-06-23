@@ -1,6 +1,4 @@
 import aiohttp
-from aiocache.backends.memory import SimpleMemoryCache
-from aiocache.serializers import JsonSerializer
 from sanic import Sanic
 from sanic_openapi import swagger_blueprint, openapi_blueprint
 from sanic_motor import BaseModel
@@ -18,7 +16,6 @@ def create_app(config_path):
     app.config.from_pyfile(config_path)
     app.base_url = f"{app.config.METHOD}://{app.config.DOMAIN}"
     app.streams = Streams()
-    app.cache = SimpleMemoryCache(serializer=JsonSerializer())
     BaseModel.init_app(app)
 
     # TODO Find viable openapi fork

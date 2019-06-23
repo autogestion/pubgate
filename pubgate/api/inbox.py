@@ -83,7 +83,6 @@ async def inbox_post(request, user):
     else:
         await Inbox.save(user, activity)
 
-    await request.app.cache.clear()
     return response.json({'peremoga': 'yep'}, status=202)
 
 
