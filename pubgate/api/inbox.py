@@ -4,16 +4,19 @@ from sanic.log import logger
 from sanic_openapi import doc
 
 from pubgate.db import Inbox, Outbox
+from pubgate.db.cached import timeline_cached
 from pubgate.utils import check_origin
 from pubgate.utils.networking import deliver, verify_request
 from pubgate.utils.checks import user_check, token_check
+from pubgate.utils.cached import ensure_cached
 from pubgate.activity import Activity
 
 inbox_v1 = Blueprint('inbox_v1')
 
-@inbox_v1.middleware('response')
-async def update_headers(request, response):
-    response.headers["Access-Control-Allow-Origin"] = "*"
+
+# @inbox_v1.middleware('response')
+# async def update_headers(request, response):
+#     response.headers["Access-Control-Allow-Origin"] = "*"
 
 
 @inbox_v1.route('/<user>/inbox', methods=['POST'])
@@ -55,9 +58,13 @@ async def inbox_post(request, user):
     elif activity["type"] in ["Announce", "Like", "Create"]:
         # TODO validate if local object of reaction exists in outbox
         saved = await Inbox.save(user, activity)
-        local = check_origin(activity["object"], user.uri)
-        if local and saved:
-            await user.forward_to_followers(activity)
+        local_user = check_origin(activity["object"], user.uri)
+        if saved:
+            if local_user:
+                await user.forward_to_followers(activity)
+            elif activity["type"] in ["Announce", "Like"]:
+                if not check_origin(activity["object"], request.app.base_url):
+                    await ensure_cached(activity['object'])
 
     elif activity["type"] == "Undo":
         deleted = await Inbox.delete(activity["object"]["id"])
@@ -83,12 +90,18 @@ async def inbox_post(request, user):
 @doc.summary("Returns user inbox, auth required")
 @token_check
 async def inbox_list(request, user):
-    resp = await user.inbox_paged(request)
+    if request.args.get('cached'):
+        resp = await timeline_cached(Inbox, request, user.inbox, user=user.name)
+    else:
+        resp = await user.inbox_paged(request)
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
 @inbox_v1.route('/timeline/federated', methods=['GET'])
 @doc.summary("Returns federated timeline")
 async def inbox_all(request):
-    resp = await Inbox.timeline_paged(request, f"{request.app.base_url}/timeline/federated")
+    if request.args.get('cached'):
+        resp = await timeline_cached(Inbox, request, f"{request.app.base_url}/timeline/federated")
+    else:
+        resp = await Inbox.timeline_paged(request, f"{request.app.base_url}/timeline/federated")
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})

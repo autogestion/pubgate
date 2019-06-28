@@ -1,8 +1,36 @@
+from aiocache.backends.memory import SimpleMemoryCache
+from aiocache.serializers import JsonSerializer
+
 from pubgate.renders import ordered_collection
-from pubgate.utils import strip_tags
 
 
 class BaseManager:
+
+    cache = SimpleMemoryCache(serializer=JsonSerializer())
+
+    aggregate_query = [
+        {"$lookup": {
+            "from": "inbox",
+            "pipeline": [],
+            "as": "inbox"}},
+        {"$group": {
+            "_id": "null",
+            "outbox": {
+                "$push": {
+                    "_id": "$_id",
+                    "activity": "$activity",
+                    "deleted": "$deleted"}},
+            "inbox": {
+                "$first": "$inbox"}
+        }},
+        {"$project": {
+            "items": {
+                "$setUnion": ["$outbox", "$inbox"]
+            }
+        }},
+        {"$unwind": "$items"},
+        {"$replaceRoot": {"newRoot": "$items"}},
+    ]
 
     @classmethod
     async def delete(cls, obj_id):
@@ -12,15 +40,12 @@ class BaseManager:
              "deleted": False},
             {'$set': {"deleted": True}}
         )
+        await cls.cache.clear()
         return result.modified_count
 
     @staticmethod
-    def activity_clean(data, striptags=False):
-        cleaned = [item["activity"] for item in data]
-        if striptags:
-            for post in cleaned:
-                post["object"]["content"] = strip_tags(post["object"]["content"])
-        return cleaned
+    def activity_clean(data):
+        return [item["activity"] for item in data]
 
     @staticmethod
     async def get_ordered(request, model, filters, cleaner, coll_id):
@@ -40,14 +65,14 @@ class BaseManager:
                                     skip=limit * (page - 1),
                                     limit=limit)
             data = data.objects
+
         else:
             data = []
-        resp = ordered_collection(coll_id, total, page,
-                                  cleaner(data, request.args.get("strip_tags")))
-        return resp
 
-    @staticmethod
-    async def get_replies(request, t1, t2, filters, cleaner, coll_id):
+        return ordered_collection(coll_id, total, page, cleaner(data))
+
+    @classmethod
+    async def get_replies(cls, request, t1, t2, filters, cleaner, coll_id):
         page = request.args.get("page")
 
         if page:
@@ -61,38 +86,16 @@ class BaseManager:
 
         limit = request.app.config.PAGINATION_LIMIT
         if total != 0:
-            data = await t1.aggregate([
-                {"$lookup": {
-                    "from": "inbox",
-                    "pipeline": [],
-                    "as": "inbox"}},
-                {"$group": {
-                    "_id": "null",
-                    "outbox": {
-                        "$push": {
-                            "_id": "$_id",
-                            "activity": "$activity",
-                            "deleted": "$deleted"}},
-                    "inbox": {
-                        "$first": "$inbox"}
-                }},
-                {"$project": {
-                    "items": {
-                        "$setUnion": ["$outbox", "$inbox"]
-                    }
-                }},
-                {"$unwind": "$items"},
-                {"$replaceRoot": {"newRoot": "$items"}},
-                {'$match': filters},
+            data = await t1.aggregate(cls.aggregate_query + [
                 {'$sort': {"activity.published": -1}},
+                {'$match': filters},
                 {'$limit': limit},
                 {'$skip': limit * (page - 1)}
             ])
         else:
             data = []
-        resp = ordered_collection(coll_id, total, page,
-                                  cleaner(data, request.args.get("strip_tags")))
-        return resp
+
+        return ordered_collection(coll_id, total, page, cleaner(data))
 
     @classmethod
     async def timeline_paged(cls, request, uri):
@@ -100,5 +103,6 @@ class BaseManager:
             "deleted": False,
             "activity.type": {'$in': ["Create", "Announce", "Like"]}
         }
-        return await cls.get_ordered(request, cls, filters,
-                                     cls.activity_clean, uri)
+        return await cls.get_ordered(
+            request, cls, filters, cls.activity_clean, uri
+        )

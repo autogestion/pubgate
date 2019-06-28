@@ -179,6 +179,35 @@
 			"response": []
 		},
 		{
+			"name": "/<user>/outbox get outbox cached",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/{{user}}/outbox?cached=1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{user}}",
+						"outbox"
+					],
+					"query": [
+						{
+							"key": "cached",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "/<user>/outbox?page=2 get outbox paged",
 			"request": {
 				"method": "GET",
@@ -231,6 +260,35 @@
 			"response": []
 		},
 		{
+			"name": "/timeline/local cached",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/timeline/local?cached=1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"timeline",
+						"local"
+					],
+					"query": [
+						{
+							"key": "cached",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "/timeline/local strip tags",
 			"request": {
 				"method": "GET",
@@ -253,6 +311,58 @@
 						{
 							"key": "strip_tags",
 							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/timeline/federated",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/timeline/federated",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"timeline",
+						"federated"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/timeline/federated cached",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/timeline/federated?cached=1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"timeline",
+						"federated"
+					],
+					"query": [
+						{
+							"key": "cached",
+							"value": "1"
 						}
 					]
 				}
@@ -827,6 +937,39 @@
 			"response": []
 		},
 		{
+			"name": "/<user>/inbox get inbox cached",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/{{user}}/inbox?cached=1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{user}}",
+						"inbox"
+					],
+					"query": [
+						{
+							"key": "cached",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "/<user>/inbox?page=2 get inbox paged",
 			"request": {
 				"method": "GET",
@@ -854,29 +997,6 @@
 							"key": "page",
 							"value": "2"
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/timeline/federated",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Accept",
-						"value": "application/activity+json"
-					}
-				],
-				"url": {
-					"raw": "{{host}}/timeline/federated",
-					"host": [
-						"{{host}}"
-					],
-					"path": [
-						"timeline",
-						"federated"
 					]
 				}
 			},

@@ -1,4 +1,4 @@
-from pubgate.db.user import User
+from pubgate.db.user import User, setup_cached_user
 from pubgate.db.boxes import Inbox, Outbox
 
 

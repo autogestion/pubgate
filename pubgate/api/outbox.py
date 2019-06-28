@@ -4,9 +4,12 @@ from sanic import response, Blueprint
 from sanic_openapi import doc
 
 from pubgate.db import Outbox
+from pubgate.db.cached import timeline_cached
 from pubgate.renders import context
 from pubgate.activity import choose
 from pubgate.utils.checks import user_check, token_check, outbox_check
+from pubgate.utils import check_origin
+from pubgate.utils.cached import ensure_cached
 
 outbox_v1 = Blueprint('outbox_v1')
 
@@ -30,6 +33,11 @@ async def outbox_post(request, user):
     activity = choose(user, request.json)
     await activity.save()
     await activity.deliver(debug=request.app.config.LOG_OUTGOING_REQUEST)
+    if activity.render["type"] in ["Announce", "Like"]:
+        local = check_origin(activity.render["object"], request.app.base_url)
+        if not local:
+            await ensure_cached(activity.render['object'])
+
     # TODO implement streaming
     # if activity.render["type"] == "Create":
     #     await request.app.streams.outbox.put(activity.render)
@@ -44,7 +52,10 @@ async def outbox_post(request, user):
 @doc.summary("Returns user outbox")
 @user_check
 async def outbox_list(request, user):
-    resp = await user.outbox_paged(request)
+    if request.args.get('cached'):
+        resp = await timeline_cached(Outbox, request, user.outbox, user=user.name)
+    else:
+        resp = await user.outbox_paged(request)
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
@@ -98,7 +109,10 @@ async def outbox_shares(request, user, entity):
 @outbox_v1.route('/timeline/local', methods=['GET'])
 @doc.summary("Returns local timeline")
 async def outbox_all(request):
-    resp = await Outbox.timeline_paged(request, f"{request.app.base_url}/timeline/local")
+    if request.args.get('cached'):
+        resp = await timeline_cached(Outbox, request, f"{request.app.base_url}/timeline/local")
+    else:
+        resp = await Outbox.timeline_paged(request, f"{request.app.base_url}/timeline/local")
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
