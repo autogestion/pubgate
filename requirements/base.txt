@@ -4,5 +4,6 @@ aiocache==0.10.1
 sanic==18.12.0
 sanic-motor==0.3.4
 sanic-openapi==0.4.0
+sanic-cors==0.9.8.post1
 simple-bcrypt==0.1.0
 pycryptodome==3.7.0
