@@ -34,8 +34,8 @@ class User(BaseModel, UserUtils, BaseManager):
     async def create(cls, user_data, base_url):
         user_data["name"] = user_data.pop("username")
         user_data["password"] = generate_password_hash(user_data["password"])
-        user_data["uri"] = f"{base_url}/{user_data['name']}"
-        user_data["alias"] = f"{base_url}/@{user_data['name']}"
+        user_data["alias"] = f"{base_url}/{user_data['name']}"
+        user_data["uri"] = f"{base_url}/@{user_data['name']}"
         await cls.insert_one(user_data)
         user = await cls.find_one({"name": user_data['name']})
         return user
