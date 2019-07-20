@@ -107,12 +107,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{host}}/{{user}}/following",
+					"raw": "{{host}}/@{{user}}/following",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"following"
 					]
 				}
@@ -125,12 +125,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{host}}/{{user}}/followers",
+					"raw": "{{host}}/@{{user}}/followers",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"followers"
 					]
 				}
@@ -143,12 +143,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{host}}/{{user}}/liked",
+					"raw": "{{host}}/@{{user}}/liked",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"liked"
 					]
 				}
@@ -166,12 +166,12 @@
 					}
 				],
 				"url": {
-					"raw": "{{host}}/{{user}}/outbox",
+					"raw": "{{host}}/@{{user}}/outbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"outbox"
 					]
 				}
@@ -189,12 +189,12 @@
 					}
 				],
 				"url": {
-					"raw": "{{host}}/{{user}}/outbox?cached=1",
+					"raw": "{{host}}/@{{user}}/outbox?cached=1",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"outbox"
 					],
 					"query": [
@@ -218,12 +218,12 @@
 					}
 				],
 				"url": {
-					"raw": "{{host}}/{{user}}/outbox?page=2",
+					"raw": "{{host}}/@{{user}}/outbox?page=2",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"outbox"
 					],
 					"query": [
@@ -380,12 +380,12 @@
 					}
 				],
 				"url": {
-					"raw": "{{host}}/{{user}}/activity/{{entity}}",
+					"raw": "{{host}}/@{{user}}/activity/{{entity}}",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"activity",
 						"{{entity}}"
 					]
@@ -404,12 +404,12 @@
 					}
 				],
 				"url": {
-					"raw": "{{host}}/{{user}}/object/{{entity}}",
+					"raw": "{{host}}/@{{user}}/object/{{entity}}",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"object",
 						"{{entity}}"
 					]
@@ -428,12 +428,12 @@
 					}
 				],
 				"url": {
-					"raw": "{{host}}/{{user}}/object/{{entity}}/replies",
+					"raw": "{{host}}/@{{user}}/object/{{entity}}/replies",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"object",
 						"{{entity}}",
 						"replies"
@@ -453,12 +453,12 @@
 					}
 				],
 				"url": {
-					"raw": "{{host}}/{{user}}/object/{{entity}}/likes",
+					"raw": "{{host}}/@{{user}}/object/{{entity}}/likes",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"object",
 						"{{entity}}",
 						"likes"
@@ -478,12 +478,12 @@
 					}
 				],
 				"url": {
-					"raw": "{{host}}/{{user}}/object/{{entity}}/shares",
+					"raw": "{{host}}/@{{user}}/object/{{entity}}/shares",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"object",
 						"{{entity}}",
 						"shares"
@@ -627,12 +627,11 @@
 					"raw": "{\n\t\"username\": \"{{user}}\",\n\t\"password\":\"{{pass}}\"\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/token",
+					"raw": "{{host}}/token",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
 						"token"
 					]
 				}
@@ -654,12 +653,12 @@
 					"raw": "{\n    \"type\": \"Follow\",\n    \"object\": \"https://mastodon.social/users/pubgate\",\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/outbox",
+					"raw": "{{host}}/@{{user}}/outbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"outbox"
 					]
 				}
@@ -681,12 +680,12 @@
 					"raw": "{\n\t\"type\": \"Undo\",\n\t\"object\": {\n\t\t\"type\": \"Follow\",\n\t\t\"object\": \"https://mastodon.social/users/pubgate\"\n\t}\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/outbox",
+					"raw": "{{host}}/@{{user}}/outbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"outbox"
 					]
 				}
@@ -708,12 +707,12 @@
 					"raw": "{\n    \"type\": \"Create\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"sensitive\": false,\n        \"content\": \"Litepub compatible!\",\n        \"attachment\": [],\n        \"tag\": []\n    }\n}        "
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/outbox",
+					"raw": "{{host}}/@{{user}}/outbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"outbox"
 					]
 				}
@@ -735,12 +734,12 @@
 					"raw": "{\n    \"type\": \"Create\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"inReplyTo\": null,\n        \"sensitive\": false,\n        \"content\": \"Lightweight rssbot, based on pubgate federator <a href='https://github.com/autogestion/pubgate-rssbot' target='blank'> https://github.com/autogestion/pubgate-rssbot</a> . <br> Handles replies, could be deployed on 2$ hosting, like scaleway. Bot example <a href='https://pubgate.autogestion.org/xatarsis' >@xatarsis</a> .<br> <a href='{{host}}/tag/activitypub' rel='tag'>#activitypub</a> <a href='{{host}}/tag/python' rel='tag'>#python</a> <a href='{{host}}/tag/rssbot' rel='tag'>#rssbot</a> <a href='{{host}}/tag/pubgate' rel='tag'>#pubgate</a>\",\n        \"attachment\": [],\n        \"tag\": [\n\t\t\t{\n\t\t\t\t\"type\": \"Mention\",\n\t\t\t\t\"href\": \"https://pubgate.autogestion.org/xatarsis\",\n\t\t\t\t\"name\": \"@xatarsis@pubgate.autogestion.org\"\n\t\t\t},        \n            {\n                \"type\": \"Hashtag\",\n                \"href\": \"{{host}}/tags/activitypub\",\n                \"name\": \"#activitypub\"\n            },\n            {\n                \"type\": \"Hashtag\",\n                \"href\": \"{{host}}/tags/python\",\n                \"name\": \"#python\"\n            },        \n            {\n                \"type\": \"Hashtag\",\n                \"href\": \"{{host}}/tags/rssbot\",\n                \"name\": \"#rssbot\"\n            },\n            {\n                \"type\": \"Hashtag\",\n                \"href\": \"{{host}}/tags/pubgate\",\n                \"name\": \"#pubgate\"\n            }\n        ]\n    }\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/outbox",
+					"raw": "{{host}}/@{{user}}/outbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"outbox"
 					]
 				}
@@ -762,12 +761,12 @@
 					"raw": "{\n    \"type\": \"Create\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"inReplyTo\": null,\n        \"sensitive\": false,\n        \"content\": \"<p>yep</p>\",\n        \"contentMap\": {\n            \"en\": \"<p>yep</p>\"\n        },\n        \"attachment\": [\n            {\n                \"type\": \"Document\",\n                \"mediaType\": \"image/jpeg\",\n                \"url\": \"https://files.mastodon.social/media_attachments/files/014/029/544/original/67f35fd0c3c185db.jpg\",\n                \"name\": null\n            }\n        ],\n        \"tag\": []\n    }\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/outbox",
+					"raw": "{{host}}/@{{user}}/outbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"outbox"
 					]
 				}
@@ -789,12 +788,12 @@
 					"raw": "{\n    \"type\": \"Create\",\n    \"cc\": [\"https://mastodon.social/users/pubgate\"],\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"sensitive\": false,\n        \"content\": \"Litepub compatible Reply!\",\n        \"attachment\": [],\n        \"tag\": [],\n        \"inReplyTo\": \"https://mastodon.social/users/pubgate/statuses/101047834927446681\"\n    }\n}        "
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/outbox",
+					"raw": "{{host}}/@{{user}}/outbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"outbox"
 					]
 				}
@@ -816,12 +815,12 @@
 					"raw": "{\n    \"type\": \"Create\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"sensitive\": false,\n        \"content\": \"Litepub compatible Reply!\",\n        \"attachment\": [],\n        \"tag\": [],\n        \"inReplyTo\": \"{{host}}/{{user}}/object/{{entity}}\"\n    }\n}        "
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/outbox",
+					"raw": "{{host}}/@{{user}}/outbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"outbox"
 					]
 				}
@@ -843,12 +842,12 @@
 					"raw": "{\n  \"type\": \"Announce\",\n  \"object\": \"https://mastodon.social/users/autogestion/statuses/100584040062075154\",\n  \"cc\": [ \"https://mastodon.social/users/autogestion\" ]\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/outbox",
+					"raw": "{{host}}/@{{user}}/outbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"outbox"
 					]
 				}
@@ -870,12 +869,12 @@
 					"raw": "{\n  \"type\": \"Undo\",\n  \"object\": {\n\t\"type\": \"Announce\",\n\t\"object\": \"https://mastodon.social/users/autogestion/statuses/100584040062075154\",\n\t\"cc\": [\"{{host}}/{{user}}/followers\", \"https://mastodon.social/users/autogestion\"],\n\t\"actor\": \"{{host}}/{{user}}\",\n\t\"id\": \"{{host}}/{{user}}/activity/bebfb213c6fd470f\",\n\t\"published\": \"2018-11-10T14:32:50Z\",\n\t\"to\": [\"https://www.w3.org/ns/activitystreams#Public\"],\n\t\"@context\": [\"https://www.w3.org/ns/activitystreams\", \"https://w3id.org/security/v1\", {\n\t\t\"Hashtag\": \"as:Hashtag\",\n\t\t\"sensitive\": \"as:sensitive\"\n\t}]\n  },\n  \"cc\": [ \"https://mastodon.social/users/autogestion\" ]\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/outbox",
+					"raw": "{{host}}/@{{user}}/outbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"outbox"
 					]
 				}
@@ -897,12 +896,12 @@
 					"raw": "{\n\n  \"id\": \"{{host}}/{{user}}/object/{{entity}}#delete\",\n  \"type\": \"Delete\",\n  \"object\": {\n    \"id\": \"{{host}}/{{user}}/object/{{entity}}\",\n    \"type\": \"Tombstone\"\n  }\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/outbox",
+					"raw": "{{host}}/@{{user}}/outbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"outbox"
 					]
 				}
@@ -924,12 +923,12 @@
 					}
 				],
 				"url": {
-					"raw": "{{host}}/{{user}}/inbox",
+					"raw": "{{host}}/@{{user}}/inbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"inbox"
 					]
 				}
@@ -951,12 +950,12 @@
 					}
 				],
 				"url": {
-					"raw": "{{host}}/{{user}}/inbox?cached=1",
+					"raw": "{{host}}/@{{user}}/inbox?cached=1",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"inbox"
 					],
 					"query": [
@@ -984,12 +983,12 @@
 					}
 				],
 				"url": {
-					"raw": "{{host}}/{{user}}/inbox?page=2",
+					"raw": "{{host}}/@{{user}}/inbox?page=2",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"inbox"
 					],
 					"query": [
@@ -1213,12 +1212,12 @@
 					"raw": " {\n                \"type\": \"Create\",\n                \"id\": \"https://mastodon.social/users/Sonstwer/statuses/100368779865509498/activity\",\n                \"actor\": \"https://mastodon.social/users/Sonstwer\",\n                \"object\": {\n                    \"id\": \"https://mastodon.social/users/Sonstwer/statuses/100368779865509498\",\n                    \"type\": \"Note\",\n                    \"summary\": null,\n                    \"inReplyTo\": null,\n                    \"published\": \"2018-07-13T18:20:40Z\",\n                    \"url\": \"https://mastodon.social/@Sonstwer/100368779865509498\",\n                    \"attributedTo\": \"https://mastodon.social/users/Sonstwer\",\n                    \"to\": [\n                        \"https://www.w3.org/ns/activitystreams#Public\"\n                    ],\n                    \"cc\": [\n                        \"https://mastodon.social/users/Sonstwer/followers\"\n                    ],\n                    \"sensitive\": false,\n                    \"atomUri\": \"https://mastodon.social/users/Sonstwer/statuses/100368779865509498\",\n                    \"inReplyToAtomUri\": null,\n                    \"conversation\": \"tag:mastodon.social,2018-07-13:objectId=42028339:objectType=Conversation\",\n                    \"content\": \"<p>Graz Hauptplatz<br />@AttacAustria@twitter.com Sommerakademie<br />Abschluss Demo</p>\",\n                    \"contentMap\": {\n                        \"de\": \"<p>Graz Hauptplatz<br />@AttacAustria@twitter.com Sommerakademie<br />Abschluss Demo</p>\"\n                    },\n                    \"attachment\": [\n                        {\n                            \"type\": \"Document\",\n                            \"mediaType\": \"image/jpeg\",\n                            \"url\": \"https://files.mastodon.social/media_attachments/files/004/949/619/original/7abb47991af01bdc.jpeg\",\n                            \"name\": null\n                        }\n                    ],\n                    \"tag\": []\n                },\n                \"published\": \"2018-07-13T18:20:40Z\",\n                \"to\": [\n                    \"https://www.w3.org/ns/activitystreams#Public\"\n                ],\n                \"cc\": [\n                    \"https://mastodon.social/users/Sonstwer/followers\"\n                ],\n                \"signature\": {\n                    \"type\": \"RsaSignature2017\",\n                    \"creator\": \"https://mastodon.social/users/Sonstwer#main-key\",\n                    \"created\": \"2018-07-13T18:20:41Z\",\n                    \"signatureValue\": \"ke5klb8DKljGplPRHimsXIf/IdUaBye6btv0PBXlhR1ikQ5otEKMLO6dJma8w9HK9Xg9DMsVgLS6eniWHr2dO+ymWg5QES0Iu7knn7UgZpfbVsLdz4tNKjTn5KTxDJAEBHuwDz9rvAWOG4XwtKanGXF3Q+UooqNnqB4MXid+tUb7tNhgvqsdDmTNEih4/78gcdRpqanmayOfJY8GOGOBjw+uQk5yxzGBYQVvED+kIhavoYOR9oGDo1zdUFOHNSUX0E27T8H+MYOV2ykW3n0XwBoQINgsaKj7okmwUx5bilsWhxxlikymVvQuM3E/w7LW4/pNeyHwETdY5785NM/DNA==\"\n                }\n            }"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/inbox",
+					"raw": "{{host}}/@{{user}}/inbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"inbox"
 					]
 				}

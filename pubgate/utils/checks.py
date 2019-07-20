@@ -8,7 +8,7 @@ from pubgate.db import User, Outbox
 def token_check(handler=None):
     @wraps(handler)
     async def wrapper(request, *args, **kwargs):
-        user = await User.find_one(dict(name=kwargs["user"].lower(),
+        user = await User.find_one(dict(name=kwargs["user"].lower().lstrip('@'),
                                         token=request.token))
         if not user:
             raise exceptions.Unauthorized("Auth required.")
@@ -21,7 +21,7 @@ def token_check(handler=None):
 def user_check(handler=None):
     @wraps(handler)
     async def wrapper(request, *args, **kwargs):
-        user = await User.find_one(dict(name=kwargs["user"].lower()))
+        user = await User.find_one(dict(name=kwargs["user"].lower().lstrip('@')))
         if not user:
             raise exceptions.NotFound("User not found")
 
