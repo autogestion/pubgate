@@ -33,7 +33,7 @@ class Outbox(BaseModel, BaseManager):
 
     @classmethod
     async def unfollow(cls, activity):
-        filters = activity.user.following_filter
+        filters = activity.user.follow_filter(Inbox)
         filters["activity.object.object"] = \
             activity.render["object"]["object"]
 

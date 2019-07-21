@@ -7,8 +7,7 @@ class Actor:
     def __init__(self, user):
         self.user = user
 
-    @property
-    def render(self):
+    def render(self, base_url):
 
         actor = self.user.profile
         actor.update({
@@ -25,7 +24,7 @@ class Actor:
             "publicKey": self.user.key.to_dict(),
             "endpoints": {
                 # "sharedInbox": f"{base_url}/inbox"
-                "oauthTokenEndpoint": f"{self.user.uri}/token"
+                "oauthTokenEndpoint": f"{base_url}/token"
             }
         })
         return actor

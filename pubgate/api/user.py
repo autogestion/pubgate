@@ -1,5 +1,5 @@
 from simple_bcrypt import check_password_hash
-from sanic import response, Blueprint
+from sanic import response, Blueprint, exceptions
 from sanic_openapi import doc
 
 from pubgate.renders import Actor
@@ -31,7 +31,10 @@ async def user_create(request):
         is_uniq = await User.is_unique(doc=dict(name=username))
         if is_uniq in (True, None):
             user = await User.create(request.json, request.app.base_url)
-            return response.json({'profile': Actor(user).render}, status=201)
+            return response.json(
+                {'profile': Actor(user).render(request.app.base_url)},
+                status=201
+            )
         else:
             return response.json({'error': 'username n/a'})
 
@@ -79,19 +82,25 @@ async def user_mass_delete(request, user):
 
 
 @user_v1.route('/<user>', methods=['GET'])
-@user_v1.route('/@<user>', methods=['GET'])
 @doc.summary("Returns user profile")
 @user_check
 async def user_get(request, user):
-    return response.json(Actor(user).render, headers={
-        'Content-Type': 'application/activity+json; charset=utf-8'
-    })
+    return response.json(
+        Actor(user).render(request.app.base_url), headers={
+            'Content-Type': 'application/activity+json; charset=utf-8'
+        }
+    )
 
 
-@user_v1.route('/<user>/token', methods=['POST'])
+@user_v1.route('/token', methods=['POST'])
 @doc.summary("Get token")
-@user_check
-async def token_get(request, user):
+async def token_get(request):
+    user = await User.find_one(dict(
+        name=request.json["username"].lower().lstrip('@')
+    ))
+    if not user:
+        raise exceptions.NotFound("User not found")
+
     if not check_password_hash(user.password, request.json["password"]):
         return response.json({"error": "password incorrect"}, status=401)
 

@@ -48,7 +48,7 @@ class Follow(Activity):
         return [self.render["object"]]
 
     async def save(self, **kwargs):
-        filters = self.user.following_filter
+        filters = self.user.follow_filter(Inbox)
         filters["activity.object.object"] = self.render["object"]
         followed = await Inbox.find_one(filters)
         if followed:
@@ -79,7 +79,8 @@ class Create(Activity):
         check = activity.get("cc", None)
         if check:
             activity["cc"].insert(0, user.followers)
-        else: activity["cc"] = [user.followers]
+        else:
+            activity["cc"] = [user.followers]
         activity["object"]["cc"] = activity["cc"]
 
 
