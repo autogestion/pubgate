@@ -47,7 +47,15 @@ async def register_client(app):
 
 
 def register_extensions(app):
+
     extensions = app.config.EXTENSIONS
+    if app.config.get('UI_APP'):
+        ui_app = __import__(app.config.UI_APP)
+        app.ui_app_index = getattr(ui_app, 'index_view', None)
+        extensions.append(app.config.UI_APP)
+    else:
+        app.ui_app_index = None
+
     for extension in extensions:
         ext = __import__(extension)
 
@@ -58,3 +66,8 @@ def register_extensions(app):
         ext_tasks = getattr(ext, 'pg_tasks', [])
         for task in ext_tasks:
             app.add_task(task)
+
+
+
+
+

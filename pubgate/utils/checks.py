@@ -41,3 +41,14 @@ def outbox_check(handler=None):
         kwargs["entity"] = data
         return await handler(request, *args, **kwargs)
     return wrapper
+
+
+def ui_app_check(handler=None):
+    @wraps(handler)
+    async def wrapper(request, *args, **kwargs):
+        if request.app.ui_app_index and request.headers.get(
+                'Accept', None) != 'application/activity+json':
+            return await request.app.ui_app_index(request)
+        else:
+            return await handler(request, *args, **kwargs)
+    return wrapper

@@ -4,7 +4,7 @@ from sanic_openapi import doc
 
 from pubgate.renders import Actor
 from pubgate.utils import random_object_id
-from pubgate.utils.checks import user_check, token_check
+from pubgate.utils.checks import user_check, token_check, ui_app_check
 from pubgate.db import User, Outbox
 from pubgate.activity import Delete
 
@@ -84,12 +84,18 @@ async def user_mass_delete(request, user):
 @user_v1.route('/<user>', methods=['GET'])
 @doc.summary("Returns user profile")
 @user_check
+@ui_app_check
 async def user_get(request, user):
-    return response.json(
-        Actor(user).render(request.app.base_url), headers={
-            'Content-Type': 'application/activity+json; charset=utf-8'
-        }
-    )
+
+    # if request.app.ui_app_index and request.headers.get(
+    #         'Accept', None) != 'application/activity+json':
+    #     return await request.app.ui_app_index(request)
+    # else:
+        return response.json(
+            Actor(user).render(request.app.base_url), headers={
+                'Content-Type': 'application/activity+json; charset=utf-8'
+            }
+        )
 
 
 @user_v1.route('/token', methods=['POST'])
