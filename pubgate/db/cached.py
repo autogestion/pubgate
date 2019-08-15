@@ -1,6 +1,6 @@
-
 from pubgate.renders import ordered_collection
 from pubgate.db import Inbox, Outbox
+from pubgate.utils.networking import fetch
 
 
 async def timeline_cached(cls, request, uri, user='stream'):
@@ -20,6 +20,7 @@ async def timeline_cached(cls, request, uri, user='stream'):
     data = await get_ordered_cached(
         request, cls, filters, cls.activity_clean, uri
     )
+
     await cls.cache.set(cache_key, data)
     return data
 
@@ -41,39 +42,51 @@ async def get_ordered_cached(request, model, filters, cleaner, coll_id):
                                 skip=limit * (page - 1),
                                 limit=limit)
         data = data.objects
+        for entry in data:
+            # Get details for boosted/liked object
+            if isinstance(entry.activity['object'], str):
+                entry.activity['object'] = await retrieve_object(
+                    request.app.base_url, entry.activity['object']
+                ) or entry.activity['object']
 
-        get_cached_inbox, get_cached_outbox, get_cached_index = [], [], []
-        for index, entry in enumerate(data):
-            if entry.activity['type'] in ["Announce", "Like"] and \
-                    isinstance(entry.activity['object'], str):
-                if entry.activity['object'].startswith(request.app.base_url):
-                    get_cached_outbox.append(entry.activity['object'])
-                else:
-                    get_cached_inbox.append(entry.activity['object'])
-                get_cached_index.append(index)
+            if isinstance(entry.activity['object'], dict):
+                # Get details for parent Object
+                if entry.activity['object'].get('inReplyTo') and \
+                        isinstance(entry.activity['object']['inReplyTo'], str):
+                    entry.activity['object']['inReplyTo'] = await retrieve_object(
+                        request.app.base_url, entry.activity['object']['inReplyTo']
+                    ) or entry.activity['object']['inReplyTo']
 
-        if get_cached_inbox:
-            get_cached_inbox = await Inbox.find(
-                filter={"activity.object.id": {'$in': get_cached_inbox}}
-            )
-            get_cached_inbox = get_cached_inbox.objects
-
-        if get_cached_outbox:
-            get_cached_outbox = await Outbox.find(
-                filter={"activity.object.id": {'$in': get_cached_outbox}}
-            )
-            get_cached_outbox = get_cached_outbox.objects
-
-        get_cached = get_cached_inbox + get_cached_outbox
-
-        ref_activity_dict = {
-            x['activity']['object']['id']: x['activity']['object'] for x in get_cached
-        }
-        for index in get_cached_index:
-            obj_id = data[index].activity['object']
-            data[index].activity['object'] = ref_activity_dict.get(obj_id, obj_id)
+                # Get likes, reposts and replies
+                await reaction_list(entry, request, 'replies')
+                await reaction_list(entry, request, 'shares')
+                await reaction_list(entry, request, 'likes')
 
     else:
         data = []
 
     return ordered_collection(coll_id, total, page, cleaner(data))
+
+
+# TODO upgrade to get or cache for remote objects
+async def retrieve_object(base_url, uri):
+    if uri.startswith(base_url):
+        result = await Outbox.get_by_uri(uri)
+    else:
+        result = await Inbox.get_by_uri(uri)
+    return result.activity['object'] if result else None
+
+
+async def reaction_list(entry, request, reaction):
+    if entry.activity['object'].get(reaction) and \
+            isinstance(entry.activity['object'][reaction], str):
+        if entry.activity['object'][reaction].startswith(request.app.base_url):
+            entry.activity['object'][reaction] = await getattr(
+                Outbox, f'outbox_{reaction}'
+            )(
+                Outbox, request, entry.activity['object']['id']
+            ) or entry.activity['object'][reaction]
+        else:
+            entry.activity['object'][reaction] = await fetch(
+                entry.activity['object'][reaction]
+            ) or entry.activity['object'][reaction]

@@ -1,1 +1,0 @@
-from pubgate.db.boxes import Outbox, Inbox

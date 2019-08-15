@@ -33,6 +33,14 @@ class BaseManager:
     ]
 
     @classmethod
+    async def get_by_uri(cls, object_id):
+        activity = await cls.find_one(
+            {"activity.object.id": object_id,
+             "deleted": False}
+        )
+        return activity
+
+    @classmethod
     async def delete(cls, obj_id):
         result = await cls.update_one(
             {"$or": [{"activity.object.id": obj_id},

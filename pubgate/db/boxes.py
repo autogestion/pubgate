@@ -13,12 +13,6 @@ class Outbox(BaseModel, BaseManager):
         return {"user_id": name}
 
     @classmethod
-    async def get(cls, filters):
-        filters["deleted"] = False
-        data = await Outbox.find_one(filters)
-        return data
-
-    @classmethod
     async def save(cls, activity, **kwargs):
         db_obj = {
             "_id": activity.id,
@@ -49,6 +43,33 @@ class Outbox(BaseModel, BaseManager):
                 {'$set': {"deleted": True}}
             )
 
+    async def outbox_likes(self, request, entity):
+        filters = {
+            "deleted": False,
+            "activity.type": "Like",
+            "activity.object": entity
+        }
+        return await self.get_ordered(request, Inbox, filters,
+                                      self.activity_clean, f"{entity}/likes")
+
+    async def outbox_shares(self, request, entity):
+        filters = {
+            "deleted": False,
+            "activity.type": "Announce",
+            "activity.object": entity
+        }
+        return await self.get_ordered(request, Inbox, filters,
+                                      self.activity_clean, f"{entity}/shares")
+
+    async def outbox_replies(self, request, entity):
+        filters = {
+            "deleted": False,
+            "activity.type": "Create",
+            "activity.object.inReplyTo": entity
+        }
+        return await self.get_replies(request, Outbox, Inbox, filters,
+                                      self.activity_clean, f"{entity}/replies")
+
 
 class Inbox(BaseModel, BaseManager):
     __coll__ = 'inbox'
@@ -57,13 +78,6 @@ class Inbox(BaseModel, BaseManager):
     @staticmethod
     def by_user(name):
         return {"users": {"$in": [name]}}
-
-    @classmethod
-    async def get_by_object(cls, object_id):
-        activity = await cls.find_one(
-            {"activity.object.id": object_id}
-        )
-        return activity
 
     @classmethod
     async def save(cls, user, activity):
