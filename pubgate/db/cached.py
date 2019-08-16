@@ -5,17 +5,22 @@ from pubgate.utils.networking import fetch
 
 async def timeline_cached(cls, request, uri, user='stream'):
 
-    cache_key = f'{cls.__coll__}_{user}'
+    page = request.args.get("page", 1)
+    cache_key = f'{cls.__coll__}_{user}_{page}'
     data = await cls.cache.get(cache_key)
     if data:
         return data
 
     filters = {
         "deleted": False,
-        "activity.type": {'$in': ["Create", "Announce", "Like"]}
+        "activity.type": {'$in': ["Create", "Announce", "Like"]},
     }
     if user != 'stream':
         filters.update(cls.by_user(user))
+    if type(cls) is type(Inbox):
+        filters.update(
+            {"users.0": {"$ne": "cached"}, "users": {"$size": 1}}
+        )
 
     data = await get_ordered_cached(
         request, cls, filters, cls.activity_clean, uri
