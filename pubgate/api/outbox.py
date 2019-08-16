@@ -7,7 +7,7 @@ from pubgate.db import Outbox
 from pubgate.db.cached import timeline_cached
 from pubgate.renders import context
 from pubgate.activity import choose
-from pubgate.utils.checks import user_check, token_check, outbox_check
+from pubgate.utils.checks import user_check, token_check, outbox_check, ui_app_check
 from pubgate.utils import check_origin
 from pubgate.utils.cached import ensure_cached
 
@@ -73,6 +73,7 @@ async def outbox_activity(request, user, entity):
 @doc.summary("Returns object from outbox")
 @user_check
 @outbox_check
+@ui_app_check
 async def outbox_object(request, user, entity):
     result = entity["activity"]["object"]
     result['@context'] = context
@@ -84,7 +85,7 @@ async def outbox_object(request, user, entity):
 @user_check
 @outbox_check
 async def outbox_replies(request, user, entity):
-    resp = await user.outbox_replies(request, entity["activity"]["object"]["id"])
+    resp = await Outbox.outbox_replies(request, entity["activity"]["object"]["id"])
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
@@ -93,7 +94,7 @@ async def outbox_replies(request, user, entity):
 @user_check
 @outbox_check
 async def outbox_likes(request, user, entity):
-    resp = await user.outbox_likes(request, entity["activity"]["object"]["id"])
+    resp = await Outbox.outbox_likes(request, entity["activity"]["object"]["id"])
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
@@ -102,7 +103,7 @@ async def outbox_likes(request, user, entity):
 @user_check
 @outbox_check
 async def outbox_shares(request, user, entity):
-    resp = await user.outbox_shares(request, entity["activity"]["object"]["id"])
+    resp = await Outbox.outbox_shares(request, entity["activity"]["object"]["id"])
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 

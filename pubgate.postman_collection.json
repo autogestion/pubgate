@@ -69,7 +69,13 @@
 			"name": "/@<user>",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/activity+json",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{host}}/@{{user}}/",
 					"host": [
@@ -893,7 +899,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\n  \"id\": \"{{host}}/{{user}}/object/{{entity}}#delete\",\n  \"type\": \"Delete\",\n  \"object\": {\n    \"id\": \"{{host}}/{{user}}/object/{{entity}}\",\n    \"type\": \"Tombstone\"\n  }\n}"
+					"raw": "{\n\n  \"id\": \"{{host}}/@{{user}}/object/{{entity}}#delete\",\n  \"type\": \"Delete\",\n  \"object\": {\n    \"id\": \"{{host}}/@{{user}}/object/{{entity}}\",\n    \"type\": \"Tombstone\"\n  }\n}"
 				},
 				"url": {
 					"raw": "{{host}}/@{{user}}/outbox",

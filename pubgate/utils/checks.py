@@ -34,10 +34,21 @@ def outbox_check(handler=None):
     @wraps(handler)
     async def wrapper(request, *args, **kwargs):
 
-        data = await Outbox.get(dict(user_id=kwargs["user"].name, _id=kwargs["entity"]))
+        data = await Outbox.find_one(dict(user_id=kwargs["user"].name, _id=kwargs["entity"]))
         if not data:
             raise exceptions.NotFound("Object not found")
 
         kwargs["entity"] = data
         return await handler(request, *args, **kwargs)
+    return wrapper
+
+
+def ui_app_check(handler=None):
+    @wraps(handler)
+    async def wrapper(request, *args, **kwargs):
+        if request.app.ui_app_index and request.headers.get(
+                'Accept', None) != 'application/activity+json':
+            return await request.app.ui_app_index(request)
+        else:
+            return await handler(request, *args, **kwargs)
     return wrapper
