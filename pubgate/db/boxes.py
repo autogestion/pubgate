@@ -43,32 +43,35 @@ class Outbox(BaseModel, BaseManager):
                 {'$set': {"deleted": True}}
             )
 
-    async def outbox_likes(self, request, entity):
+    @classmethod
+    async def outbox_likes(cls, request, entity):
         filters = {
             "deleted": False,
             "activity.type": "Like",
             "activity.object": entity
         }
-        return await self.get_ordered(request, Inbox, filters,
-                                      self.activity_clean, f"{entity}/likes")
+        return await cls.get_ordered(request, Inbox, filters,
+                                     cls.activity_clean, f"{entity}/likes")
 
-    async def outbox_shares(self, request, entity):
+    @classmethod
+    async def outbox_shares(cls, request, entity):
         filters = {
             "deleted": False,
             "activity.type": "Announce",
             "activity.object": entity
         }
-        return await self.get_ordered(request, Inbox, filters,
-                                      self.activity_clean, f"{entity}/shares")
+        return await cls.get_ordered(request, Inbox, filters,
+                                     cls.activity_clean, f"{entity}/shares")
 
-    async def outbox_replies(self, request, entity):
+    @classmethod
+    async def outbox_replies(cls, request, entity):
         filters = {
             "deleted": False,
             "activity.type": "Create",
             "activity.object.inReplyTo": entity
         }
-        return await self.get_replies(request, Outbox, Inbox, filters,
-                                      self.activity_clean, f"{entity}/replies")
+        return await cls.get_replies(request, Outbox, Inbox, filters,
+                                     cls.activity_clean, f"{entity}/replies")
 
 
 class Inbox(BaseModel, BaseManager):
