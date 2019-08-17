@@ -89,7 +89,7 @@ async def reaction_list(entry, request, reaction):
             entry.activity['object'][reaction] = await getattr(
                 Outbox, f'outbox_{reaction}'
             )(
-                Outbox, request, entry.activity['object']['id']
+                request, entry.activity['object']['id']
             ) or entry.activity['object'][reaction]
         else:
             entry.activity['object'][reaction] = await fetch(
