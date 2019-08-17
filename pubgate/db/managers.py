@@ -111,7 +111,7 @@ class BaseManager:
             "deleted": False,
             "activity.type": {'$in': ["Create", "Announce", "Like"]}
         }
-        
+
         if cls.__coll__ == 'inbox':
             filters.update(
                 {"users.0": {"$ne": "cached"}, "users": {"$size": 1}}
