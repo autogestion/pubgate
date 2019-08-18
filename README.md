@@ -49,6 +49,8 @@ cp -r config/base_sample_conf.cfg config/conf.cfg
 pip install -r requirements/extensions.txt
 cp -r config/extensions_sample_conf.cfg config/conf.cfg
 ```
+
+###### Update config/conf.cfg with your domain name
 ##### Run
 
 ```

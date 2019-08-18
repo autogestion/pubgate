@@ -1,6 +1,5 @@
 from pubgate.renders import ordered_collection
-from pubgate.db import Inbox, Outbox
-from pubgate.utils.networking import fetch
+from pubgate.db import Inbox, Outbox, Reactions
 
 
 async def timeline_cached(cls, request, uri, user='stream'):
@@ -63,6 +62,7 @@ async def get_ordered_cached(request, model, filters, cleaner, coll_id):
                     ) or entry.activity['object']['inReplyTo']
 
                 # Get likes, reposts and replies
+                # TODO make one aggregation query for all reactions
                 await reaction_list(entry, request, 'replies')
                 await reaction_list(entry, request, 'shares')
                 await reaction_list(entry, request, 'likes')
@@ -85,13 +85,8 @@ async def retrieve_object(base_url, uri):
 async def reaction_list(entry, request, reaction):
     if entry.activity['object'].get(reaction) and \
             isinstance(entry.activity['object'][reaction], str):
-        if entry.activity['object'][reaction].startswith(request.app.base_url):
             entry.activity['object'][reaction] = await getattr(
-                Outbox, f'outbox_{reaction}'
+                Reactions, reaction
             )(
                 request, entry.activity['object']['id']
-            ) or entry.activity['object'][reaction]
-        else:
-            entry.activity['object'][reaction] = await fetch(
-                entry.activity['object'][reaction]
             ) or entry.activity['object'][reaction]

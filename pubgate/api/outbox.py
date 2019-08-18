@@ -3,7 +3,7 @@ import asyncio
 from sanic import response, Blueprint
 from sanic_openapi import doc
 
-from pubgate.db import Outbox
+from pubgate.db import Outbox, Reactions
 from pubgate.db.cached import timeline_cached
 from pubgate.renders import context
 from pubgate.activity import choose
@@ -85,7 +85,7 @@ async def outbox_object(request, user, entity):
 @user_check
 @outbox_check
 async def outbox_replies(request, user, entity):
-    resp = await Outbox.outbox_replies(request, entity["activity"]["object"]["id"])
+    resp = await Reactions.replies(request, entity["activity"]["object"]["id"])
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
@@ -94,7 +94,7 @@ async def outbox_replies(request, user, entity):
 @user_check
 @outbox_check
 async def outbox_likes(request, user, entity):
-    resp = await Outbox.outbox_likes(request, entity["activity"]["object"]["id"])
+    resp = await Reactions.likes(request, entity["activity"]["object"]["id"])
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
@@ -103,7 +103,7 @@ async def outbox_likes(request, user, entity):
 @user_check
 @outbox_check
 async def outbox_shares(request, user, entity):
-    resp = await Outbox.outbox_shares(request, entity["activity"]["object"]["id"])
+    resp = await Reactions.shares(request, entity["activity"]["object"]["id"])
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 

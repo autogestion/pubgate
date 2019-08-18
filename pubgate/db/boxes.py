@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sanic_motor import BaseModel
 
 from pubgate.utils import make_label, random_object_id
@@ -43,37 +45,6 @@ class Outbox(BaseModel, BaseManager):
                 {'$set': {"deleted": True}}
             )
 
-    @classmethod
-    async def outbox_likes(cls, request, entity):
-        filters = {
-            "deleted": False,
-            "activity.type": "Like",
-            "activity.object": entity
-        }
-        return await cls.get_ordered(request, Inbox, filters,
-                                     cls.activity_clean, f"{entity}/likes")
-
-    @classmethod
-    async def outbox_shares(cls, request, entity):
-        filters = {
-            "deleted": False,
-            "activity.type": "Announce",
-            "activity.object": entity
-        }
-        return await cls.get_ordered(request, Inbox, filters,
-                                     cls.activity_clean, f"{entity}/shares")
-
-    @classmethod
-    async def outbox_replies(cls, request, entity):
-        filters = {
-            "deleted": False,
-            "activity.type": "Create",
-            "activity.object.inReplyTo": entity
-        }
-        return await cls.get_replies(request, Outbox, Inbox, filters,
-                                     cls.activity_clean, f"{entity}/replies")
-
-
 class Inbox(BaseModel, BaseManager):
     __coll__ = 'inbox'
     __unique_fields__ = ['_id', 'activity.id']
@@ -96,8 +67,10 @@ class Inbox(BaseModel, BaseManager):
                 users.append(user.name)
                 await cls.update_one(
                     {'_id': exists.id},
-                    {'$set': {"users": users}}
+                    {'$set': {"users": users,
+                              "updated": datetime.now()}}
                 )
+                await cls.cache.clear()
 
         else:
             # TODO validate actor and activity
@@ -111,7 +84,8 @@ class Inbox(BaseModel, BaseManager):
                 "activity": activity,
                 "label": make_label(activity),
                 "deleted": False,
-                "first_user": user.name
+                "first_user": user.name,
+                "created": datetime.now()
             })
         await cls.cache.clear()
         return True

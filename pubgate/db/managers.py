@@ -8,30 +8,6 @@ class BaseManager:
 
     cache = SimpleMemoryCache(serializer=JsonSerializer())
 
-    aggregate_query = [
-        {"$lookup": {
-            "from": "inbox",
-            "pipeline": [],
-            "as": "inbox"}},
-        {"$group": {
-            "_id": "null",
-            "outbox": {
-                "$push": {
-                    "_id": "$_id",
-                    "activity": "$activity",
-                    "deleted": "$deleted"}},
-            "inbox": {
-                "$first": "$inbox"}
-        }},
-        {"$project": {
-            "items": {
-                "$setUnion": ["$outbox", "$inbox"]
-            }
-        }},
-        {"$unwind": "$items"},
-        {"$replaceRoot": {"newRoot": "$items"}},
-    ]
-
     @classmethod
     async def get_by_uri(cls, object_id):
         activity = await cls.find_one(
@@ -74,32 +50,6 @@ class BaseManager:
                                     limit=limit)
             data = data.objects
 
-        else:
-            data = []
-
-        return ordered_collection(coll_id, total, page, cleaner(data))
-
-    @classmethod
-    async def get_replies(cls, request, t1, t2, filters, cleaner, coll_id):
-        page = request.args.get("page")
-
-        if page:
-            total = None
-            page = int(page)
-        else:
-            total1 = await t1.count(filter=filters)
-            total2 = await t2.count(filter=filters)
-            total = total1 + total2
-            page = 1
-
-        limit = request.app.config.PAGINATION_LIMIT
-        if total != 0:
-            data = await t1.aggregate(cls.aggregate_query + [
-                {'$sort': {"activity.published": -1}},
-                {'$match': filters},
-                {'$limit': limit},
-                {'$skip': limit * (page - 1)}
-            ])
         else:
             data = []
 
