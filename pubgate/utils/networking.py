@@ -29,7 +29,7 @@ async def fetch(url):
                                              "user-agent": f"PubGate v:{__version__}"}
                                 ) as resp:
             logger.info(f"Fetch {url}, status: {resp.status}, {resp.reason}")
-            return await resp.json()
+            return await resp.json(encoding='utf-8')
 
 
 async def fetch_text(url):

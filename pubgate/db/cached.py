@@ -1,21 +1,25 @@
 from pubgate.renders import ordered_collection
-from pubgate.db import Inbox, Outbox
-from pubgate.utils.networking import fetch
+from pubgate.db import Inbox, Outbox, Reactions
 
 
 async def timeline_cached(cls, request, uri, user='stream'):
 
-    cache_key = f'{cls.__coll__}_{user}'
+    page = request.args.get("page", 1)
+    cache_key = f'{cls.__coll__}_{user}_{page}'
     data = await cls.cache.get(cache_key)
     if data:
         return data
 
     filters = {
         "deleted": False,
-        "activity.type": {'$in': ["Create", "Announce", "Like"]}
+        "activity.type": {'$in': ["Create", "Announce", "Like"]},
     }
     if user != 'stream':
         filters.update(cls.by_user(user))
+    if cls.__coll__ == 'inbox':
+        filters.update(
+            {"users.0": {"$ne": "cached"}, "users": {"$size": 1}}
+        )
 
     data = await get_ordered_cached(
         request, cls, filters, cls.activity_clean, uri
@@ -58,6 +62,7 @@ async def get_ordered_cached(request, model, filters, cleaner, coll_id):
                     ) or entry.activity['object']['inReplyTo']
 
                 # Get likes, reposts and replies
+                # TODO make one aggregation query for all reactions
                 await reaction_list(entry, request, 'replies')
                 await reaction_list(entry, request, 'shares')
                 await reaction_list(entry, request, 'likes')
@@ -80,13 +85,8 @@ async def retrieve_object(base_url, uri):
 async def reaction_list(entry, request, reaction):
     if entry.activity['object'].get(reaction) and \
             isinstance(entry.activity['object'][reaction], str):
-        if entry.activity['object'][reaction].startswith(request.app.base_url):
             entry.activity['object'][reaction] = await getattr(
-                Outbox, f'outbox_{reaction}'
+                Reactions, reaction
             )(
-                Outbox, request, entry.activity['object']['id']
-            ) or entry.activity['object'][reaction]
-        else:
-            entry.activity['object'][reaction] = await fetch(
-                entry.activity['object'][reaction]
+                request, entry.activity['object']['id']
             ) or entry.activity['object'][reaction]

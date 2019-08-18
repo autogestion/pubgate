@@ -3,6 +3,7 @@ from pubgate.utils.networking import fetch
 
 
 async def ensure_cached(object_id):
+    # TODO also fetch and cache reactions (replies, likes, shares)
     exists = await Inbox.get_by_uri(object_id)
     if not exists:
         cached_user = await User.find_one({'name': 'cached'})
