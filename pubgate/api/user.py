@@ -86,16 +86,11 @@ async def user_mass_delete(request, user):
 @user_check
 @ui_app_check
 async def user_get(request, user):
-
-    if request.app.ui_app_index and request.headers.get(
-            'Accept', None) != 'application/activity+json':
-        return await request.app.ui_app_index(request)
-    else:
-        return response.json(
-            Actor(user).render(request.app.base_url), headers={
-                'Content-Type': 'application/activity+json; charset=utf-8'
-            }
-        )
+    return response.json(
+        Actor(user).render(request.app.base_url), headers={
+            'Content-Type': 'application/activity+json; charset=utf-8'
+        }
+    )
 
 
 @user_v1.route('/token', methods=['POST'])
