@@ -1,6 +1,35 @@
 
 
-context = ["https://www.w3.org/ns/activitystreams"]
+context = [
+        "https://www.w3.org/ns/activitystreams",
+        "https://w3id.org/security/v1",
+        {
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "toot": "http://joinmastodon.org/ns#",
+            "featured": {
+                "@id": "toot:featured",
+                "@type": "@id"
+            },
+            "alsoKnownAs": {
+                "@id": "as:alsoKnownAs",
+                "@type": "@id"
+            },
+            "movedTo": {
+                "@id": "as:movedTo",
+                "@type": "@id"
+            },
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "Hashtag": "as:Hashtag",
+            "Emoji": "toot:Emoji",
+            "IdentityProof": "toot:IdentityProof",
+            "focalPoint": {
+                "@container": "@list",
+                "@id": "toot:focalPoint"
+            }
+        }
+    ]
 
 
 class Actor:
@@ -19,7 +48,7 @@ class Actor:
             "inbox": self.user.inbox,
             "outbox": self.user.outbox,
             "liked": self.user.liked,
-            # "url": f"{base_url}/@{user_id}",
+            "url": self.user.uri,
             "manuallyApprovesFollowers": False,
             "publicKey": self.user.key.to_dict(),
             "endpoints": {
