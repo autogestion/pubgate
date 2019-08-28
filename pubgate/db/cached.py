@@ -41,6 +41,7 @@ async def get_ordered_cached(request, model, filters, cleaner, coll_id):
 
     limit = request.app.config.PAGINATION_LIMIT
     if total != 0:
+        print(filters)
         data = await model.find(filter=filters,
                                 sort="activity.published desc",
                                 skip=limit * (page - 1),
