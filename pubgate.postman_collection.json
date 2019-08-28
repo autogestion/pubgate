@@ -90,24 +90,6 @@
 			"response": []
 		},
 		{
-			"name": "/<user>",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{host}}/{{user}}/",
-					"host": [
-						"{{host}}"
-					],
-					"path": [
-						"{{user}}",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "/<user>/following",
 			"request": {
 				"method": "GET",
@@ -585,12 +567,12 @@
 					"raw": "{\n\t\"profile\": {\n\t\t\"type\": \"Person\",\n\t\t\"name\": \"{{user}}\",\n\t\t\"summary\": \"Gotta go fast! <br> <a href='https://github.com/autogestion/pubgate' target='blank'> https://github.com/autogestion/pubgate</a>\",\n\t    \"icon\": {\n\t        \"type\": \"Image\",\n\t        \"mediaType\": \"image/jpeg\",\n\t        \"url\": \"https://avatars2.githubusercontent.com/u/1098257\"\n\t    }\t\t\n\t}\t\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}",
+					"raw": "{{host}}/@{{user}}",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}"
+						"@{{user}}"
 					]
 				}
 			},
@@ -611,12 +593,12 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/mass_delete",
+					"raw": "{{host}}/@{{user}}/mass_delete",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"mass_delete"
 					]
 				}
@@ -818,7 +800,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"type\": \"Create\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"sensitive\": false,\n        \"content\": \"Litepub compatible Reply!\",\n        \"attachment\": [],\n        \"tag\": [],\n        \"inReplyTo\": \"{{host}}/{{user}}/object/{{entity}}\"\n    }\n}        "
+					"raw": "{\n    \"type\": \"Create\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"sensitive\": false,\n        \"content\": \"Litepub compatible Reply!\",\n        \"attachment\": [],\n        \"tag\": [],\n        \"inReplyTo\": \"{{host}}/@{{user}}/object/{{entity}}\"\n    }\n}        "
 				},
 				"url": {
 					"raw": "{{host}}/@{{user}}/outbox",
@@ -1073,12 +1055,12 @@
 					"raw": "{\n\t\"details\": {\n\t\t\"rssbot\": {\n\t\t\t\"feed\": \"https://xatarsis.blogspot.com/feeds/posts/default?alt=rss\",\n\t\t\t\"enable\": false,\n\t\t\t\"tags\": [\"tag1\", \"tag2\"],\n\t\t\t\"html\": true \n\t\t}\n\t}\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}",
+					"raw": "{{host}}/@{{user}}",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}"
+						"@{{user}}"
 					]
 				}
 			},
@@ -1120,12 +1102,12 @@
 					"raw": "{\n\t\"details\": {\n\t\t\"tgbot\": {\n\t\t\t\"channels\": [\"telapub\"],\n\t\t\t\"enable\": false,\n\t\t\t\"tags\": []\n\t\t}\n\t}\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}",
+					"raw": "{{host}}/@{{user}}",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}"
+						"@{{user}}"
 					]
 				}
 			},
@@ -1167,12 +1149,12 @@
 					"raw": "{\n\t\"details\": {\n\t\t\"stbot\": {\n\t\t\t\"blogs\": [\"liberlandpress\"],\n\t\t\t\"enable\": false,\n\t\t\t\"tags\": []\n\t\t}\n\t}\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}",
+					"raw": "{{host}}/@{{user}}",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}"
+						"@{{user}}"
 					]
 				}
 			},
@@ -1240,12 +1222,12 @@
 					"raw": "{\n\t\"@context\": [\"https://www.w3.org/ns/activitystreams\",\n\t\t\"https://litepub.github.io/litepub/context.jsonld\"\n\t],\n\t\"actor\": \"https://pleroma.site/users/putinhujlo\",\n\t\"cc\": [\"https://pleroma.site/users/putinhujlo/followers\"],\n\t\"context\": \"https://pleroma.site/contexts/d90cc3ca-288d-447a-a9f9-b634c822ec25\",\n\t\"context_id\": 14823356,\n\t\"id\": \"https://pleroma.site/activities/92f89a1a-9964-4ad9-8076-529938214e97\",\n\t\"object\": {\n\t\t\"actor\": \"https://pleroma.site/users/putinhujlo\",\n\t\t\"attachment\": [],\n\t\t\"attributedTo\": \"https://pleroma.site/users/putinhujlo\",\n\t\t\"cc\": [\"https://pleroma.site/users/putinhujlo/followers\"],\n\t\t\"content\": \"just toot\",\n\t\t\"context\": \"https://pleroma.site/contexts/d90cc3ca-288d-447a-a9f9-b634c822ec25\",\n\t\t\"context_id\": 14823356,\n\t\t\"conversation\": \"https://pleroma.site/contexts/d90cc3ca-288d-447a-a9f9-b634c822ec25\",\n\t\t\"emoji\": {},\n\t\t\"id\": \"https://pleroma.site/objects/85db4a54-b4c2-43ef-994c-50354542c11e\",\n\t\t\"published\": \"2018-11-08T21:29:14.631946Z\",\n\t\t\"sensitive\": false,\n\t\t\"summary\": null,\n\t\t\"tag\": [],\n\t\t\"to\": [\"https://www.w3.org/ns/activitystreams#Public\"],\n\t\t\"type\": \"Note\"\n\t},\n\t\"published\": \"2018-11-08T21:29:14.627223Z\",\n\t\"to\": [\"https://www.w3.org/ns/activitystreams#Public\"],\n\t\"type\": \"Create\"\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/inbox",
+					"raw": "{{host}}/@{{user}}/inbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"inbox"
 					]
 				}
@@ -1262,12 +1244,12 @@
 					"raw": "{'@context': ['https://www.w3.org/ns/activitystreams',\n              'https://litepub.github.io/litepub/context.jsonld'],\n 'actor': 'https://pleroma.site/users/putinhujlo',\n 'cc': ['https://pleroma.site/users/putinhujlo/followers'],\n 'context': 'https://pleroma.site/contexts/f6c12fd1-236e-45b5-92c3-37a2c58dede0',\n 'context_id': 14831216,\n 'id': 'https://pleroma.site/activities/49fa306f-96ea-4552-9e7e-dd8e9716c153',\n 'object': {'actor': 'https://pleroma.site/users/putinhujlo',\n            'attachment': [],\n            'attributedTo': 'https://pleroma.site/users/putinhujlo',\n            'cc': ['https://pleroma.site/users/putinhujlo/followers'],\n            'content': \"Post with mention <span><a class='mention' \"\n                       \"href='https://mastodon.social/@pubgate'>@<span>pubgate</span></a></span>  \"\n                       \"and tags <a href='https://pleroma.site/tag/gogo' \"\n                       \"rel='tag'>#gogo</a> <a \"\n                       \"href='https://pleroma.site/tag/bu' rel='tag'>#bu</a>\",\n            'context': 'https://pleroma.site/contexts/f6c12fd1-236e-45b5-92c3-37a2c58dede0',\n            'context_id': 14831216,\n            'conversation': 'https://pleroma.site/contexts/f6c12fd1-236e-45b5-92c3-37a2c58dede0',\n            'emoji': {},\n            'id': 'https://pleroma.site/objects/f7bb8493-e72e-4727-980d-101d203969f5',\n            'published': '2018-11-08T22:45:51.889945Z',\n            'sensitive': False,\n            'summary': None,\n            'tag': [{'href': 'https://pleroma.site/tags/gogo',\n                     'name': '#gogo',\n                     'type': 'Hashtag'},\n                    {'href': 'https://pleroma.site/tags/bu',\n                     'name': '#bu',\n                     'type': 'Hashtag'},\n                    {'href': 'https://mastodon.social/users/pubgate',\n                     'name': '@pubgate@mastodon.social',\n                     'type': 'Mention'}],\n            'to': ['https://www.w3.org/ns/activitystreams#Public',\n                   'https://mastodon.social/users/pubgate'],\n            'type': 'Note'},\n 'published': '2018-11-08T22:45:51.884916Z',\n 'to': ['https://www.w3.org/ns/activitystreams#Public',\n        'https://mastodon.social/users/pubgate'],\n 'type': 'Create'}\n"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/inbox",
+					"raw": "{{host}}/@{{user}}/inbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"inbox"
 					]
 				}
@@ -1284,12 +1266,12 @@
 					"raw": "{\n    \"type\": \"Follow\",\n    \"id\": \"https://mastodon.social/102ec882-a917-4644-bd19-0739dbaa1a3d\",\n    \"actor\": \"https://mastodon.social/users/pubgate\",\n    \"object\": \"{{host}}/{{user}}\",\n    \"signature\": {\n        \"type\": \"RsaSignature2017\",\n        \"creator\": \"https://mastodon.social/users/pubgate#main-key\",\n        \"created\": \"2018-08-13T15:41:36Z\",\n        \"signatureValue\": \"lEsmVmkwz3bfMPyqKyPuPahN8OLnuMIKPjK44J04FQQbuxAddGRaK3yVh0acOlycbkbNla875Usn7a7uQlfhqW/ONjZXxkIYUroLLIKOsmOqEf/RrSYORvLytJzwoygompB9UY3IKm+VZBjmZrp4KgXxbRQrs2avFB4CUnLykNZwCHeEoikKR1aTwbRL2qLvzSmL8iPUieBR7LlKB+QBvDFGkKbU0JMs9eegYNdgoyt5JiHQYC0LvlwJlqzmFeW1CYxiAZP/QVHh+ZchsYlwRrYmO3aZItLKOcqKCBSXOdqSZ9tsIFIMf94EBFF0GxRDBnNISvOLS3c43BHeWLnxng==\"\n    }\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/inbox",
+					"raw": "{{host}}/@{{user}}/inbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"inbox"
 					]
 				}
@@ -1306,12 +1288,12 @@
 					"raw": "{\n\t\"@context\": [\"https://www.w3.org/ns/activitystreams\", \"https://w3id.org/security/v1\", {\n\t\t\"manuallyApprovesFollowers\": \"as:manuallyApprovesFollowers\",\n\t\t\"sensitive\": \"as:sensitive\",\n\t\t\"movedTo\": {\n\t\t\t\"@id\": \"as:movedTo\",\n\t\t\t\"@type\": \"@id\"\n\t\t},\n\t\t\"Hashtag\": \"as:Hashtag\",\n\t\t\"ostatus\": \"http://ostatus.org#\",\n\t\t\"atomUri\": \"ostatus:atomUri\",\n\t\t\"inReplyToAtomUri\": \"ostatus:inReplyToAtomUri\",\n\t\t\"conversation\": \"ostatus:conversation\",\n\t\t\"toot\": \"http://joinmastodon.org/ns#\",\n\t\t\"Emoji\": \"toot:Emoji\",\n\t\t\"focalPoint\": {\n\t\t\t\"@container\": \"@list\",\n\t\t\t\"@id\": \"toot:focalPoint\"\n\t\t},\n\t\t\"featured\": {\n\t\t\t\"@id\": \"toot:featured\",\n\t\t\t\"@type\": \"@id\"\n\t\t},\n\t\t\"schema\": \"http://schema.org#\",\n\t\t\"PropertyValue\": \"schema:PropertyValue\",\n\t\t\"value\": \"schema:value\"\n\t}],\n\t\"id\": \"https://mastodon.social/users/pubgate#follows/4489116/undo\",\n\t\"type\": \"Undo\",\n\t\"actor\": \"https://mastodon.social/users/pubgate\",\n\t\"object\": {\n\t\t\"id\": \"https://mastodon.social/102ec882-a917-4644-bd19-0739dbaa1a3d\",\n\t\t\"type\": \"Follow\",\n\t\t\"actor\": \"https://mastodon.social/users/pubgate\",\n\t\t\"object\": \"{{host}}/{{user}}\"\n\t},\n\t\"signature\": {\n\t\t\"type\": \"RsaSignature2017\",\n\t\t\"creator\": \"https://mastodon.social/users/pubgate#main-key\",\n\t\t\"created\": \"2018-10-25T21:45:16Z\",\n\t\t\"signatureValue\": \"JgeqvVZ4S1ki+TXr3eVOG71JbJUEBF0+q/UoHv7Nj07VdfiN1GnGgmXb76W78e1lJfmW69o4LoBsirMthZAcOBFCBVEGddLLB+olxKi4lRHmQuvSeZkCCZW7mLSMnETOh02KEdU2Z0PQ43l6Tr6KKXqcQIhq19VDCbthpjsIREOpbZD623QA4ByArqSX1dJ0KNXrW4FH+GI6BkQUGWirFOfo9G1yHjE8M8xAezYQA21NVaipTOPtPWM5oOPUr9FAWNaw1WkHzj3sFRQyVK9VRS4Fe6rwvauTnjBIKpFmxGHlssh4nuDVuJBZibZEiivBjQBgUm9YvpIkkKcpP7EgEA==\"\n\t}\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/inbox",
+					"raw": "{{host}}/@{{user}}/inbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"inbox"
 					]
 				}
@@ -1328,12 +1310,12 @@
 					"raw": "{\n\t\"@context\": [\"https://www.w3.org/ns/activitystreams\",\n\t\t\"https://w3id.org/security/v1\",\n\t\t{\n\t\t\t\"Hashtag\": \"as:Hashtag\",\n\t\t\t\"sensitive\": \"as:sensitive\"\n\t\t}\n\t],\n\t\"actor\": \"https://mastodon.social/users/pubgate\",\n\t\"id\": \"https://pubgate.autogestion.org/xatar3/activity/87a8ccae824698e5\",\n\t\"object\": {\n\t\t\"actor\": \"{{host}}/{{user}}\",\n\t\t\"id\": \"{{host}}/{{user}}/activity/dfa132c5b0463350\",\n\t\t\"object\": \"https://mastodon.social/users/pubgate\",\n\t\t\"type\": \"Follow\"\n\t},\n\t\"signature\": {\n\t\t\"created\": \"2018-10-25T21:50:05Z\",\n\t\t\"creator\": \"https://pubgate.autogestion.org/xatar3#main-key\",\n\t\t\"signatureValue\": \"FNDmeO9jEMyN+vCtDSbtFvok+5PWwuZ80HlKhmaRNjF+jHKFKYn9160dB74wSuzsITQ7Yigf6bduTHM+ctdiHVJxbUQAFvq+He+3O0QU7SBX6FpiHYs9yoquiSCPQ2JhVFWHaDjUWQmSiSquUaHsIS7VtD8s56aZoSs0buuA+6OCIy158F4KZJQ092UvbIWpWMSuRV5w4s0A8GU/MAPLlZ4EGWGa2q/Jqn7jX48C7jQUvkxLxTlL7pN/Ya3jetoVDNupuz+PwFt1rrLNBeJj2qgmXuxzai0a2Tzn/zixgYoA7TMTx2an5L/BOzp/MZCvwVKNJ1iZj0DlPsHxSgYd7w==\",\n\t\t\"type\": \"RsaSignature2017\"\n\t},\n\t\"type\": \"Accept\"\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/inbox",
+					"raw": "{{host}}/@{{user}}/inbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"inbox"
 					]
 				}
@@ -1350,12 +1332,12 @@
 					"raw": "{\n\t\"@context\": [\"https://www.w3.org/ns/activitystreams\",\n\t\t\"https://w3id.org/security/v1\",\n\t\t{\n\t\t\t\"Emoji\": \"toot:Emoji\",\n\t\t\t\"Hashtag\": \"as:Hashtag\",\n\t\t\t\"PropertyValue\": \"schema:PropertyValue\",\n\t\t\t\"atomUri\": \"ostatus:atomUri\",\n\t\t\t\"conversation\": \"ostatus:conversation\",\n\t\t\t\"featured\": {\n\t\t\t\t\"@id\": \"toot:featured\",\n\t\t\t\t\"@type\": \"@id\"\n\t\t\t},\n\t\t\t\"focalPoint\": {\n\t\t\t\t\"@container\": \"@list\",\n\t\t\t\t\"@id\": \"toot:focalPoint\"\n\t\t\t},\n\t\t\t\"inReplyToAtomUri\": \"ostatus:inReplyToAtomUri\",\n\t\t\t\"manuallyApprovesFollowers\": \"as:manuallyApprovesFollowers\",\n\t\t\t\"movedTo\": {\n\t\t\t\t\"@id\": \"as:movedTo\",\n\t\t\t\t\"@type\": \"@id\"\n\t\t\t},\n\t\t\t\"ostatus\": \"http://ostatus.org#\",\n\t\t\t\"schema\": \"http://schema.org#\",\n\t\t\t\"sensitive\": \"as:sensitive\",\n\t\t\t\"toot\": \"http://joinmastodon.org/ns#\",\n\t\t\t\"value\": \"schema:value\"\n\t\t}\n\t],\n\t\"actor\": \"https://mastodon.social/users/pubgate\",\n\t\"id\": \"https://mastodon.social/users/pubgate#announces/101012780624820231/undo\",\n\t\"object\": {\n\t\t\"actor\": \"https://mastodon.social/users/pubgate\",\n\t\t\"atomUri\": \"https://mastodon.social/users/pubgate/statuses/101012780624820231/activity\",\n\t\t\"cc\": [\"https://pubgate.autogestion.org/xatarsis\",\n\t\t\t\"https://mastodon.social/users/pubgate/followers\"\n\t\t],\n\t\t\"id\": \"https://mastodon.social/users/pubgate/statuses/101012780624820231/activity\",\n\t\t\"object\": \"{{host}}/{{user}}/object/4ea73f3f950df185\",\n\t\t\"published\": \"2018-11-04T11:58:32Z\",\n\t\t\"to\": [\"https://www.w3.org/ns/activitystreams#Public\"],\n\t\t\"type\": \"Announce\"\n\t},\n\t\"signature\": {\n\t\t\"created\": \"2018-11-04T12:01:51Z\",\n\t\t\"creator\": \"https://mastodon.social/users/pubgate#main-key\",\n\t\t\"signatureValue\": \"jBP5GExKKuKQcAQ5HK0tE/3/KrJA9csO3L2QOT4DV/lvDW08Ir1H2Ccsc/3qcU90NBNvJoEAvezX+Uw4JFbDY9bLgSAlKT11ULjFmUA6azgVMNa3kJIfFWW9/sf8aEtjf6pdSz57Ll9v1kSVhybYBJ+cvOUzvEMruzg3sAHk55LNgzvUI2YwOs0LfoG6NHEKEHLGkkIVO8tESh4giOyAZzRg+pb3VCoXWHKiGnpT1vj2Eqdokhw+Tb6PuhukxEjckEHnZngj26P1eQKNqcM9GskLukSRedlkMKznKTrc1hM6kYgsDCSm6e61/1NYulAkx3oivq0MWXE9CMvc+jSWYQ==\",\n\t\t\"type\": \"RsaSignature2017\"\n\t},\n\t\"to\": [\"https://www.w3.org/ns/activitystreams#Public\"],\n\t\"type\": \"Undo\"\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/inbox",
+					"raw": "{{host}}/@{{user}}/inbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"inbox"
 					]
 				}
@@ -1372,12 +1354,12 @@
 					"raw": "{\n\t\"@context\": [\"https://www.w3.org/ns/activitystreams\",\n\t\t\"https://w3id.org/security/v1\",\n\t\t{\n\t\t\t\"Emoji\": \"toot:Emoji\",\n\t\t\t\"Hashtag\": \"as:Hashtag\",\n\t\t\t\"PropertyValue\": \"schema:PropertyValue\",\n\t\t\t\"atomUri\": \"ostatus:atomUri\",\n\t\t\t\"conversation\": \"ostatus:conversation\",\n\t\t\t\"featured\": {\n\t\t\t\t\"@id\": \"toot:featured\",\n\t\t\t\t\"@type\": \"@id\"\n\t\t\t},\n\t\t\t\"focalPoint\": {\n\t\t\t\t\"@container\": \"@list\",\n\t\t\t\t\"@id\": \"toot:focalPoint\"\n\t\t\t},\n\t\t\t\"inReplyToAtomUri\": \"ostatus:inReplyToAtomUri\",\n\t\t\t\"manuallyApprovesFollowers\": \"as:manuallyApprovesFollowers\",\n\t\t\t\"movedTo\": {\n\t\t\t\t\"@id\": \"as:movedTo\",\n\t\t\t\t\"@type\": \"@id\"\n\t\t\t},\n\t\t\t\"ostatus\": \"http://ostatus.org#\",\n\t\t\t\"schema\": \"http://schema.org#\",\n\t\t\t\"sensitive\": \"as:sensitive\",\n\t\t\t\"toot\": \"http://joinmastodon.org/ns#\",\n\t\t\t\"value\": \"schema:value\"\n\t\t}\n\t],\n\t\"actor\": \"https://mastodon.social/users/pubgate\",\n\t\"id\": \"https://mastodon.social/users/pubgate#announces/101012780624820231/undo\",\n\t\"object\": {\n\t\t\"actor\": \"https://mastodon.social/users/pubgate\",\n\t\t\"atomUri\": \"https://mastodon.social/users/pubgate/statuses/101012780624820231/activity\",\n\t\t\"cc\": [\"https://pubgate.autogestion.org/xatarsis\",\n\t\t\t\"https://mastodon.social/users/pubgate/followers\"\n\t\t],\n\t\t\"id\": \"https://mastodon.social/users/pubgate/statuses/101012780624820231/activity\",\n\t\t\"object\": \"https://pubgate.autogestion.org/xatarsis/object/4ea73f3f950df185\",\n\t\t\"published\": \"2018-11-04T11:58:32Z\",\n\t\t\"to\": [\"https://www.w3.org/ns/activitystreams#Public\"],\n\t\t\"type\": \"Announce\"\n\t},\n\t\"signature\": {\n\t\t\"created\": \"2018-11-04T12:01:51Z\",\n\t\t\"creator\": \"https://mastodon.social/users/pubgate#main-key\",\n\t\t\"signatureValue\": \"jBP5GExKKuKQcAQ5HK0tE/3/KrJA9csO3L2QOT4DV/lvDW08Ir1H2Ccsc/3qcU90NBNvJoEAvezX+Uw4JFbDY9bLgSAlKT11ULjFmUA6azgVMNa3kJIfFWW9/sf8aEtjf6pdSz57Ll9v1kSVhybYBJ+cvOUzvEMruzg3sAHk55LNgzvUI2YwOs0LfoG6NHEKEHLGkkIVO8tESh4giOyAZzRg+pb3VCoXWHKiGnpT1vj2Eqdokhw+Tb6PuhukxEjckEHnZngj26P1eQKNqcM9GskLukSRedlkMKznKTrc1hM6kYgsDCSm6e61/1NYulAkx3oivq0MWXE9CMvc+jSWYQ==\",\n\t\t\"type\": \"RsaSignature2017\"\n\t},\n\t\"to\": [\"https://www.w3.org/ns/activitystreams#Public\"],\n\t\"type\": \"Undo\"\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/inbox",
+					"raw": "{{host}}/@{{user}}/inbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"inbox"
 					]
 				}
@@ -1394,12 +1376,12 @@
 					"raw": "{\n  \"@context\": [\n    \"https://www.w3.org/ns/activitystreams\",\n    \"https://w3id.org/security/v1\",\n    {\n      \"manuallyApprovesFollowers\": \"as:manuallyApprovesFollowers\",\n      \"sensitive\": \"as:sensitive\",\n      \"movedTo\": {\n        \"@id\": \"as:movedTo\",\n        \"@type\": \"@id\"\n      },\n      \"Hashtag\": \"as:Hashtag\",\n      \"ostatus\": \"http://ostatus.org#\",\n      \"atomUri\": \"ostatus:atomUri\",\n      \"inReplyToAtomUri\": \"ostatus:inReplyToAtomUri\",\n      \"conversation\": \"ostatus:conversation\",\n      \"toot\": \"http://joinmastodon.org/ns#\",\n      \"Emoji\": \"toot:Emoji\",\n      \"focalPoint\": {\n        \"@container\": \"@list\",\n        \"@id\": \"toot:focalPoint\"\n      },\n      \"featured\": {\n        \"@id\": \"toot:featured\",\n        \"@type\": \"@id\"\n      },\n      \"schema\": \"http://schema.org#\",\n      \"PropertyValue\": \"schema:PropertyValue\",\n      \"value\": \"schema:value\"\n    }\n  ],\n  \"id\": \"https://mastodon.social/users/pubgate/statuses/100958150861100369#delete\",\n  \"type\": \"Delete\",\n  \"actor\": \"https://mastodon.social/users/pubgate\",\n  \"to\": [\n    \"https://www.w3.org/ns/activitystreams#Public\"\n  ],\n  \"object\": {\n    \"id\": \"https://mastodon.social/users/pubgate/statuses/100958150861100369\",\n    \"type\": \"Tombstone\",\n    \"atomUri\": \"https://mastodon.social/users/pubgate/statuses/100958150861100369\"\n  },\n  \"signature\": {\n    \"type\": \"RsaSignature2017\",\n    \"creator\": \"https://mastodon.social/users/pubgate#main-key\",\n    \"created\": \"2018-10-25T20:35:36Z\",\n    \"signatureValue\": \"YYMCZYjFe78YiZFnamEy847muf7dxp366dlivjGK+P/snqywK6R97kwgDXI36Ly6Md8zt2eRQD5pI+/yR4fivgHbZiwx4BAYMUoe61rOC12g7ypZ3yG77Ju4RW/nOkmW8YDlcafI9pnOHPsFUc1/+Z13FXvTytHa0D4WwwyFBKtryRYoWtxLMPPfCRKCGFyO+7tb8Gj5uGks8i90K4ppZ3vZKx4rWRSRspGfEWfwCeXwAc4NR5X7oYjlz5iTx1txj0GK7dUuQSs/+1ixycggxk2aTJQqulKvBlIKpPon8AULiqiyl6t2tfZkzumevogQ7Ych+I6LilIZolVADGP2zQ==\"\n  }\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/inbox",
+					"raw": "{{host}}/@{{user}}/inbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"inbox"
 					]
 				}
@@ -1416,12 +1398,12 @@
 					"raw": "{\n  \"@context\": [\n    \"https://www.w3.org/ns/activitystreams\",\n    \"https://w3id.org/security/v1\",\n    {\n      \"manuallyApprovesFollowers\": \"as:manuallyApprovesFollowers\",\n      \"sensitive\": \"as:sensitive\",\n      \"movedTo\": {\n        \"@id\": \"as:movedTo\",\n        \"@type\": \"@id\"\n      },\n      \"Hashtag\": \"as:Hashtag\",\n      \"ostatus\": \"http://ostatus.org#\",\n      \"atomUri\": \"ostatus:atomUri\",\n      \"inReplyToAtomUri\": \"ostatus:inReplyToAtomUri\",\n      \"conversation\": \"ostatus:conversation\",\n      \"toot\": \"http://joinmastodon.org/ns#\",\n      \"Emoji\": \"toot:Emoji\",\n      \"focalPoint\": {\n        \"@container\": \"@list\",\n        \"@id\": \"toot:focalPoint\"\n      },\n      \"featured\": {\n        \"@id\": \"toot:featured\",\n        \"@type\": \"@id\"\n      },\n      \"schema\": \"http://schema.org#\",\n      \"PropertyValue\": \"schema:PropertyValue\",\n      \"value\": \"schema:value\"\n    }\n  ],\n  \"id\": \"https://mastodon.social/users/pubgate#likes/13765502\",\n  \"type\": \"Like\",\n  \"actor\": \"https://mastodon.social/users/pubgate\",\n  \"object\": \"{{host}}/{{user}}/object/{{entity}}\",\n  \"signature\": {\n    \"type\": \"RsaSignature2017\",\n    \"creator\": \"https://mastodon.social/users/pubgate#main-key\",\n    \"created\": \"2018-10-25T20:56:02Z\",\n    \"signatureValue\": \"ApmsMqUmJpoT3A02WH1f0x/QVkGge9XT1YjDKXbgC0hOIzK//XntVkfbtw+cr1cmMQFE5D2csRTIGiq0o9BvlOgsVksXrPh8f1hCasZcBPqSs6a22lblk47apsB4+86jwpdJmrLdZj2VhFeYRFIIC5mFDUq4QsHmaUpQnp0/gZCU0PolNvabGMQse560/y3Oht9imqwOpKVgoys9zH4w5K/aSGQgpC0/SVPdgC6CKYZiW4r8S5gKCH4L2DsXbHYpA5JOm4DzrukMdRBvqngxChd8yrHvwDDvbeswerpVpcPDIN2XLKNuo1su8qRPlv0mCM/VY6GMk2i98hGsXXF7fg==\"\n  }\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/inbox",
+					"raw": "{{host}}/@{{user}}/inbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"inbox"
 					]
 				}
@@ -1438,12 +1420,12 @@
 					"raw": "{\n  \"@context\": [\n    \"https://www.w3.org/ns/activitystreams\",\n    \"https://w3id.org/security/v1\",\n    {\n      \"manuallyApprovesFollowers\": \"as:manuallyApprovesFollowers\",\n      \"sensitive\": \"as:sensitive\",\n      \"movedTo\": {\n        \"@id\": \"as:movedTo\",\n        \"@type\": \"@id\"\n      },\n      \"Hashtag\": \"as:Hashtag\",\n      \"ostatus\": \"http://ostatus.org#\",\n      \"atomUri\": \"ostatus:atomUri\",\n      \"inReplyToAtomUri\": \"ostatus:inReplyToAtomUri\",\n      \"conversation\": \"ostatus:conversation\",\n      \"toot\": \"http://joinmastodon.org/ns#\",\n      \"Emoji\": \"toot:Emoji\",\n      \"focalPoint\": {\n        \"@container\": \"@list\",\n        \"@id\": \"toot:focalPoint\"\n      },\n      \"featured\": {\n        \"@id\": \"toot:featured\",\n        \"@type\": \"@id\"\n      },\n      \"schema\": \"http://schema.org#\",\n      \"PropertyValue\": \"schema:PropertyValue\",\n      \"value\": \"schema:value\"\n    }\n  ],\n  \"id\": \"https://mastodon.social/users/pubgate/statuses/100958283185025712/activity\",\n  \"type\": \"Announce\",\n  \"actor\": \"https://mastodon.social/users/pubgate\",\n  \"published\": \"2018-10-25T20:59:07Z\",\n  \"to\": [\n    \"https://www.w3.org/ns/activitystreams#Public\"\n  ],\n  \"cc\": [\n    \"https://pubgate.autogestion.org/xatar3\",\n    \"https://mastodon.social/users/pubgate/followers\"\n  ],\n  \"object\": \"{{host}}/{{user}}/object/{{entity}}\",\n  \"atomUri\": \"https://mastodon.social/users/pubgate/statuses/100958283185025707/activity\",\n  \"signature\": {\n    \"type\": \"RsaSignature2017\",\n    \"creator\": \"https://mastodon.social/users/pubgate#main-key\",\n    \"created\": \"2018-10-25T20:59:07Z\",\n    \"signatureValue\": \"Q3DxXsmSZT2sk0uuzSHBWT1qRdUw/VTIeS9Im/5L71V47260LfQrceXNR1qf2cnAzhO9L+swgiFaFpIk4nlFIFrP+XVP2W6gbiXHT+7jkxkPAh/ijYh4rxGyBlB2O2a4bicuea1af8YyvNDYyHPqcJCoeRVu7OLvXQsXG+SAIjWuVZiMfLO4HaBW60at6FzPeXS8zzvfTea4o0Zk6lJewu6cxPuF1XumnXAhxgIQkzlrNnw04MMFaubd477WUufH6asrsMBI7vTPlXiMM1KF1KI0OC31ljeHK8ShBYiNZm+qTq8HFxcXmJqukuzlsF87/rmkpr6DYRwvgH1LWQr1DA==\"\n  }\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/inbox",
+					"raw": "{{host}}/@{{user}}/inbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"inbox"
 					]
 				}
@@ -1460,12 +1442,12 @@
 					"raw": "{\n\t\"@context\": [\"https://www.w3.org/ns/activitystreams\", \"https://w3id.org/security/v1\", {\n\t\t\"manuallyApprovesFollowers\": \"as:manuallyApprovesFollowers\",\n\t\t\"sensitive\": \"as:sensitive\",\n\t\t\"movedTo\": {\n\t\t\t\"@id\": \"as:movedTo\",\n\t\t\t\"@type\": \"@id\"\n\t\t},\n\t\t\"Hashtag\": \"as:Hashtag\",\n\t\t\"ostatus\": \"http://ostatus.org#\",\n\t\t\"atomUri\": \"ostatus:atomUri\",\n\t\t\"inReplyToAtomUri\": \"ostatus:inReplyToAtomUri\",\n\t\t\"conversation\": \"ostatus:conversation\",\n\t\t\"toot\": \"http://joinmastodon.org/ns#\",\n\t\t\"Emoji\": \"toot:Emoji\",\n\t\t\"focalPoint\": {\n\t\t\t\"@container\": \"@list\",\n\t\t\t\"@id\": \"toot:focalPoint\"\n\t\t},\n\t\t\"featured\": {\n\t\t\t\"@id\": \"toot:featured\",\n\t\t\t\"@type\": \"@id\"\n\t\t},\n\t\t\"schema\": \"http://schema.org#\",\n\t\t\"PropertyValue\": \"schema:PropertyValue\",\n\t\t\"value\": \"schema:value\"\n\t}],\n\t\"id\": \"https://mastodon.social/users/pubgate/statuses/100975652477277396/activity\",\n\t\"type\": \"Announce\",\n\t\"actor\": \"https://mastodon.social/users/pubgate\",\n\t\"published\": \"2018-10-28T22:36:21Z\",\n\t\"to\": [\"https://www.w3.org/ns/activitystreams#Public\"],\n\t\"cc\": [\"https://mastodon.social/users/autogestion\", \"https://mastodon.social/users/pubgate/followers\"],\n\t\"object\": \"https://mastodon.social/users/autogestion/statuses/100615918085142459\",\n\t\"atomUri\": \"https://mastodon.social/users/pubgate/statuses/100975652477277396/activity\",\n\t\"signature\": {\n\t\t\"type\": \"RsaSignature2017\",\n\t\t\"creator\": \"https://mastodon.social/users/pubgate#main-key\",\n\t\t\"created\": \"2018-10-28T22:36:21Z\",\n\t\t\"signatureValue\": \"uXEbvmLUUVzU0mmSkaiWshhfbBIS0aYQ47jX0zyIpGFDgQzn4uBmkroyhXZLjXfamIg3q8bWvL2sTqgOyo6xPZyKa64Nb/c0uGPYkSC6skRVAOKZ5c2KbLaH3GL8Tc7YO0pof6Wl1pKW0HSFfkXTBN2+f+PIG5tAQPdeRWntOsiaaDDv2euFWv56yKiLi/KQmmF5l8bS3p4THukufGaQJrUfrsufsoqh7O0nmQ6hm/UGQDBjDGnzmCt9KiNR3ejYk/aj/T/7X5XaCTLXb73ljAIOV20RcOnRa44aPX2+I1KbepJrE0lggVbaUC2cQHLVoPnIBB1vmxlel/Skq5RK9A==\"\n\t}\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/inbox",
+					"raw": "{{host}}/@{{user}}/inbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"inbox"
 					]
 				}
@@ -1482,12 +1464,12 @@
 					"raw": "{\n\t\"@context\": [\"https://www.w3.org/ns/activitystreams\",\n\t\t\"https://w3id.org/security/v1\",\n\t\t{\n\t\t\t\"manuallyApprovesFollowers\": \"as:manuallyApprovesFollowers\",\n\t\t\t\"sensitive\": \"as:sensitive\",\n\t\t\t\"movedTo\": {\n\t\t\t\t\"@id\": \"as:movedTo\",\n\t\t\t\t\"@type\": \"@id\"\n\t\t\t},\n\t\t\t\"Hashtag\": \"as:Hashtag\",\n\t\t\t\"ostatus\": \"http://ostatus.org#\",\n\t\t\t\"atomUri\": \"ostatus:atomUri\",\n\t\t\t\"inReplyToAtomUri\": \"ostatus:inReplyToAtomUri\",\n\t\t\t\"conversation\": \"ostatus:conversation\",\n\t\t\t\"toot\": \"http://joinmastodon.org/ns#\",\n\t\t\t\"Emoji\": \"toot:Emoji\",\n\t\t\t\"focalPoint\": {\n\t\t\t\t\"@container\": \"@list\",\n\t\t\t\t\"@id\": \"toot:focalPoint\"\n\t\t\t},\n\t\t\t\"featured\": {\n\t\t\t\t\"@id\": \"toot:featured\",\n\t\t\t\t\"@type\": \"@id\"\n\t\t\t},\n\t\t\t\"schema\": \"http://schema.org#\",\n\t\t\t\"PropertyValue\": \"schema:PropertyValue\",\n\t\t\t\"value\": \"schema:value\"\n\t\t}\n\t],\n\t\"id\": \"https://mastodon.social/users/pubgate/statuses/1009583009160732785/activity\",\n\t\"type\": \"Create\",\n\t\"actor\": \"https://mastodon.social/users/pubgate\",\n\t\"published\": \"2018-10-25T21:03:37Z\",\n\t\"to\": [\"https://www.w3.org/ns/activitystreams#Public\"],\n\t\"cc\": [\"https://mastodon.social/users/pubgate/followers\",\n\t\t\"https://pubgate.autogestion.org/xatar3\"\n\t],\n\t\"object\": {\n\t\t\"id\": \"https://mastodon.social/users/pubgate/statuses/10095830091607327711\",\n\t\t\"type\": \"Note\",\n\t\t\"summary\": null,\n\t\t\"inReplyTo\": \"{{host}}/{{user}}/object/{{entity}}\",\n\t\t\"published\": \"2018-10-25T21:03:37Z\",\n\t\t\"url\": \"https://mastodon.social/@pubgate/100958300916073273\",\n\t\t\"attributedTo\": \"https://mastodon.social/users/pubgate\",\n\t\t\"to\": [\"https://www.w3.org/ns/activitystreams#Public\"],\n\t\t\"cc\": [\"https://mastodon.social/users/pubgate/followers\",\n\t\t\t\"https://pubgate.autogestion.org/xatar3\"\n\t\t],\n\t\t\"sensitive\": false,\n\t\t\"atomUri\": \"https://mastodon.social/users/pubgate/statuses/100958300916073273\",\n\t\t\"inReplyToAtomUri\": \"https://pubgate.autogestion.org/xatar3/object/4bcc98e64689fa7f\",\n\t\t\"conversation\": \"tag:mastodon.social,2018-10-25:objectId=61240035:objectType=Conversation\",\n\t\t\"content\": \"<p><span class='h-card'><a href='https://pubgate.autogestion.org/xatar3' class='u-url mention'>@<span>xatar3</span></a></span> </p><p>replay</p>\",\n\t\t\"contentMap\": {\n\t\t\t\"en\": \"<p><span class='h-card'><a href='https://pubgate.autogestion.org/xatar3' class='u-url mention'>@<span>xatar3</span></a></span> </p><p>replay</p>\"\n\t\t},\n\t\t\"attachment\": [],\n\t\t\"tag\": [{\n\t\t\t\"type\": \"Mention\",\n\t\t\t\"href\": \"https://pubgate.autogestion.org/xatar3\",\n\t\t\t\"name\": \"@xatar3@pubgate.autogestion.org\"\n\t\t}]\n\t},\n\t\"signature\": {\n\t\t\"type\": \"RsaSignature2017\",\n\t\t\"creator\": \"https://mastodon.social/users/pubgate#main-key\",\n\t\t\"created\": \"2018-10-25T21:03:37Z\",\n\t\t\"signatureValue\": \"fJwxBTW5LNmpR+AVEejCuPdGaYm3RpvRvaFencyzXc77uPnTjAYg9YrrwxrTpYTvqWE8dWTKSjd4D21BFWw7sfpo+678RTVvfnYJ7eZhHbwKC+ZyryKJVVPLQfFPd4moZgknuzvvb/TzYrJmUBp0tW97pITZCA7K4Mwvkr0XON7HmiCg5tulwLb5Wj66lo7wE4e95ovkVHfjmrp9+aaf42tuk+onNIgFvyps/IuA5/mhAERZRdhJZQagd+A+dmGVHBa4rioAL0QgD5bQCCGnjn8ePm+FynnrbYzNCeIX9USo/uH4biYViMjYussgkiHOXtoy+kKdG4iVKqGEfZigdQ==\"\n\t}\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/inbox",
+					"raw": "{{host}}/@{{user}}/inbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"inbox"
 					]
 				}
@@ -1504,12 +1486,12 @@
 					"raw": "{\n\t\"@context\": [\"https://www.w3.org/ns/activitystreams\", \"https://w3id.org/security/v1\", {\n\t\t\"manuallyApprovesFollowers\": \"as:manuallyApprovesFollowers\",\n\t\t\"sensitive\": \"as:sensitive\",\n\t\t\"movedTo\": {\n\t\t\t\"@id\": \"as:movedTo\",\n\t\t\t\"@type\": \"@id\"\n\t\t},\n\t\t\"Hashtag\": \"as:Hashtag\",\n\t\t\"ostatus\": \"http://ostatus.org#\",\n\t\t\"atomUri\": \"ostatus:atomUri\",\n\t\t\"inReplyToAtomUri\": \"ostatus:inReplyToAtomUri\",\n\t\t\"conversation\": \"ostatus:conversation\",\n\t\t\"toot\": \"http://joinmastodon.org/ns#\",\n\t\t\"Emoji\": \"toot:Emoji\",\n\t\t\"focalPoint\": {\n\t\t\t\"@container\": \"@list\",\n\t\t\t\"@id\": \"toot:focalPoint\"\n\t\t},\n\t\t\"featured\": {\n\t\t\t\"@id\": \"toot:featured\",\n\t\t\t\"@type\": \"@id\"\n\t\t},\n\t\t\"schema\": \"http://schema.org#\",\n\t\t\"PropertyValue\": \"schema:PropertyValue\",\n\t\t\"value\": \"schema:value\"\n\t}],\n\t\"id\": \"https://mastodon.social/users/autogestion/statuses/100978917628012701/activity\",\n\t\"type\": \"Create\",\n\t\"actor\": \"https://mastodon.social/users/autogestion\",\n\t\"published\": \"2018-10-29T12:26:43Z\",\n\t\"to\": [\"https://www.w3.org/ns/activitystreams#Public\"],\n\t\"cc\": [\"https://mastodon.social/users/autogestion/followers\"],\n\t\"object\": {\n\t\t\"id\": \"https://mastodon.social/users/autogestion/statuses/100978917628012701\",\n\t\t\"type\": \"Note\",\n\t\t\"summary\": null,\n\t\t\"inReplyTo\": \"https://mastodon.social/users/pubgate/statuses/100957939699089852\",\n\t\t\"published\": \"2018-10-29T12:26:43Z\",\n\t\t\"url\": \"https://mastodon.social/@autogestion/100978917628012701\",\n\t\t\"attributedTo\": \"https://mastodon.social/users/autogestion\",\n\t\t\"to\": [\"https://www.w3.org/ns/activitystreams#Public\"],\n\t\t\"cc\": [\"https://mastodon.social/users/autogestion/followers\"],\n\t\t\"sensitive\": false,\n\t\t\"atomUri\": \"https://mastodon.social/users/autogestion/statuses/100978917628012701\",\n\t\t\"inReplyToAtomUri\": \"https://mastodon.social/users/pubgate/statuses/100957939699089852\",\n\t\t\"conversation\": \"tag:mastodon.social,2018-10-25:objectId=61231791:objectType=Conversation\",\n\t\t\"content\": \"<p>yep3</p>\",\n\t\t\"contentMap\": {\n\t\t\t\"en\": \"<p>yep3</p>\"\n\t\t},\n\t\t\"attachment\": [],\n\t\t\"tag\": []\n\t},\n\t\"signature\": {\n\t\t\"type\": \"RsaSignature2017\",\n\t\t\"creator\": \"https://mastodon.social/users/autogestion#main-key\",\n\t\t\"created\": \"2018-10-29T12:26:44Z\",\n\t\t\"signatureValue\": \"OZqgg/vqdtxfMPJJE+tYqe0BZFug0b0TA1Jcts/GP+nb+V+5zaE5FN5JBRuCfQY/MtaBg0GizyW5suU97v7/tpp/VkctweDduB0lXpeVYzwY1HYrSx+Lbwmppw9jVnLnQd6q4ltlckmuSOqnj80drmtQH9ZiatozQ82TfZk8KWnTPnVzT4Osk+pdD0P0TuOxa6ThsIKSu6+xbl3gNfju2WtWLEVLWJ8FVzqQ2W+quHOKgGcqBdxSUCMl26o2YQAwdPl8s0lwq9Prfj9PdiLcm1Vb1Gjp+TRRCcbGN24WfEDQphdtc4HIWRxyvn1KYpeLKIbmsJG4LCshFUfOKCwHrg==\"\n\t}\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/inbox",
+					"raw": "{{host}}/@{{user}}/inbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"inbox"
 					]
 				}
@@ -1526,12 +1508,12 @@
 					"raw": "{\n\t\"@context\": [\"https://www.w3.org/ns/activitystreams\", \"https://w3id.org/security/v1\", {\n\t\t\"manuallyApprovesFollowers\": \"as:manuallyApprovesFollowers\",\n\t\t\"sensitive\": \"as:sensitive\",\n\t\t\"movedTo\": {\n\t\t\t\"@id\": \"as:movedTo\",\n\t\t\t\"@type\": \"@id\"\n\t\t},\n\t\t\"Hashtag\": \"as:Hashtag\",\n\t\t\"ostatus\": \"http://ostatus.org#\",\n\t\t\"atomUri\": \"ostatus:atomUri\",\n\t\t\"inReplyToAtomUri\": \"ostatus:inReplyToAtomUri\",\n\t\t\"conversation\": \"ostatus:conversation\",\n\t\t\"toot\": \"http://joinmastodon.org/ns#\",\n\t\t\"Emoji\": \"toot:Emoji\",\n\t\t\"focalPoint\": {\n\t\t\t\"@container\": \"@list\",\n\t\t\t\"@id\": \"toot:focalPoint\"\n\t\t},\n\t\t\"featured\": {\n\t\t\t\"@id\": \"toot:featured\",\n\t\t\t\"@type\": \"@id\"\n\t\t},\n\t\t\"schema\": \"http://schema.org#\",\n\t\t\"PropertyValue\": \"schema:PropertyValue\",\n\t\t\"value\": \"schema:value\"\n\t}],\n\t\"id\": \"https://liberdon.com/users/don/statuses/100978961087996718/activity\",\n\t\"type\": \"Create\",\n\t\"actor\": \"https://liberdon.com/users/don\",\n\t\"published\": \"2018-10-29T12:37:46Z\",\n\t\"to\": [\"https://www.w3.org/ns/activitystreams#Public\"],\n\t\"cc\": [\"https://liberdon.com/users/don/followers\"],\n\t\"object\": {\n\t\t\"id\": \"https://liberdon.com/users/don/statuses/100978961087996718\",\n\t\t\"type\": \"Note\",\n\t\t\"summary\": null,\n\t\t\"inReplyTo\": \"https://mastodon.social/users/pubgate/statuses/100957939699089852\",\n\t\t\"published\": \"2018-10-29T12:37:46Z\",\n\t\t\"url\": \"https://liberdon.com/@don/100978961087996718\",\n\t\t\"attributedTo\": \"https://liberdon.com/users/don\",\n\t\t\"to\": [\"https://www.w3.org/ns/activitystreams#Public\"],\n\t\t\"cc\": [\"https://liberdon.com/users/don/followers\"],\n\t\t\"sensitive\": false,\n\t\t\"atomUri\": \"https://liberdon.com/users/don/statuses/100978961087996718\",\n\t\t\"inReplyToAtomUri\": \"https://mastodon.social/users/pubgate/statuses/100957939699089852\",\n\t\t\"conversation\": \"tag:mastodon.social,2018-10-25:objectId=61231791:objectType=Conversation\",\n\t\t\"content\": \"<p>yep</p>\",\n\t\t\"contentMap\": {\n\t\t\t\"en\": \"<p>yep</p>\"\n\t\t},\n\t\t\"attachment\": [],\n\t\t\"tag\": []\n\t},\n\t\"signature\": {\n\t\t\"type\": \"RsaSignature2017\",\n\t\t\"creator\": \"https://liberdon.com/users/don#main-key\",\n\t\t\"created\": \"2018-10-29T12:37:47Z\",\n\t\t\"signatureValue\": \"lTDInvFmInJrrBMt5TQoFuAY7cvRG4ZtfDF7j/im9tv+F0pAyWqrSKjzpIn3u5Y2oPbW0ekjnOrnHmLpYKArCk32d8F/1ujsIJbuGrX1w3FUxnTp/6yod6W5t5sAoY9aJK1pdb7wwd2u0bqbfFAp3jQpSwXEr682BsejJcGUHfnGONOogdiN5vp255eHqD97SrOpSHR8dNv3Sur+hyj53mpN2hfHDdt5x5VIx82psE3SlwBnfuZ/DGy+5KacBK5+50mVyYd1o4uLlR3MsvaelKH72lKXyjNAFvIB6haQVKm9qykBD2vpiOxWH+sbGrDIRVLnEbXlBB0qC4teg+Nx5Q==\"\n\t}\n}"
 				},
 				"url": {
-					"raw": "{{host}}/{{user}}/inbox",
+					"raw": "{{host}}/@{{user}}/inbox",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"{{user}}",
+						"@{{user}}",
 						"inbox"
 					]
 				}

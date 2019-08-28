@@ -19,7 +19,7 @@ inbox_v1 = Blueprint('inbox_v1')
 #     response.headers["Access-Control-Allow-Origin"] = "*"
 
 
-@inbox_v1.route('/<user>/inbox', methods=['POST'])
+@inbox_v1.route('/@<user>/inbox', methods=['POST'])
 @doc.summary("Post to user inbox")
 @doc.consumes(Inbox, location="body")
 @user_check
@@ -86,7 +86,7 @@ async def inbox_post(request, user):
     return response.json({'peremoga': 'yep'}, status=202)
 
 
-@inbox_v1.route('/<user>/inbox', methods=['GET'])
+@inbox_v1.route('/@<user>/inbox', methods=['GET'])
 @doc.summary("Returns user inbox, auth required")
 @token_check
 async def inbox_list(request, user):

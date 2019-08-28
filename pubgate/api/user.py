@@ -39,7 +39,7 @@ async def user_create(request):
             return response.json({'error': 'username n/a'})
 
 
-@user_v1.route('/<user>', methods=['PATCH'])
+@user_v1.route('/@<user>', methods=['PATCH'])
 @doc.summary("Update user details or profile")
 @token_check
 async def user_update(request, user):
@@ -62,7 +62,7 @@ async def user_update(request, user):
     return response.json({'peremoga': 'yep'}, status=201)
 
 
-@user_v1.route('/<user>/mass_delete', methods=['POST'])
+@user_v1.route('/@<user>/mass_delete', methods=['POST'])
 @doc.summary("Delete all user's posts")
 @token_check
 # TODO delete user's reactions (Like, Announce)
@@ -81,7 +81,7 @@ async def user_mass_delete(request, user):
     return response.json({'peremoga': 'yep'}, status=201)
 
 
-@user_v1.route('/<user>', methods=['GET'])
+@user_v1.route('/@<user>', methods=['GET'])
 @doc.summary("Returns user profile")
 @user_check
 @ui_app_check
@@ -115,7 +115,7 @@ async def token_get(request):
     return response.json({'access_token': token})
 
 
-@user_v1.route('/<user>/followers', methods=['GET'])
+@user_v1.route('/@<user>/followers', methods=['GET'])
 @doc.summary("Returns user followers")
 @user_check
 async def followers_get(request, user):
@@ -125,7 +125,7 @@ async def followers_get(request, user):
     })
 
 
-@user_v1.route('/<user>/following', methods=['GET'])
+@user_v1.route('/@<user>/following', methods=['GET'])
 @doc.summary("Returns user following")
 @user_check
 async def following_get(request, user):
@@ -135,7 +135,7 @@ async def following_get(request, user):
     })
 
 
-@user_v1.route('/<user>/liked', methods=['GET'])
+@user_v1.route('/@<user>/liked', methods=['GET'])
 @doc.summary("Returns user likes")
 @user_check
 async def liked_get(request, user):

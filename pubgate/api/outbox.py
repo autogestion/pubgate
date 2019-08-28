@@ -19,7 +19,7 @@ outbox_v1 = Blueprint('outbox_v1')
 #     response.headers["Content-Type"] = "application/activity+json; charset=utf-8"
 
 
-@outbox_v1.route('/<user>/outbox', methods=['POST'])
+@outbox_v1.route('/@<user>/outbox', methods=['POST'])
 @doc.summary("Post to user outbox, auth required")
 @doc.consumes(Outbox, location="body")
 @token_check
@@ -48,7 +48,7 @@ async def outbox_post(request, user):
                          )
 
 
-@outbox_v1.route('/<user>/outbox', methods=['GET'])
+@outbox_v1.route('/@<user>/outbox', methods=['GET'])
 @doc.summary("Returns user outbox")
 @user_check
 async def outbox_list(request, user):
@@ -59,7 +59,7 @@ async def outbox_list(request, user):
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
-@outbox_v1.route('/<user>/activity/<entity>', methods=['GET'])
+@outbox_v1.route('/@<user>/activity/<entity>', methods=['GET'])
 @doc.summary("Returns activity from outbox")
 @user_check
 @outbox_check
@@ -69,7 +69,7 @@ async def outbox_activity(request, user, entity):
     return response.json(result, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
-@outbox_v1.route('/<user>/object/<entity>', methods=['GET'])
+@outbox_v1.route('/@<user>/object/<entity>', methods=['GET'])
 @doc.summary("Returns object from outbox")
 @user_check
 @outbox_check
@@ -80,7 +80,7 @@ async def outbox_object(request, user, entity):
     return response.json(result, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
-@outbox_v1.route('/<user>/object/<entity>/replies', methods=['GET'])
+@outbox_v1.route('/@<user>/object/<entity>/replies', methods=['GET'])
 @doc.summary("Returns replies for object")
 @user_check
 @outbox_check
@@ -89,7 +89,7 @@ async def outbox_replies(request, user, entity):
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
-@outbox_v1.route('/<user>/object/<entity>/likes', methods=['GET'])
+@outbox_v1.route('/@<user>/object/<entity>/likes', methods=['GET'])
 @doc.summary("Returns likes for object")
 @user_check
 @outbox_check
@@ -98,7 +98,7 @@ async def outbox_likes(request, user, entity):
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
-@outbox_v1.route('/<user>/object/<entity>/shares', methods=['GET'])
+@outbox_v1.route('/@<user>/object/<entity>/shares', methods=['GET'])
 @doc.summary("Returns shares for object")
 @user_check
 @outbox_check
