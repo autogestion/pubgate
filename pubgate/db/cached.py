@@ -16,7 +16,7 @@ async def timeline_cached(cls, request, uri, user='stream'):
     }
     if user != 'stream':
         filters.update(cls.by_user(user))
-    if cls.__coll__ == 'inbox':
+    elif cls.__coll__ == 'inbox':
         filters.update(
             {"users.0": {"$ne": "cached"}, "users": {"$size": 1}}
         )
