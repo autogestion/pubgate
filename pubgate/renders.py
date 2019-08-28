@@ -1,35 +1,6 @@
 
 
-context = [
-        "https://www.w3.org/ns/activitystreams",
-        "https://w3id.org/security/v1",
-        {
-            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
-            "toot": "http://joinmastodon.org/ns#",
-            "featured": {
-                "@id": "toot:featured",
-                "@type": "@id"
-            },
-            "alsoKnownAs": {
-                "@id": "as:alsoKnownAs",
-                "@type": "@id"
-            },
-            "movedTo": {
-                "@id": "as:movedTo",
-                "@type": "@id"
-            },
-            "schema": "http://schema.org#",
-            "PropertyValue": "schema:PropertyValue",
-            "value": "schema:value",
-            "Hashtag": "as:Hashtag",
-            "Emoji": "toot:Emoji",
-            "IdentityProof": "toot:IdentityProof",
-            "focalPoint": {
-                "@container": "@list",
-                "@id": "toot:focalPoint"
-            }
-        }
-    ]
+context = "https://www.w3.org/ns/activitystreams"
 
 
 class Actor:
