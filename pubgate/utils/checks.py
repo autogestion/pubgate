@@ -46,8 +46,8 @@ def outbox_check(handler=None):
 def ui_app_check(handler=None):
     @wraps(handler)
     async def wrapper(request, *args, **kwargs):
-        if request.app.ui_app_index and request.headers.get(
-                'Accept', None) != 'application/activity+json':
+        if request.app.ui_app_index and 'application/activity+json' not in request.headers.get(
+                'Accept', ''):
             return await request.app.ui_app_index(request)
         else:
             return await handler(request, *args, **kwargs)
