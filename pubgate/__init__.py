@@ -1,6 +1,6 @@
 import os
 
-__version__ = "0.2.17"
+__version__ = "0.2.18"
 
 
 KEY_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "storage")

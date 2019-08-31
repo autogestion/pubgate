@@ -4,6 +4,8 @@ from sanic.exceptions import SanicException
 
 from pubgate.utils import random_object_id
 from pubgate.utils.networking import deliver
+from pubgate.utils import check_origin
+from pubgate.utils.cached import ensure_cached
 from pubgate.db import Outbox, Inbox
 
 
@@ -94,6 +96,12 @@ class Reaction(Activity):
         activity["published"] = self.published()
         activity["to"] = ["https://www.w3.org/ns/activitystreams#Public"]
 
+    async def save(self):
+        local = check_origin(self.render["object"], self.render["actor"])
+        if not local:
+            await ensure_cached(self.render['object'])
+        await Outbox.reaction_add(self, local)
+
 
 class Unfollow(BaseActivity):
     async def recipients(self):
@@ -124,6 +132,11 @@ class Delete(BaseActivity):
         })
 
 
+class UndoReaction(Delete):
+    async def save(self):
+        await Outbox.reaction_undo(self)
+
+
 def choose(user, activity):
     # TODO add support for Collections (Add, Remove), Update, Block
     atype = activity.get("type", None)
@@ -145,7 +158,7 @@ def choose(user, activity):
         if otype == "Follow":
             return Unfollow(user, activity)
         elif otype in ["Announce", "Like"]:
-            return Delete(user, activity)
+            return UndoReaction(user, activity)
 
     elif atype == "Delete":
         # TODO Replaces deleted object with a Tombstone object

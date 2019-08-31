@@ -606,7 +606,7 @@
 			"response": []
 		},
 		{
-			"name": "/<user>/token",
+			"name": "/token",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -692,7 +692,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"type\": \"Create\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"sensitive\": false,\n        \"content\": \"Litepub compatible!\",\n        \"attachment\": [],\n        \"tag\": []\n    }\n}        "
+					"raw": "{\n    \"type\": \"Create\",\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"sensitive\": false,\n        \"content\": \"Pubgate has telegram bridge extension\",\n        \"attachment\": [],\n        \"tag\": []\n    }\n}        "
 				},
 				"url": {
 					"raw": "{{host}}/@{{user}}/outbox",
@@ -773,7 +773,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"type\": \"Create\",\n    \"cc\": [\"https://mastodon.social/users/pubgate\"],\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"sensitive\": false,\n        \"content\": \"Litepub compatible Reply!\",\n        \"attachment\": [],\n        \"tag\": [],\n        \"inReplyTo\": \"https://mastodon.social/users/pubgate/statuses/101047834927446681\"\n    }\n}        "
+					"raw": "{\n    \"type\": \"Create\",\n    \"cc\": [\"https://mastodon.social/users/pubgate\"],\n    \"object\": {\n        \"type\": \"Note\",\n        \"summary\": null,\n        \"sensitive\": false,\n        \"content\": \"Sounds fun\",\n        \"attachment\": [],\n        \"tag\": [],\n        \"inReplyTo\": \"https://mastodon.social/users/pubgate/statuses/101047834927446681\"\n    }\n}        "
 				},
 				"url": {
 					"raw": "{{host}}/@{{user}}/outbox",
@@ -854,7 +854,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"type\": \"Undo\",\n  \"object\": {\n\t\"type\": \"Announce\",\n\t\"object\": \"https://mastodon.social/users/autogestion/statuses/100584040062075154\",\n\t\"cc\": [\"{{host}}/{{user}}/followers\", \"https://mastodon.social/users/autogestion\"],\n\t\"actor\": \"{{host}}/{{user}}\",\n\t\"id\": \"{{host}}/{{user}}/activity/bebfb213c6fd470f\",\n\t\"published\": \"2018-11-10T14:32:50Z\",\n\t\"to\": [\"https://www.w3.org/ns/activitystreams#Public\"],\n\t\"@context\": [\"https://www.w3.org/ns/activitystreams\", \"https://w3id.org/security/v1\", {\n\t\t\"Hashtag\": \"as:Hashtag\",\n\t\t\"sensitive\": \"as:sensitive\"\n\t}]\n  },\n  \"cc\": [ \"https://mastodon.social/users/autogestion\" ]\n}"
+					"raw": "{\n  \"type\": \"Undo\",\n  \"object\": {\n\t\"type\": \"Announce\",\n\t\"object\": \"https://mastodon.social/users/autogestion/statuses/100584040062075154\",\n\t\"cc\": [\"{{host}}/@{{user}}/followers\", \"https://mastodon.social/users/autogestion\"],\n\t\"actor\": \"{{host}}/{{user}}\",\n\t\"id\": \"{{host}}/@{{user}}/activity/9139f12b6950d20f\",\n  },\n  \"cc\": [ \"https://mastodon.social/users/autogestion\" ]\n}"
 				},
 				"url": {
 					"raw": "{{host}}/@{{user}}/outbox",

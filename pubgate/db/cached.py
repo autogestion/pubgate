@@ -2,6 +2,16 @@ from pubgate.renders import ordered_collection
 from pubgate.db import Inbox, Outbox, Reactions
 
 
+def activity_reactions_clean(data):
+    result = []
+    for item in data:
+        cleaned = item['activity']
+        if isinstance(cleaned['object'], dict):
+            cleaned['object']['reactions'] = getattr(item, 'reactions', {})
+        result.append(cleaned)
+    return result
+
+
 async def timeline_cached(cls, request, uri, user='stream'):
 
     page = request.args.get("page", 1)
@@ -22,7 +32,7 @@ async def timeline_cached(cls, request, uri, user='stream'):
         )
 
     data = await get_ordered_cached(
-        request, cls, filters, cls.activity_clean, uri
+        request, cls, filters, activity_reactions_clean, uri
     )
 
     await cls.cache.set(cache_key, data)
@@ -79,7 +89,12 @@ async def retrieve_object(base_url, uri):
         result = await Outbox.get_by_uri(uri)
     else:
         result = await Inbox.get_by_uri(uri)
-    return result.activity['object'] if result else None
+
+    if result:
+        responce = result.activity['object']
+        responce['reactions'] = getattr(result, 'reactions', {})
+        return responce
+    return None
 
 
 async def reaction_list(entry, request, reaction):
