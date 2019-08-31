@@ -50,12 +50,6 @@ class Reactions(Outbox):
                 {'$limit': limit},
                 {'$skip': limit * (page - 1)}
             ])
-            print(cls.aggregate_query + [
-                {'$sort': {"activity.published": -1}},
-                {'$match': filters},
-                {'$limit': limit},
-                {'$skip': limit * (page - 1)}
-            ])
         else:
             data = []
 

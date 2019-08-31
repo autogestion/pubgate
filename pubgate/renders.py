@@ -19,7 +19,7 @@ class Actor:
             "inbox": self.user.inbox,
             "outbox": self.user.outbox,
             "liked": self.user.liked,
-            # "url": f"{base_url}/@{user_id}",
+            "url": self.user.uri,
             "manuallyApprovesFollowers": False,
             "publicKey": self.user.key.to_dict(),
             "endpoints": {

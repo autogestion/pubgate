@@ -8,8 +8,6 @@ from pubgate.db.cached import timeline_cached
 from pubgate.renders import context
 from pubgate.activity import choose
 from pubgate.utils.checks import user_check, token_check, outbox_check, ui_app_check
-from pubgate.utils import check_origin
-from pubgate.utils.cached import ensure_cached
 
 outbox_v1 = Blueprint('outbox_v1')
 
@@ -19,7 +17,7 @@ outbox_v1 = Blueprint('outbox_v1')
 #     response.headers["Content-Type"] = "application/activity+json; charset=utf-8"
 
 
-@outbox_v1.route('/<user>/outbox', methods=['POST'])
+@outbox_v1.route('/@<user>/outbox', methods=['POST'])
 @doc.summary("Post to user outbox, auth required")
 @doc.consumes(Outbox, location="body")
 @token_check
@@ -33,10 +31,6 @@ async def outbox_post(request, user):
     activity = choose(user, request.json)
     await activity.save()
     await activity.deliver(debug=request.app.config.LOG_OUTGOING_REQUEST)
-    if activity.render["type"] in ["Announce", "Like"]:
-        local = check_origin(activity.render["object"], request.app.base_url)
-        if not local:
-            await ensure_cached(activity.render['object'])
 
     # TODO implement streaming
     # if activity.render["type"] == "Create":
@@ -48,7 +42,7 @@ async def outbox_post(request, user):
                          )
 
 
-@outbox_v1.route('/<user>/outbox', methods=['GET'])
+@outbox_v1.route('/@<user>/outbox', methods=['GET'])
 @doc.summary("Returns user outbox")
 @user_check
 async def outbox_list(request, user):
@@ -59,7 +53,7 @@ async def outbox_list(request, user):
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
-@outbox_v1.route('/<user>/activity/<entity>', methods=['GET'])
+@outbox_v1.route('/@<user>/activity/<entity>', methods=['GET'])
 @doc.summary("Returns activity from outbox")
 @user_check
 @outbox_check
@@ -69,7 +63,7 @@ async def outbox_activity(request, user, entity):
     return response.json(result, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
-@outbox_v1.route('/<user>/object/<entity>', methods=['GET'])
+@outbox_v1.route('/@<user>/object/<entity>', methods=['GET'])
 @doc.summary("Returns object from outbox")
 @user_check
 @outbox_check
@@ -80,7 +74,7 @@ async def outbox_object(request, user, entity):
     return response.json(result, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
-@outbox_v1.route('/<user>/object/<entity>/replies', methods=['GET'])
+@outbox_v1.route('/@<user>/object/<entity>/replies', methods=['GET'])
 @doc.summary("Returns replies for object")
 @user_check
 @outbox_check
@@ -89,7 +83,7 @@ async def outbox_replies(request, user, entity):
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
-@outbox_v1.route('/<user>/object/<entity>/likes', methods=['GET'])
+@outbox_v1.route('/@<user>/object/<entity>/likes', methods=['GET'])
 @doc.summary("Returns likes for object")
 @user_check
 @outbox_check
@@ -98,7 +92,7 @@ async def outbox_likes(request, user, entity):
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
 
-@outbox_v1.route('/<user>/object/<entity>/shares', methods=['GET'])
+@outbox_v1.route('/@<user>/object/<entity>/shares', methods=['GET'])
 @doc.summary("Returns shares for object")
 @user_check
 @outbox_check

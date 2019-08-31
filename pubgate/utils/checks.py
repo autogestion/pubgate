@@ -8,7 +8,7 @@ from pubgate.db import User, Outbox
 def token_check(handler=None):
     @wraps(handler)
     async def wrapper(request, *args, **kwargs):
-        user = await User.find_one(dict(name=kwargs["user"].lower().lstrip('@'),
+        user = await User.find_one(dict(name=kwargs["user"].lower(),
                                         token=request.token))
         if not user:
             raise exceptions.Unauthorized("Auth required.")
@@ -21,7 +21,7 @@ def token_check(handler=None):
 def user_check(handler=None):
     @wraps(handler)
     async def wrapper(request, *args, **kwargs):
-        user = await User.find_one(dict(name=kwargs["user"].lower().lstrip('@')))
+        user = await User.find_one(dict(name=kwargs["user"].lower()))
         if not user:
             raise exceptions.NotFound("User not found")
 
@@ -46,8 +46,8 @@ def outbox_check(handler=None):
 def ui_app_check(handler=None):
     @wraps(handler)
     async def wrapper(request, *args, **kwargs):
-        if request.app.ui_app_index and request.headers.get(
-                'Accept', None) != 'application/activity+json':
+        if request.app.ui_app_index and 'application/activity+json' not in request.headers.get(
+                'Accept', ''):
             return await request.app.ui_app_index(request)
         else:
             return await handler(request, *args, **kwargs)

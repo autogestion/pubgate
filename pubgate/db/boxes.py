@@ -1,9 +1,11 @@
 from datetime import datetime
 
 from sanic_motor import BaseModel
+from sanic.exceptions import SanicException
 
 from pubgate.utils import make_label, random_object_id
 from pubgate.db.managers import BaseManager
+from pubgate.utils import check_origin
 
 
 class Outbox(BaseModel, BaseManager):
@@ -28,6 +30,48 @@ class Outbox(BaseModel, BaseManager):
         await cls.cache.clear()
 
     @classmethod
+    async def reaction_add(cls, activity, local, **kwargs):
+
+        search_model = cls if local else Inbox
+        add_to = await search_model.find_one(
+            {"activity.object.id": activity.render['object']}
+        )
+        if add_to:
+            if add_to.reactions and add_to.reactions.get(activity.render['type']):
+                if add_to.reactions[activity.render['type']].get(activity.user.name):
+                    raise SanicException(f'This post is already {activity.render["type"]}d', status_code=409)
+            else:
+                await cls.update_one(
+                    {'_id': add_to.id},
+                    {'$set': {f"reactions.{activity.render['type']}.{activity.user.name}":
+                                  activity.render['id'],
+                              "updated": datetime.now()}}
+                )
+
+        await cls.save(activity, **kwargs)
+
+    @classmethod
+    async def reaction_undo(cls, activity):
+        reaction_type = activity.render['object']['type']
+        local = check_origin(activity.render["object"]["object"], activity.render["actor"])
+        search_model = cls if local else Inbox
+
+        undo_from = await search_model.find_one(
+            {"activity.object.id": activity.render['object']['object']}
+        )
+        if undo_from:
+            if undo_from.reactions and undo_from.reactions.get(reaction_type) \
+                    and undo_from.reactions[reaction_type].get(activity.user.name):
+                await cls.update_one(
+                    {'_id': undo_from.id},
+                    {'$unset': {f"reactions.{reaction_type}.{activity.user.name}": 1}}
+                )
+            else:
+                raise SanicException(f'This post is not {reaction_type}d', status_code=409)
+
+        await cls.delete(activity.render["object"]["id"])
+
+    @classmethod
     async def unfollow(cls, activity):
         filters = activity.user.follow_filter(Inbox)
         filters["activity.object.object"] = \
@@ -44,6 +88,7 @@ class Outbox(BaseModel, BaseManager):
                 {'activity.id': accept.activity["object"]["id"]},
                 {'$set': {"deleted": True}}
             )
+
 
 class Inbox(BaseModel, BaseManager):
     __coll__ = 'inbox'
@@ -99,5 +144,18 @@ class Inbox(BaseModel, BaseManager):
                                       self.activity_clean,
                                       f"{request.app.base_url}/timeline/federated")
 
+
+    async def ensure_cached(cls, object_id):
+        # TODO also fetch and cache reactions (replies, likes, shares)
+        exists = await cls.get_by_uri(object_id)
+        if not exists:
+            cached_user = await User.find_one({'name': 'cached'})
+            activity_object = await fetch(object_id)
+            await cls.save(cached_user, {
+                'type': 'Create',
+                'id': f'{object_id}#activity',
+                'published': activity_object['published'],
+                'object': activity_object
+            })
 
 
