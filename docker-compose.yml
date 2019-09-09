@@ -1,35 +1,25 @@
-version: '3.3'
+version: '3.7'
 
 services:
 
-  ###################
-  # Shared Services #
-  ###################
-
-  # mongo:
-  #   image: mongo:4
-  #   restart: always
-  #   command: --smallfiles
-  #   expose:
-  #     - 27017
-  #   ports:
-  #     - 27017:27017
-  #   volumes:
-  #     - mongo_data_vol:/data/db
-  
+  mongo:
+     image: mongo:4
+     restart: always
+#     command: --smallfiles
+#     volumes:
+#       - mongo_data_vol:/data/db
 
   pubgate:
     build: .
     image: pubgate
     restart: always
-    command: invoke server
-    environment:
-      - SHELL=/bin/sh
-      - DEBUG=true
     ports:
-       - 8888:8000
+       - 8000:8000
     volumes:
       - type: bind
         source: ./
         target: /code/
     # stop_signal: SIGINT
+    environment:
+      - MONGODB_HOST=mongo
+      - DOMAIN=$domain

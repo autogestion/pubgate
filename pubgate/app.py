@@ -1,3 +1,5 @@
+import os
+
 import aiohttp
 from sanic import Sanic
 from sanic_openapi import swagger_blueprint, openapi_blueprint
@@ -15,8 +17,12 @@ def create_app(config_path):
 
     app = Sanic(error_handler=PGErrorHandler())
     app.config.from_pyfile(config_path)
+
+    app.config.DOMAIN = os.environ.get("DOMAIN", app.config.DOMAIN)
     app.base_url = f"{app.config.METHOD}://{app.config.DOMAIN}"
-    app.streams = Streams()
+    # app.streams = Streams()
+    db_host = os.environ.get("MONGODB_HOST", "localhost")
+    app.config.MOTOR_URI = f'mongodb://{db_host}:27017/pbgate'
     BaseModel.init_app(app)
     CORS(app, automatic_options=True)
 
