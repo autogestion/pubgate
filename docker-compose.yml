@@ -14,7 +14,7 @@ services:
     image: pubgate
     restart: always
     ports:
-       - 8000:8000
+       - 80:8000
     volumes:
       - type: bind
         source: ./
@@ -23,3 +23,15 @@ services:
     environment:
       - MONGODB_HOST=mongo
       - DOMAIN=$domain
+
+  ssl:
+    image: andreilhicas/nginx-letsencrypt
+    restart: always
+    build:
+      args:
+        DOMAIN: $domain
+        EMAIL: test@test.test
+    ports:
+      - 443:443
+      - 80:80
+
