@@ -27,10 +27,9 @@ services:
   ssl:
     image: andreilhicas/nginx-letsencrypt
     restart: always
-    build:
-      args:
-        DOMAIN: $domain
-        EMAIL: test@test.test
+    environment:
+      - EMAIL=test@test.test
+      - DOMAIN=$domain
     ports:
       - 443:443
       - 80:80
