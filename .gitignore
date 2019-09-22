@@ -110,6 +110,8 @@ venv.bak/
 
 # pubgate
 /config/conf.cfg
+/config/conf_dev.cfg
+
 /storage/*
 /media/*
 *.session
