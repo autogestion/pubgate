@@ -10,7 +10,9 @@ services:
 #       - mongo_data_vol:/data/db
 
   pubgate:
-    build: .
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
     image: pubgate
     restart: always
     ports:
