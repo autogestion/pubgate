@@ -1,11 +1,16 @@
 ![python_version](https://img.shields.io/badge/python-3.7-blue.svg)
 
-## Asyncronous Lightweight ActivityPub API
+## Asyncronous Lightweight ActivityPub API / CMS
 Based on [little-boxes](https://github.com/tsileo/little-boxes).
 Implements both the client-to-server(C2S) API and the federated server-to-server(S2S) API.
  - S2S compatible with Mastodon, Pixelfed, Pleroma and microblog.pub
 
 Can do create / delete / un-/follow users / share / like / undo
+=======
+The idea is to develop PubGate as CMS, which could be used same as WordPress - 
+easy install on cheap hosting with customization by installing plugins and choosing themes.
+As far as it based on asynchronous python framework, 
+which provides non-blocking delivery of AP objects to other instances, it supposed to be light and fast.
 
 ##### Support extensions (collects blueprints and tasks):
 

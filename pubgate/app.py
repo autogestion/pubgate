@@ -2,7 +2,7 @@ import os
 
 import aiohttp
 from sanic import Sanic
-from sanic_openapi import swagger_blueprint, openapi_blueprint
+from sanic_openapi import swagger_blueprint
 from sanic_motor import BaseModel
 from sanic_cors import CORS
 
@@ -27,7 +27,6 @@ def create_app(config_path):
     CORS(app, automatic_options=True)
 
     # TODO Find viable openapi fork
-    app.blueprint(openapi_blueprint)
     app.blueprint(swagger_blueprint)
 
     # app.blueprint(instance)
