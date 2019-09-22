@@ -11,12 +11,12 @@ services:
 
   pubgate:
     build:
-      context: ../
-      dockerfile: ./docker/Dockerfile
+      context: .
+      dockerfile: docker/Dockerfile
     image: pubgate
     restart: always
     ports:
-       - 80:8000
+       - 8888:8000
     volumes:
       - type: bind
         source: ./
