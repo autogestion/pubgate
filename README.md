@@ -39,7 +39,7 @@ At [Postman documenter](https://documenter.getpostman.com/view/4625755/RzZCFdXv)
 ## Run
 
 #### Prerequisites
-`MongoDB 3.6, Python 3.6`
+`MongoDB 3.6, Python 3.7`
 #### Shell
 ```
 git clone https://github.com/autogestion/pubgate.git
