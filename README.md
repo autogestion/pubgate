@@ -6,7 +6,7 @@ Implements both the client-to-server(C2S) API and the federated server-to-server
  - S2S compatible with Mastodon, Pixelfed, Pleroma and microblog.pub
 
 Can do create / delete / un-/follow users / share / like / undo
-=======
+
 The idea is to develop PubGate as CMS, which could be used same as WordPress - 
 easy install on cheap hosting with customization by installing plugins and choosing themes.
 As far as it based on asynchronous python framework, 
