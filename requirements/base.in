@@ -1,0 +1,9 @@
+
+aiohttp
+aiocache
+sanic
+sanic-motor
+sanic-openapi
+sanic-cors
+simple-bcrypt
+pycryptodome
