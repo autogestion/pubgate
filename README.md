@@ -5,11 +5,12 @@ Based on [little-boxes](https://github.com/tsileo/little-boxes).
 Implements both the client-to-server(C2S) API and the federated server-to-server(S2S) API.
  - S2S compatible with Mastodon, Pixelfed, Pleroma and microblog.pub
 
+Can do create / delete / un-/follow users / share / like / undo
+
 The idea is to develop PubGate as CMS, which could be used same as WordPress - 
 easy install on cheap hosting with customization by installing plugins and choosing themes.
 As far as it based on asynchronous python framework, 
 which provides non-blocking delivery of AP objects to other instances, it supposed to be light and fast.
-
 
 ##### Support extensions (collects blueprints and tasks):
 
@@ -19,48 +20,29 @@ which provides non-blocking delivery of AP objects to other instances, it suppos
  - [pubgate-philip](https://github.com/autogestion/pubgate-philip):  minimalist blogging js client, Svelte framework (alpha)*
 
 ### API documentation
-Support create / delete / un-/follow users / share / like / undo
-
-#### Endpoints
 Overview [swagger docs example](http://pubgate.autogestion.org/swagger)
-##### ActivityPub
- - /user/           (create, profile, token(password grant OAuth 2), following/ers, liked)
- - /inbox/          (create, list)
- - /outbox/         (create, list, details (replies, likes, shares))
-##### Additional
- - /.well-known/    (webfinger, nodeinfo)
- - /timeline        (local, federated)
- - /swagger         (api docs)
 
-More details:
+More details at [Postman documenter](https://documenter.getpostman.com/view/4625755/RzZCFdXv) or download latest [Postman collection](https://github.com/autogestion/pubgate/blob/master/pubgate.postman_collection.json)
 
-At [Postman documenter](https://documenter.getpostman.com/view/4625755/RzZCFdXv) or download latest [Postman collection](https://github.com/autogestion/pubgate/blob/master/pubgate.postman_collection.json)
-
-## Run
-
-#### Prerequisites
-`MongoDB 3.6, Python 3.7`
+## Deploy
+###### Install Docker + Docker Compose
 #### Shell
 ```
 git clone https://github.com/autogestion/pubgate.git
-pip install -r requirements/base.txt
-```
-##### Only federator
-```
-cp -r config/base_sample_conf.cfg config/conf.cfg
-```
-##### To run with extensions (marked * in list )
-```
-pip install -r requirements/extensions.txt
 cp -r config/extensions_sample_conf.cfg config/conf.cfg
 ```
+###### Check/Edit config/conf.cfg to change setup of your instance 
+(registration status, title and description for UI App)
 
-###### Update config/conf.cfg with your domain name
-##### Run
+Then, instance could be started
+```
+domain=put-your-domain-here.com docker-compose up -d
+```
 
-```
-python run_api.py
-```
+This will install PubGate with extensions (marked * in list ). 
+For custom configuration edit requirements/extensions.txt and config/conf.cfg . 
+To install federator without extensions, empty requirements/extensions.txt and use 
+config/base_sample_conf.cfg
 
 ### Tests
 

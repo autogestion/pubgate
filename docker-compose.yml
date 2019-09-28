@@ -1,0 +1,38 @@
+version: '3.7'
+
+services:
+
+  mongo:
+     image: mongo:4
+     restart: always
+#     command: --smallfiles
+#     volumes:
+#       - mongo_data_vol:/data/db
+
+  pubgate:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: pubgate
+    restart: always
+    ports:
+       - 8888:8000
+    volumes:
+      - type: bind
+        source: ./
+        target: /code/
+    # stop_signal: SIGINT
+    environment:
+      - MONGODB_HOST=mongo
+      - DOMAIN=$domain
+
+#  ssl:
+#    image: andreilhicas/nginx-letsencrypt
+#    restart: always
+#    environment:
+#      - EMAIL=test@test.test
+#      - DOMAIN=$domain
+#    ports:
+#      - 443:443
+#      - 80:80
+
