@@ -26,13 +26,13 @@ services:
       - MONGODB_HOST=mongo
       - DOMAIN=$domain
 
-  ssl:
-    image: andreilhicas/nginx-letsencrypt
-    restart: always
-    environment:
-      - EMAIL=test@test.test
-      - DOMAIN=$domain
-    ports:
-      - 443:443
-      - 80:80
+#  ssl:
+#    image: andreilhicas/nginx-letsencrypt
+#    restart: always
+#    environment:
+#      - EMAIL=test@test.test
+#      - DOMAIN=$domain
+#    ports:
+#      - 443:443
+#      - 80:80
 
