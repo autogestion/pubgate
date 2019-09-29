@@ -16,7 +16,7 @@ services:
     image: pubgate
     restart: always
     ports:
-       - 8888:8000
+       - 8000:8000
     volumes:
       - type: bind
         source: ./
