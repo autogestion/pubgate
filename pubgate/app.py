@@ -8,10 +8,11 @@ from sanic_cors import CORS
 
 from pubgate import MEDIA
 from pubgate.api import user_v1, inbox_v1, outbox_v1, well_known
-from pubgate.db import register_admin, setup_cached_user
+# from pubgate.db import register_admin
 from pubgate.logging import PGErrorHandler
-from pubgate.utils.streams import Streams
-from pubgate.utils.startapp import register_extensions, on_deploy_user
+# from pubgate.utils.streams import Streams
+from pubgate.utils.startapp import register_extensions, \
+    setup_on_deploy_user, setup_cached_user
 
 
 def create_app(config_path):
@@ -39,9 +40,15 @@ def create_app(config_path):
     app.register_listener(
         setup_cached_user, 'before_server_start'
     )
+
     # app.add_task(register_client(app))
     # app.add_task(register_admin(app))
     register_extensions(app)
+
+    if app.config.get('USER_ON_DEPLOY'):
+        app.register_listener(
+            setup_on_deploy_user, 'before_server_start'
+        )
 
     app.static('/media', MEDIA)
 

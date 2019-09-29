@@ -2,3 +2,4 @@
 #Extensions
 git+https://github.com/autogestion/pubgate-rssbot.git
 git+https://github.com/autogestion/pubgate-philip.git
+git+https://github.com/autogestion/pubgate-telegram.git
