@@ -43,12 +43,13 @@ def create_app(config_path):
 
     # app.add_task(register_client(app))
     # app.add_task(register_admin(app))
-    register_extensions(app)
 
     if app.config.get('USER_ON_DEPLOY'):
         app.register_listener(
             setup_on_deploy_user, 'before_server_start'
         )
+
+    register_extensions(app)
 
     app.static('/media', MEDIA)
 
