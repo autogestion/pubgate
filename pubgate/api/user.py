@@ -59,7 +59,7 @@ async def user_update(request, user):
                 {'$set': {f"details.{detail}": details[detail]}}
             )
 
-    return response.json({'peremoga': 'yep'}, status=201)
+    return response.json({'Created': 'success'}, status=201)
 
 
 @user_v1.route('/@<user>/mass_delete', methods=['POST'])
@@ -78,7 +78,7 @@ async def user_mass_delete(request, user):
         )
         await del_activity.save()
         await del_activity.deliver()
-    return response.json({'peremoga': 'yep'}, status=201)
+    return response.json({'Created': 'success'}, status=201)
 
 
 @user_v1.route('/@<user>', methods=['GET'])
