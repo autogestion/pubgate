@@ -83,7 +83,7 @@ async def inbox_post(request, user):
     else:
         await Inbox.save(user, activity)
 
-    return response.json({'peremoga': 'yep'}, status=202)
+    return response.json({'Created': 'success'}, status=202)
 
 
 @inbox_v1.route('/@<user>/inbox', methods=['GET'])
