@@ -1,6 +1,6 @@
 from functools import wraps
 
-from sanic import exceptions
+from sanic import response,exceptions
 
 from pubgate.db import User, Outbox
 
@@ -23,7 +23,7 @@ def user_check(handler=None):
     async def wrapper(request, *args, **kwargs):
         user = await User.find_one(dict(name=kwargs["user"].lower()))
         if not user:
-            raise exceptions.NotFound("User not found")
+            return response.json({'error': 'User not found', 'status_code': 404})
 
         kwargs["user"] = user
         return await handler(request, *args, **kwargs)

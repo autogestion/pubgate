@@ -28,9 +28,12 @@ async def outbox_post(request, user):
     # TODO merges audience properties (to, bto, cc, bcc, audience) with the Create's 'object's audience properties
     # TODO support collection
 
-    activity = choose(user, request.json)
-    await activity.save()
-    await activity.deliver(debug=request.app.config.LOG_OUTGOING_REQUEST)
+    try:
+        activity = choose(user, request.json)
+        await activity.save()
+        await activity.deliver(debug=request.app.config.LOG_OUTGOING_REQUEST)
+    except Exception as error:
+        return response.json({error})
 
     # TODO implement streaming
     # if activity.render["type"] == "Create":
