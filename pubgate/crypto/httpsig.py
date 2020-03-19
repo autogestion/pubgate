@@ -94,7 +94,7 @@ class HTTPSigAuth:
         bh.update(body)
 
         headers.update({
-            '(request-target)': f'post {spl_url.path}',
+            'request-target': f'post {spl_url.path}',
             "date": datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT"),
             'host': spl_url.netloc,
             'digest': "SHA-256=" + base64.b64encode(bh.digest()).decode("utf-8")
