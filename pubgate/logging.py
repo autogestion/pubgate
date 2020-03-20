@@ -1,14 +1,12 @@
 import json
 
 from sanic.server import HttpProtocol
-from sanic.log import logger, access_logger
-from sanic.response import HTTPResponse
 from sanic.handlers import ErrorHandler
 
 
-from traceback import format_exc, print_exc
-from sanic.exceptions import INTERNAL_SERVER_ERROR_HTML, SanicException
-from sanic.response import text, html
+from traceback import print_exc
+from sanic.exceptions import SanicException
+from sanic.response import json
 
 
 class PGHttpProtocol(HttpProtocol):
@@ -29,18 +27,23 @@ class PGErrorHandler(ErrorHandler):
 
     def default(self, request, exception):
         if issubclass(type(exception), SanicException):
-            return text(
+            return json(
                 {'error': '{}'.format(exception)},
                 status=getattr(exception, 'status_code', 500),
                 headers=getattr(exception, 'headers', dict())
             )
-        # elif self.debug:
-        #     html_output = self._render_traceback_html(exception, request)
-        #
-        #     response_message = ('Exception occurred while handling uri: '
-        #                         '"%s"\n%s')
-        #     logger.error(response_message, request.url, format_exc())
-        #     return html(html_output, status=500)
+
         else:
             print_exc()
-            return html(INTERNAL_SERVER_ERROR_HTML, status=500)
+            if self.debug:
+                return json(
+                    {'server_error': '{}'.format(exception)},
+                    status=getattr(exception, 'status_code', 500),
+                    headers=getattr(exception, 'headers', dict())
+                )
+            else:
+                return json(
+                    {'server_error': 'internal server error'},
+                    status=getattr(exception, 'status_code', 500),
+                    headers=getattr(exception, 'headers', dict())
+                )
