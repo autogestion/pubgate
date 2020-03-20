@@ -23,15 +23,25 @@ async def verify_request(request) -> bool:
     return verify(hsig, request, actor)
 
 
-async def fetch(url, status=False):
+async def fetch(url, pass_through=False):
     async with aiohttp.ClientSession() as session:
         async with session.get(url, headers={"accept": 'application/activity+json',
                                              "user-agent": f"PubGate v:{__version__}"}
                                 ) as resp:
+            status_code = resp.status
             logger.info(f"Fetch {url}, status: {resp.status}, {resp.reason}")
-            if status:
-                return resp.status, await resp.json(encoding='utf-8')
-            return await resp.json(encoding='utf-8')
+            try:
+                result = await resp.json(encoding='utf-8')
+            except aiohttp.client_exceptions.ContentTypeError as e:
+                result = {'fetch_error': await resp.text()}
+                status_code = 500
+                failed = e
+
+            if pass_through:
+                return status_code, result
+            elif failed:
+                raise e
+            return await result
 
 
 async def fetch_text(url):
