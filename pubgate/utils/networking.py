@@ -23,12 +23,14 @@ async def verify_request(request) -> bool:
     return verify(hsig, request, actor)
 
 
-async def fetch(url):
+async def fetch(url, status=False):
     async with aiohttp.ClientSession() as session:
         async with session.get(url, headers={"accept": 'application/activity+json',
                                              "user-agent": f"PubGate v:{__version__}"}
                                 ) as resp:
             logger.info(f"Fetch {url}, status: {resp.status}, {resp.reason}")
+            if status:
+                return resp.status, await resp.json(encoding='utf-8')
             return await resp.json(encoding='utf-8')
 
 
