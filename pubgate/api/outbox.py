@@ -4,7 +4,7 @@ from sanic import response, Blueprint
 from sanic_openapi import doc
 
 from pubgate.db import Outbox, Reactions
-from pubgate.db.cached import timeline_cached
+from pubgate.db.cached import timeline_cached, process_entry
 from pubgate.renders import context
 from pubgate.activity import choose
 from pubgate.utils.checks import user_check, token_check, outbox_check, ui_app_check
@@ -69,7 +69,11 @@ async def outbox_activity(request, user, entity):
 @outbox_check
 @ui_app_check
 async def outbox_object(request, user, entity):
-    result = entity["activity"]["object"]
+    activity = entity.activity
+    if request.args.get('cached'):
+        activity = await process_entry(activity, request, Outbox.cache)
+
+    result = activity["object"]
     result['@context'] = context
     return response.json(result, headers={'Content-Type': 'application/activity+json; charset=utf-8'})
 
