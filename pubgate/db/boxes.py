@@ -17,6 +17,15 @@ class Outbox(BaseModel, BaseManager):
         return {"user_id": name}
 
     @classmethod
+    def drop_replies_cache(cls, target_id, user):
+        cls.cache.delete(target_id)
+        search_model = cls if target_id.startswith(base_url) else Inbox
+        target_obj = search_model.find_one(
+            {"activity.object.id": target_id}
+        )
+        if target_obj and target_obj.activity[]
+
+    @classmethod
     async def save(cls, activity, **kwargs):
         db_obj = {
             "_id": activity.id,
@@ -25,9 +34,16 @@ class Outbox(BaseModel, BaseManager):
             "label": make_label(activity.render),
             "deleted": False,
         }
+        target = kwargs.pop('target')
         db_obj.update(kwargs)
         await Outbox.insert_one(db_obj)
-        await cls.cache.clear()
+        if target:
+            cls.cache.delete(target.render['object']['id'])
+        follow_replies = (target.render['object'].get['inReplyTo']
+                          or activity.render['object'].get['inReplyTo'])
+        if follow_replies:
+            cls.drop_replies_cache(follow_replies, activity.user)
+
 
     @classmethod
     async def reaction_add(cls, activity, local, **kwargs):
@@ -132,7 +148,7 @@ class Inbox(BaseModel, BaseManager):
                 "first_user": user.name,
                 "created": datetime.now()
             })
-        await cls.cache.clear()
+        # await cls.cache.clear()
         return True
 
     async def inbox_paged(self, request):
@@ -143,7 +159,6 @@ class Inbox(BaseModel, BaseManager):
         return await self.get_ordered(request, Inbox, filters,
                                       self.activity_clean,
                                       f"{request.app.base_url}/timeline/federated")
-
 
     async def ensure_cached(cls, object_id):
         # TODO also fetch and cache reactions (replies, likes, shares)

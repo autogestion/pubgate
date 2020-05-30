@@ -50,9 +50,10 @@ async def timeline_cached(cls, request, uri, user='stream'):
 
 
 async def process_entry(activity, request, cache):
-    # cached = await cache.get(activity['id'])
-    # if cached:
-    #     return cached
+    cached = await cache.get(activity['object']['id'])
+    if cached:
+        activity['object'] = cached
+        return activity
 
     # Get details for boosted/liked object
     if isinstance(activity['object'], str):
@@ -74,7 +75,7 @@ async def process_entry(activity, request, cache):
         await reaction_list(activity, request, 'shares')
         await reaction_list(activity, request, 'likes')
 
-    await cache.set(activity['id'], activity)
+    await cache.set(activity['object']['id'], activity['object'])
     return activity
 
 
