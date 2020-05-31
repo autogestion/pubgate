@@ -36,14 +36,12 @@ class PGErrorHandler(ErrorHandler):
         else:
             print_exc()
             if self.debug:
-                return json(
-                    {'server_error': '{}'.format(exception)},
-                    status=getattr(exception, 'status_code', 500),
-                    headers=getattr(exception, 'headers', dict())
-                )
+                error = {'error': '{}'.format(exception)},
             else:
-                return json(
-                    {'server_error': 'internal server error'},
-                    status=getattr(exception, 'status_code', 500),
-                    headers=getattr(exception, 'headers', dict())
-                )
+                error = {'error': 'internal server error'},
+
+            return json(
+                error,
+                status=getattr(exception, 'status_code', 500),
+                headers=getattr(exception, 'headers', dict())
+            )
