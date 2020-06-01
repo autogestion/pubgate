@@ -1,5 +1,4 @@
 import aiohttp
-import base64
 import json
 
 from sanic.log import logger
@@ -32,7 +31,7 @@ async def fetch(url, pass_through=False):
             logger.info(f"Fetch {url}, status: {resp.status}, {resp.reason}")
             try:
                 result = await resp.json(encoding='utf-8')
-            except aiohttp.client_exceptions.ContentTypeError as e:
+            except aiohttp.ContentTypeError as e:
                 result = {'fetch_error': await resp.text()}
                 status_code = 500
                 failed = e
@@ -48,7 +47,7 @@ async def fetch_text(url):
     async with aiohttp.ClientSession() as session:
         async with session.get(url, headers={"accept": 'application/activity+json',
                                              "user-agent": f"PubGate v:{__version__}"}
-                                ) as resp:
+                               ) as resp:
             logger.info(f"Fetch {url}, status: {resp.status}, {resp.reason}")
             return await resp.text()
 
