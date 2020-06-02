@@ -31,6 +31,7 @@ async def fetch(url, pass_through=False):
             logger.info(f"Fetch {url}, status: {resp.status}, {resp.reason}")
             try:
                 result = await resp.json(encoding='utf-8')
+                failed = False
             except aiohttp.ContentTypeError as e:
                 result = {'fetch_error': await resp.text()}
                 status_code = 500
