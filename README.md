@@ -1,7 +1,6 @@
 <img src="https://user-images.githubusercontent.com/1098257/83571569-eb642700-a51f-11ea-8fca-c2b61798a4ce.png" width="200" height="200">
+
 ![python_version](https://img.shields.io/badge/python-3.7-blue.svg)
-
-
 ## Asyncronous Lightweight ActivityPub API / CMS
 Implements both the client-to-server(C2S) API and the federated server-to-server(S2S) API.
  - S2S compatible with Mastodon, Pixelfed, Pleroma and microblog.pub
