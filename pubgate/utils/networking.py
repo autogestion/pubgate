@@ -29,7 +29,12 @@ async def fetch(url, pass_through=False):
                                 ) as resp:
             status_code = resp.status
             logger.info(f"Fetch {url}, status: {resp.status}, {resp.reason}")
+
             print(resp)
+            print('----------------')
+            print(resp.text)
+            print(';;;;;;;;;;;;;;;;;;;;')
+            print(resp.json)
             try:
                 result = await resp.json(encoding='utf-8')
                 failed = False
