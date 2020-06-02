@@ -49,7 +49,7 @@ async def fetch(url, pass_through=False):
                 raise failed
             print('----------------')
             print(result)
-            return await result
+            return result
 
 
 async def fetch_text(url):
