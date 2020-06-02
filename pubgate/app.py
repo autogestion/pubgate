@@ -7,12 +7,13 @@ from sanic_motor import BaseModel
 from sanic_cors import CORS
 
 from pubgate import MEDIA
-from pubgate.api import user_v1, inbox_v1, outbox_v1, well_known
+from pubgate.api import user_v1, inbox_v1, outbox_v1, well_known, ws
 # from pubgate.db import register_admin
 from pubgate.logging import PGErrorHandler
 # from pubgate.utils.streams import Streams
 from pubgate.utils.startapp import register_extensions, \
     setup_on_deploy_user, setup_cached_user
+from pubgate.api.websocket import sio
 
 
 def create_app(config_path):
@@ -36,6 +37,7 @@ def create_app(config_path):
     app.blueprint(user_v1)
     app.blueprint(inbox_v1)
     app.blueprint(outbox_v1)
+    app.blueprint(ws)
 
     app.register_listener(
         setup_cached_user, 'before_server_start'
@@ -52,6 +54,7 @@ def create_app(config_path):
     register_extensions(app)
 
     app.static('/media', MEDIA)
+    sio.attach(app)
 
     return app
 

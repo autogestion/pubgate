@@ -7,3 +7,4 @@ sanic-openapi
 sanic-cors
 simple-bcrypt
 pycryptodome
+python-socketio

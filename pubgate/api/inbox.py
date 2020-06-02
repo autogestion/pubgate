@@ -18,6 +18,9 @@ inbox_v1 = Blueprint('inbox_v1')
 # async def update_headers(request, response):
 #     response.headers["Access-Control-Allow-Origin"] = "*"
 
+class WS:
+    pass
+
 
 @inbox_v1.route('/@<user>/inbox', methods=['POST'])
 @doc.summary("Post to user inbox")

@@ -1,15 +1,15 @@
 import json
 
-from sanic.server import HttpProtocol
+# from sanic.server import HttpProtocol
 from sanic.handlers import ErrorHandler
-
+from sanic.websocket import WebSocketProtocol
 
 from traceback import print_exc
 from sanic.exceptions import SanicException
 from sanic.response import json
 
 
-class PGHttpProtocol(HttpProtocol):
+class PGHttpProtocol(WebSocketProtocol):
 
     def log_response(self, response):
         super().log_response(response)
