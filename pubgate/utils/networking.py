@@ -47,6 +47,8 @@ async def fetch(url, pass_through=False):
                 return status_code, result
             elif failed:
                 raise failed
+            print('----------------')
+            print(result)
             return await result
 
 
