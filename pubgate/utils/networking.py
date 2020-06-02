@@ -41,7 +41,7 @@ async def fetch(url, pass_through=False):
             if pass_through:
                 return status_code, result
             elif failed:
-                raise e
+                raise failed
             return await result
 
 
