@@ -26,15 +26,10 @@ async def fetch(url, pass_through=False):
     async with aiohttp.ClientSession() as session:
         async with session.get(url, headers={"accept": 'application/activity+json',
                                              "user-agent": f"PubGate v:{__version__}"}
-                                ) as resp:
+                               ) as resp:
             status_code = resp.status
             logger.info(f"Fetch {url}, status: {resp.status}, {resp.reason}")
 
-            print(resp)
-            print('----------------')
-            print(resp.text)
-            print(';;;;;;;;;;;;;;;;;;;;')
-            print(resp.json)
             try:
                 result = await resp.json(encoding='utf-8')
                 failed = False
@@ -47,8 +42,6 @@ async def fetch(url, pass_through=False):
                 return status_code, result
             elif failed:
                 raise failed
-            print('----------------')
-            print(result)
             return result
 
 

@@ -26,7 +26,6 @@ class PGHttpProtocol(HttpProtocol):
 class PGErrorHandler(ErrorHandler):
 
     def default(self, request, exception):
-        print_exc()
         if issubclass(type(exception), SanicException):
             return json(
                 {'error': '{}'.format(exception)},
@@ -35,7 +34,7 @@ class PGErrorHandler(ErrorHandler):
             )
 
         else:
-
+            print_exc()
             if self.debug:
                 error = {'error': '{}'.format(exception)},
             else:
