@@ -3,6 +3,7 @@ from datetime import datetime
 from sanic_motor import BaseModel
 from sanic.exceptions import SanicException
 
+from pubgate import BaseUrl
 from pubgate.utils import make_label, random_object_id
 from pubgate.db.managers import BaseManager
 from pubgate.utils import check_origin
@@ -19,11 +20,13 @@ class Outbox(BaseModel, BaseManager):
     @classmethod
     def drop_replies_cache(cls, target_id, user):
         cls.cache.delete(target_id)
-        search_model = cls if target_id.startswith(base_url) else Inbox
-        target_obj = search_model.find_one(
-            {"activity.object.id": target_id}
-        )
-        if target_obj and target_obj.activity[]
+        print('BASE_URL')
+        print(BaseUrl.value)
+        search_model = cls if target_id.startswith(BaseUrl.value) else Inbox
+        # target_obj = search_model.find_one(
+        #     {"activity.object.id": target_id}
+        # )
+        # if target_obj and target_obj.activity[]
 
     @classmethod
     async def save(cls, activity, **kwargs):

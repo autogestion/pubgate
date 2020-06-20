@@ -11,6 +11,7 @@ from pubgate.utils.checks import user_check, token_check, outbox_check, ui_app_c
 
 outbox_v1 = Blueprint('outbox_v1')
 
+
 # disabled because it affects all app blueprints, still bugged
 # @outbox_v1.middleware('response')
 # async def update_headers(request, response):

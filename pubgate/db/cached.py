@@ -2,16 +2,6 @@ from pubgate.renders import ordered_collection
 from pubgate.db import Inbox, Outbox, Reactions
 
 
-def activity_reactions_clean(data):
-    result = []
-    for item in data:
-        cleaned = item['activity']
-        # if isinstance(cleaned['object'], dict):
-        #     cleaned['object']['reactions'] = getattr(item, 'reactions', {})
-        result.append(cleaned)
-    return result
-
-
 async def timeline_cached(cls, request, uri, user='stream'):
     filters = {
         "deleted": False,
@@ -50,7 +40,13 @@ async def timeline_cached(cls, request, uri, user='stream'):
 
 
 async def process_entry(activity, request, cache):
-    cached = await cache.get(activity['object']['id'])
+    ap_object = activity['object']
+    if type(ap_object) == str:
+        object_id = ap_object
+    else:
+        object_id = ap_object['id']
+    cached = await cache.get(object_id)
+
     if cached:
         activity['object'] = cached
         return activity
@@ -75,7 +71,7 @@ async def process_entry(activity, request, cache):
         await reaction_list(activity, request, 'shares')
         await reaction_list(activity, request, 'likes')
 
-    await cache.set(activity['object']['id'], activity['object'])
+    await cache.set(object_id, activity['object'])
     return activity
 
 
@@ -107,4 +103,3 @@ async def reaction_list(activity, request, reaction, cache=None):
             if 'first' in activity['object'][reaction]:
                 for reply in activity['object'][reaction]['first'].get('orderedItems', []):
                     await process_entry(reply, request, cache)
-
