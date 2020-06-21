@@ -8,8 +8,9 @@ from pubgate.db.cached import timeline_cached
 from pubgate.utils import check_origin
 from pubgate.utils.networking import deliver, verify_request
 from pubgate.utils.checks import user_check, token_check
-from pubgate.utils.cached import ensure_cached
+from pubgate.utils.cached import ensure_inbox
 from pubgate.activity import Activity
+from pubgate.utils.cached import cached_mode, clear_cache
 
 inbox_v1 = Blueprint('inbox_v1')
 
@@ -62,9 +63,12 @@ async def inbox_post(request, user):
         if saved:
             if local_user:
                 await user.forward_to_followers(activity)
-            elif activity["type"] in ["Announce", "Like"]:
-                if not check_origin(activity["object"], request.app.base_url):
-                    await ensure_cached(activity['object'])
+        #     elif activity["type"] in ["Announce", "Like"]:
+        #         if not check_origin(activity["object"], request.app.base_url):
+        #             await ensure_inbox(activity['object'])
+            if request.app.config.get('APPLY_CASHING'):
+                await clear_cache(activity, Inbox)
+
 
     elif activity["type"] == "Undo":
         deleted = await Inbox.delete(activity["object"]["id"])
@@ -90,7 +94,7 @@ async def inbox_post(request, user):
 @doc.summary("Returns user inbox, auth required")
 @token_check
 async def inbox_list(request, user):
-    if request.args.get('cached'):
+    if cached_mode(request):
         resp = await timeline_cached(Inbox, request, user.inbox, user=user.name)
     else:
         resp = await user.inbox_paged(request)
@@ -100,8 +104,9 @@ async def inbox_list(request, user):
 @inbox_v1.route('/timeline/federated', methods=['GET'])
 @doc.summary("Returns federated timeline")
 async def inbox_all(request):
-    if request.args.get('cached'):
-        resp = await timeline_cached(Inbox, request, f"{request.app.base_url}/timeline/federated")
+    url =f"{request.app.base_url}/timeline/federated"
+    if cached_mode(request):
+        resp = await timeline_cached(Inbox, request, url)
     else:
-        resp = await Inbox.timeline_paged(request, f"{request.app.base_url}/timeline/federated")
+        resp = await Inbox.timeline_paged(request, url)
     return response.json(resp, headers={'Content-Type': 'application/activity+json; charset=utf-8'})

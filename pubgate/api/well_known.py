@@ -10,10 +10,6 @@ from pubgate import __version__
 well_known = Blueprint('well_known')
 instance = Blueprint('instance')
 
-# @well_known.middleware('response')
-# async def update_headers(request, response):
-#     response.headers["Content-Type"] = "application/activity+json; charset=utf-8"
-
 
 @well_known.route('/.well-known/webfinger', methods=['GET'])
 @doc.summary("webfinger")
