@@ -6,7 +6,7 @@ from pubgate.db.cached import timeline_cached, process_entry
 from pubgate.renders import context
 from pubgate.activity import choose
 from pubgate.utils.checks import user_check, token_check, outbox_check, ui_app_check
-from pubgate.utils.cached import cached_mode, clear_cache
+from pubgate.utils.cached import cached_mode, handle_cache
 
 outbox_v1 = Blueprint('outbox_v1')
 
@@ -31,7 +31,7 @@ async def outbox_post(request, user):
     await activity.save()
     await activity.deliver(debug=request.app.config.LOG_OUTGOING_REQUEST)
     if request.app.config.get('APPLY_CASHING'):
-        await clear_cache(activity.render, Outbox)
+        await handle_cache(activity.render, Outbox)
 
     # TODO implement streaming
     # if activity.render["type"] == "Create":
