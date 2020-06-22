@@ -5,7 +5,6 @@ from sanic.exceptions import SanicException
 from pubgate.utils import random_object_id
 from pubgate.utils.networking import deliver
 from pubgate.utils import check_origin
-from pubgate.utils.cached import ensure_cached
 from pubgate.db import Outbox, Inbox
 
 
@@ -98,8 +97,6 @@ class Reaction(Activity):
 
     async def save(self):
         local = check_origin(self.render["object"], self.render["actor"])
-        if not local:
-            await ensure_cached(self.render['object'])
         await Outbox.reaction_add(self, local)
 
 

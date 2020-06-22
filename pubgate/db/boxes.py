@@ -27,7 +27,6 @@ class Outbox(BaseModel, BaseManager):
         }
         db_obj.update(kwargs)
         await Outbox.insert_one(db_obj)
-        await cls.cache.clear()
 
     @classmethod
     async def reaction_add(cls, activity, local, **kwargs):
@@ -105,7 +104,8 @@ class Inbox(BaseModel, BaseManager):
         )
         if exists:
             if user.name in exists['users']:
-                return False
+                raise SanicException('Object with this ID already delivered to user',
+                                     status_code=409)
 
             else:
                 users = exists['users']
@@ -132,7 +132,6 @@ class Inbox(BaseModel, BaseManager):
                 "first_user": user.name,
                 "created": datetime.now()
             })
-        await cls.cache.clear()
         return True
 
     async def inbox_paged(self, request):
@@ -143,19 +142,3 @@ class Inbox(BaseModel, BaseManager):
         return await self.get_ordered(request, Inbox, filters,
                                       self.activity_clean,
                                       f"{request.app.base_url}/timeline/federated")
-
-
-    async def ensure_cached(cls, object_id):
-        # TODO also fetch and cache reactions (replies, likes, shares)
-        exists = await cls.get_by_uri(object_id)
-        if not exists:
-            cached_user = await User.find_one({'name': 'cached'})
-            activity_object = await fetch(object_id)
-            await cls.save(cached_user, {
-                'type': 'Create',
-                'id': f'{object_id}#activity',
-                'published': activity_object['published'],
-                'object': activity_object
-            })
-
-
