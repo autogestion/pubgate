@@ -34,9 +34,7 @@ async def timeline_cached(cls, request, uri, user='stream'):
             updated = await process_entry(entry.activity, request, cls.cache)
             result.append(updated)
 
-    # await cls.cache.set(cache_key, data)
     return ordered_collection(uri, total, page, result)
-    # return ordered_collection(uri, total, page, result)
 
 
 async def process_entry(activity, request, cache):
