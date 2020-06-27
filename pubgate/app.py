@@ -7,7 +7,8 @@ from sanic_motor import BaseModel
 from sanic_cors import CORS
 
 from pubgate import MEDIA, BaseUrl
-from pubgate.api import user_v1, inbox_v1, outbox_v1, well_known
+from pubgate.api import user_v1, inbox_v1, \
+    outbox_v1, outbox_object_v1, well_known
 # from pubgate.db import register_admin
 from pubgate.logging import PGErrorHandler
 from pubgate.utils.startapp import register_extensions, \
@@ -22,6 +23,7 @@ def create_app(config_path):
     app.config.DOMAIN = os.environ.get("DOMAIN", app.config.DOMAIN)
     app.base_url = f"{app.config.METHOD}://{app.config.DOMAIN}"
     BaseUrl.value = app.base_url
+    app.config.base_url = app.base_url
     db_host = os.environ.get("MONGODB_HOST", "localhost")
     app.config.MOTOR_URI = f'mongodb://{db_host}:27017/pbgate'
     BaseModel.init_app(app)
@@ -31,10 +33,12 @@ def create_app(config_path):
     app.blueprint(swagger_blueprint)
 
     # app.blueprint(instance)
+
     app.blueprint(well_known)
     app.blueprint(user_v1)
     app.blueprint(inbox_v1)
     app.blueprint(outbox_v1)
+    app.blueprint(outbox_object_v1)
 
     app.register_listener(
         setup_cached_user, 'before_server_start'
