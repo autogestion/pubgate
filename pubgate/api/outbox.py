@@ -9,6 +9,7 @@ from pubgate.utils.checks import user_check, token_check, outbox_check, ui_app_c
 from pubgate.utils.cached import cached_mode, handle_cache
 
 outbox_v1 = Blueprint('outbox_v1')
+outbox_object_v1 = Blueprint(name='outbox_object_v1')
 
 
 @outbox_v1.middleware('response')
@@ -64,7 +65,7 @@ async def outbox_activity(request, user, entity):
     return response.json(result)
 
 
-@outbox_v1.route('/@<user>/object/<entity>', methods=['GET'])
+@outbox_object_v1.route('/@<user>/object/<entity>', methods=['GET'])
 @doc.summary("Returns object from outbox")
 @user_check
 @outbox_check
@@ -72,11 +73,12 @@ async def outbox_activity(request, user, entity):
 async def outbox_object(request, user, entity):
     activity = entity.activity
     if cached_mode(request):
-        activity = await process_entry(activity, request, Outbox.cache)
+        activity = await process_entry(activity, request)
 
     result = activity["object"]
     result['@context'] = context
-    return response.json(result)
+    return response.json(result,
+                         content_type="application/activity+json; charset=utf-8")
 
 
 @outbox_v1.route('/@<user>/object/<entity>/replies', methods=['GET'])
