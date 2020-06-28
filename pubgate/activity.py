@@ -16,6 +16,8 @@ class BaseActivity:
         self.user = user
         self.cc = activity.get("cc", [])[:]
         activity["actor"] = user.uri
+        if user.uri in self.cc:
+            self.cc.remove(user.uri)
 
     async def recipients(self):
         result = await self.user.followers_get()

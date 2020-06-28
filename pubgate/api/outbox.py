@@ -73,7 +73,7 @@ async def outbox_activity(request, user, entity):
 async def outbox_object(request, user, entity):
     activity = entity.activity
     if cached_mode(request):
-        activity = await process_entry(activity, request, Outbox.cache)
+        activity = await process_entry(activity, request)
 
     result = activity["object"]
     result['@context'] = context

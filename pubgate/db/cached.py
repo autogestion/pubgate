@@ -1,6 +1,8 @@
 from pubgate.renders import ordered_collection
 from pubgate.db import Inbox, Outbox, Reactions
 
+cache = Outbox.cache
+
 
 async def timeline_cached(cls, request, uri, user='stream'):
     filters = {
@@ -30,14 +32,16 @@ async def timeline_cached(cls, request, uri, user='stream'):
                               skip=limit * (page - 1),
                               limit=limit)
         data = data.objects
+        counter = 0
         for entry in data:
-            updated = await process_entry(entry.activity, request, cls.cache)
+            counter += 1
+            updated = await process_entry(entry.activity, request)
             result.append(updated)
 
     return ordered_collection(uri, total, page, result)
 
 
-async def process_entry(activity, request, cache):
+async def process_entry(activity, request):
     ap_object = activity['object']
     if type(ap_object) == str:
         object_id = ap_object
@@ -51,53 +55,57 @@ async def process_entry(activity, request, cache):
 
     # Get details for boosted/liked object
     if isinstance(activity['object'], str):
-        activity['object'] = await retrieve_object(
-            request.app.base_url, activity['object']
-        ) or activity['object']
+        activity['object'] = await retrieve_object(activity['object'], request)\
+                             or activity['object']
 
     if isinstance(activity['object'], dict):
         # Get details for parent Object
         if activity['object'].get('inReplyTo') and \
                 isinstance(activity['object']['inReplyTo'], str):
-            activity['object']['inReplyTo'] = await retrieve_object(
-                request.app.base_url, activity['object']['inReplyTo']
-            ) or activity['object']['inReplyTo']
+            activity['object']['inReplyTo'] = \
+                await retrieve_object(activity['object']['inReplyTo'],
+                                      request, in_reply=True)\
+                or activity['object']['inReplyTo']
 
-        # Get likes, reposts and replies
-        # TODO make one aggregation query for all reactions
-        await reaction_list(activity, request, 'replies', cache=cache)
-        await reaction_list(activity, request, 'shares')
-        await reaction_list(activity, request, 'likes')
-
+    # Get likes, reposts and replies
+    # TODO make one aggregation query for all reactions
+    await reaction_list(activity, request)
     await cache.set(object_id, activity['object'])
     return activity
 
 
 # TODO upgrade to get or cache for remote objects
-async def retrieve_object(base_url, uri):
-    if uri.startswith(base_url):
+async def retrieve_object(uri, request, in_reply=False):
+    cached = await cache.get(uri)
+    if cached: return cached
+
+    if uri.startswith(request.app.base_url):
         result = await Outbox.get_by_uri(uri)
     else:
         result = await Inbox.get_by_uri(uri)
 
     if result:
-        responce = result.activity['object']
-        # responce['reactions'] = getattr(result, 'reactions', {})
-        return responce
+        # if in_reply:
+        #     await reaction_list(result.activity, request,
+        #                         skip_recursion=True)
+        # else:
+        #     await process_entry(result.activity, request)
+        return result.activity['object']
+
     return None
 
 
-async def reaction_list(activity, request, reaction, cache=None):
-    if (activity['object'].get(reaction)
-            and isinstance(activity['object'][reaction], str)):
-        activity['object'][reaction] = await getattr(
-            Reactions, reaction
-        )(
-            request, activity['object']['id']
-        ) or activity['object'][reaction]
+async def reaction_list(activity, request, skip_recursion=False):
+    for reaction in ['replies', 'shares', 'likes']:
+        have_reaction = activity['object'].get(reaction)
+        if not have_reaction or isinstance(activity['object'][reaction], str):
+            activity['object'][reaction] = await getattr(Reactions, reaction)(
+                request, activity['object']['id']
+            )
 
         if (reaction == 'replies'
-                and not isinstance(activity['object'][reaction], str)):
-            if 'first' in activity['object'][reaction]:
-                for reply in activity['object'][reaction]['first'].get('orderedItems', []):
-                    await process_entry(reply, request, cache)
+                and not skip_recursion
+                and 'first' in activity['object'][reaction]):
+            for reply in activity['object'][reaction]['first']\
+                    .get('orderedItems', []):
+                await process_entry(reply, request)
