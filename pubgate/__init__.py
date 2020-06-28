@@ -1,6 +1,6 @@
 import os
 
-__version__ = "0.3.3"
+__version__ = "0.3.4"
 
 KEY_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "storage")
 MEDIA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "media")
